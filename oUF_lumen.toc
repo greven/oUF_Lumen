@@ -1,11 +1,16 @@
-## Interface: 40300
+## Interface: 50001
 ## Author: greven
 ## Title: oUF_|cFF0d87d5l|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
 ## Notes: oUF layout of greven
 ## X-Category: UnitFrame
-## Version: 1.8
+## Version: 2.0
 ## Dependencies: oUF
 ## OptionalDeps: oUF_MovableFrames, oUF_Smooth, oUF_Swing, oUF_SpellRange, oUF_CombatFeedback, oUF_BarFader, oUF_Experience, oUF_TotemBar, oUF_Reputation, oUF_AuraWatch, oUF_DebuffHighlight
 
 cfg.lua
+modules\filters.lua
+modules\colors.lua
+modules\addons.lua
+modules\classes.lua
+modules\tags.lua
 oUF_lumen.lua

@@ -6,8 +6,11 @@
 -- ------------------------------------------------------------------------
 
 	local addon, ns = ...
-	local cfg = ns.cfg
+
 	local oUF = ns.oUF or oUF
+	local cfg = ns.cfg
+	local filters = ns.filters
+	local colors = ns.colors
 	
 	local lum = CreateFrame("Frame", nil, self)
 			
@@ -34,18 +37,21 @@
 	local rep_shift = 0 -- Used to shift elements if Reputation Bar is showing
 	
 	local function raidColor(unit)
-	
+
 		local _, class = UnitClass(unit)
 		return oUF.colors.class[class]
 	end
 	
 	local Outline = "THINOUTLINE" -- Font Outline
 
+	local Whitelist = filters.Whitelist -- WhiteList for BarTimers
+	local ISpells = filters.IndicatorsSpells -- WhiteList for Corner Indicators Spells
+
 	-- Colors
-	local Red, Green, Blue, Yellow = {250,20,0}, {155,255,0}, {0,150,250}, {255,188,8}
-	
-	-- Colors
-	
+
+	local addon, ns = ...
+	local colors = CreateFrame("Frame")
+
 	oUF.colors.power = {
 		["MANA"] = {26/255, 160/255, 255/255},
 		["RAGE"] = {255/255, 26/255, 48/255},
@@ -77,204 +83,12 @@
 		[8] = {143/255, 194/255, 32/255},
 	}
 
-	oUF.colors.smooth = { 1, 0, 0, 1, 1, 0, 1, 1, 1} -- R -> Y -> W
-	oUF.colors.smoothG = { 1, 0, 0, 1, 1, 0, 0, 1, 0} -- R -> Y -> G
-	oUF.colors.runes = {{196/255, 30/255, 58/255};{173/255, 217/255, 25/255};{35/255, 127/255, 255/255};{178/255, 53/255, 240/255};}
-	
-	-- Add entries to the Unitless Tag Events Table in oUF
-	oUF.UnitlessTagEvents.PLAYER_REGEN_DISABLED = true
-	oUF.UnitlessTagEvents.PLAYER_REGEN_ENABLED = true
-	
-	local Whitelist = cfg.Whitelist -- WhiteList for BarTimers
-	local ISpells = cfg.IndicatorsSpells -- WhiteList for Corner Indicators Spells
-	
--- ------------------------------------------------------------------------
--- > 3. Custom Tags
--- ------------------------------------------------------------------------
-	
-	-- Name	
-	oUF.Tags["lumen:name"] = function(u, r)
-			
-		return UnitName(r or u)
-	end
-	oUF.TagEvents["lumen:name"] = "UNIT_NAME_UPDATE UNIT_ENTERING_VEHICLE UNIT_ENTERED_VEHICLE UNIT_EXITING_VEHICLE UNIT_EXITED_VEHICLE"
-	
-	-- Player Flags (AFK, DND, Combat...)
-	oUF.Tags["lumen:Info"] = function(unit) 
-		
-		local Status 
-	
-		if(UnitAffectingCombat(unit)) then -- 1. Combat
-			if(UnitIsPlayer(unit)) then
-				Status = string.format("|cff%02x%02x%02xcbt|r", unpack(Red))
-			else
-				local _, status, percent = UnitDetailedThreatSituation('player', 'target')
-				if(percent and percent > 0) then
-					Status = ('%s%d%%|r'):format(Hex(GetThreatStatusColor(status)), percent)
-				else
-					Status = string.format("|cff%02x%02x%02xcbt|r", unpack(Red))
-				end
-			end	
-		elseif(UnitIsAFK(unit)) then
-			Status = string.format("|cff%02x%02x%02xafk|r", unpack(Yellow)) -- 2. AFK
-		elseif(UnitIsDND(unit)) then
-			Status = string.format("|cff%02x%02x%02xdnd|r", unpack(Yellow)) -- 3. DND
-		elseif(unit == 'player' and IsResting() and (UnitLevel('player') < MAX_PLAYER_LEVEL)) then
-			Status = string.format("|cff%02x%02x%02xzZz|r", unpack(Blue)) -- 4. Resting and < Max Level
-		elseif(unit == 'player' and UnitIsPVP(unit)) then -- 5. PvP
-			local isPvPtimer, PvPtime, PvPdesired = IsPVPTimerRunning(), math.floor(GetPVPTimer()/1000), GetPVPDesired()
-			if isPvPtimer then 
-				Status = string.format("|CFF9bff00PvP|r %d|cffaaaaaa%s|r", (PvPtime > 60 and math.floor(PvPtime/60)) or (PvPtime%60), (PvPtime > 60 and 'm') or 's')
-			elseif(PvPdesired == 1) then 
-				Status = string.format("|cff%02x%02x%02xPvP|r", unpack(Green))
-			end
-		end
-		return Status
-	end
-	oUF.TagEvents["lumen:Info"] = "PLAYER_ENTERING_WORLD PLAYER_FLAGS_CHANGED PLAYER_REGEN_DISABLED PLAYER_REGEN_ENABLED PLAYER_UPDATE_RESTING UNIT_FACTION UNIT_THREAT_LIST_UPDATE"
-	
-	-- Smart Level	
-	oUF.Tags["lumen:level"] = function(unit)
-		
-		local c, l, ur, t = UnitClassification(unit), UnitLevel(unit), UnitRace(unit), UnitCreatureFamily(unit)
-		local d = GetQuestDifficultyColor(l)
-
-		if (not t) then t = '' end
-		
-		local str = l -- Fallback value
-			
-		if l <= 0 then l = "??" end
-		
-		if c == "worldboss" then
-			str = string.format("|cff%02x%02x%02x%s|r |cff%02x%02x%02xBoss|r",d.r*255,d.g*255,d.b*255,l,250,20,0)
-		elseif c == "eliterare" then
-			str = string.format("|cff%02x%02x%02x%s|r |cff0080FFRare|r Elite",d.r*255,d.g*255,d.b*255,l)
-		elseif c == "elite" then
-			str = string.format("|cff%02x%02x%02x%s|r Elite",d.r*255,d.g*255,d.b*255,l)
-		elseif c == "rare" then
-			str = string.format("|cff%02x%02x%02x%s|r |cff0080FFRare|r",d.r*255,d.g*255,d.b*255,l)
-		else
-			if not UnitIsConnected(unit) then
-				str = "??"
-			else
-				if UnitIsPlayer(unit) then
-					str = string.format("|cff%02x%02x%02x%s |cffffffff%s",d.r*255,d.g*255,d.b*255,l,ur)
-				elseif UnitPlayerControlled(unit) then
-					str = string.format("|cff%02x%02x%02x%s|r |cffc2c2c2%s|r",d.r*255,d.g*255,d.b*255,l,t)
-				else
-					str = string.format("|cff%02x%02x%02x%s|r",d.r*255,d.g*255,d.b*255,l)
-				end
-			end		
-		end	
-		return str
-	end
-	oUF.TagEvents["lumen:level"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
-	
-	-- ComboPoints
-	oUF.Tags["lumen:cp"] = function(unit)
-	
-		local cp		
-		if(UnitExists'vehicle') then
-			cp = GetComboPoints('vehicle', 'target')
-		else
-			cp = GetComboPoints('player', 'target')
-		end
-	
-		if (cp == 1) then
-			return string.format("|cff69e80c%d|r",cp)
-		elseif cp == 2 then
-			return string.format("|cffb2e80c%d|r",cp)
-		elseif cp == 3 then
-			return string.format("|cffffd800%d|r",cp) 
-		elseif cp == 4 then
-			return string.format("|cffffba00%d|r",cp) 
-		elseif cp == 5 then
-			return string.format("|cfff10b0b%d|r",cp)
-		end
-	end
-	oUF.TagEvents["lumen:cp"] = "UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED"
-	
-	-- Deadly Poison Tracker
-	oUF.Tags["lumen:dp"] = function(unit)
-	
-		local Spell = "Deadly Poison" or GetSpellInfo(43233)
-		local ct, cp = hasUnitDebuff(unit, Spell, true), GetComboPoints('player', 'target')
-		
-		if cp > 0 then -- If Combo Points are bigger than 1 Show Deadly Poison Stack
-			if (ct == 1) then
-				return string.format("|cffc1e79f%d|r",ct)
-			elseif ct == 2 then
-				return string.format("|cfface678%d|r",ct)
-			elseif ct == 3 then
-				return string.format("|cff9de65c%d|r",ct) 
-			elseif ct == 4 then
-				return string.format("|cff8be739%d|r",ct) 
-			elseif ct == 5 then
-				return string.format("|cff90ff00%d|r",ct)
-			end
-		else
-			return ""
-		end
-	end
-	oUF.TagEvents["lumen:dp"] = "UNIT_COMBO_POINTS PLAYER_TARGET_CHANGED UNIT_AURA"
-	
-	-- Holy Power
-	oUF.Tags["lumen:holypower"] = function(unit)
-	
-		local hp = UnitPower('player', SPELL_POWER_HOLY_POWER)
-		
-		if hp > 0 then
-			if hp == 1 then
-				return string.format("|CFFffffff%d|r",hp)
-			elseif hp == 2 then
-				return string.format("|CFFfff880%d|r",hp)
-			elseif hp == 3 then
-				return string.format("|CFFf5e92f%d|r",hp)
-			end
-		end
-	end
-	oUF.TagEvents["lumen:holypower"] = "UNIT_POWER"
-	
-	-- Warlock Shards
-	oUF.Tags["lumen:warlockshards"] = function(unit)
-	
-		local ss = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
-		
-		if ss > 0 then
-			if ss == 1 then
-				return string.format("|CFFedc7ff%d|r",ss)
-			elseif ss == 2 then
-				return string.format("|CFFcf68ff%d|r",ss)
-			elseif ss == 3 then
-				return string.format("|CFFae00ff%d|r",ss)
-			end
-		end
-	end
-	oUF.TagEvents["lumen:warlockshards"] = "UNIT_POWER"
-	
-	-- LFGRole
-	oUF.Tags["lumen:lfdrole"] = function(unit)
-	
-		local role = UnitGroupRolesAssigned(unit)
-		if role == 'DAMAGER' then role = 'DPS' end
-		if role then return role end
-	end
-	oUF.TagEvents["lumen:lfdrole"] = "PARTY_MEMBERS_CHANGED PLAYER_ROLES_ASSIGNED"
-	
-	-- Druid Mana
-	oUF.Tags["lumen:druidPower"] = function(unit)
-	 
-		local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
-				
-		if (UnitPowerType(unit) ~= 0) and min ~= max then -- If Power Type is not Mana(it's Energy or Rage) and Mana is not at Maximum
-			return string.format('|cff009cff %d%%|r', (min/max * 100))
-		end
-	end
-	oUF.TagEvents["lumen:druidPower"] = "UNIT_MAXPOWER UNIT_POWER UPDATE_SHAPESHIFT_FORM"
-
+	oUF.colors.smooth = {1, 0, 0, 1, 1, 0, 1, 1, 1} -- R -> Y -> W
+	oUF.colors.smoothG = {1, 0, 0, 1, 1, 0, 0, 1, 0} -- R -> Y -> G
+	oUF.colors.runes = {{196/255, 30/255, 58/255};{173/255, 217/255, 25/255};{35/255, 127/255, 255/255};{178/255, 53/255, 240/255}}
 
 -- ------------------------------------------------------------------------
--- > 4. Functions
+-- > 3. Functions
 -- ------------------------------------------------------------------------
 	
 	local function UpdateAnchors()
@@ -384,7 +198,7 @@
 		s.Name:SetJustifyH(point)
 		s.Name:SetWidth(wd)
 		s.Name:SetHeight(size)
-		s:Tag(s.Name, "[lumen:name]")
+		s:Tag(s.Name, '[lumen:name]')
 	end
 		
 	-- Generates the Health Value String
@@ -560,7 +374,6 @@
 		local disconnnected = not UnitIsConnected(unit)
 		local dead = UnitIsDead(unit)
 		local ghost = UnitIsGhost(unit)
-		--local name = oUF.Tags['lumen:name'](unit)
 		
 		if cfg.useClassColoredNames then self.Name:SetTextColor(unpack(raidColor(unit))) end
 	
@@ -582,8 +395,8 @@
 				health.percent:SetTextColor(.7,.7,.7)
 			end		
 		else
-			if (min ~= max) then
-				local r, g, b = oUF.ColorGradient(min / max, unpack(oUF.colors.smooth))				
+			if (min ~= max) then				
+				local r, g, b = oUF.ColorGradient(min, max, unpack(oUF.colors.smooth))			
 				if(unit == "player" or unit == "target") then				
 					health.value:SetText(ShortNumber(min))
 					health.percent:SetText(floor(min / max * 100).."%")
@@ -617,7 +430,7 @@
 						power.value:SetText()
 						power.percent:SetText()
 					elseif(min ~= max) then
-						local r, g, b = oUF.ColorGradient(min / max, unpack(oUF.colors.smooth))
+						local r, g, b = oUF.ColorGradient(min, max, unpack(oUF.colors.smooth))
 						power.value:SetText(min)
 						power.percent:SetText(floor(min / max * 100).."%")
 						power.percent:SetTextColor(r,g,b)
@@ -648,7 +461,8 @@
 			
 		local self = health.__owner
 		local _, class = UnitClass(unit)
-		local name = oUF.Tags['lumen:name'](unit)	
+		-- local name = UnitName(unit)
+		local name = oUF.Tags.Methods['lumen:name'](unit)
 		local rColor = raidColor(unit)
 		local disconnnected = not UnitIsConnected(unit)
 		local dead = UnitIsDead(unit)
@@ -656,7 +470,7 @@
 		local isPlayer = UnitIsPlayer(unit)
 			
 		if cfg.userGradientColor then 
-			local r, g, b = oUF.ColorGradient(min / max, unpack(oUF.colors.smoothG))
+			local r, g, b = oUF.ColorGradient(min, max, unpack(oUF.colors.smoothG))
 			if(cfg.hp_inverted) then
 				health.bg:SetVertexColor(r,g,b)
 			else
@@ -1853,7 +1667,20 @@
 			self:Tag(HolyPower, '[lumen:holypower]')
 		end
 	end
-	
+
+	-- Monk Chi
+	local MonkChiCount = function(self)
+
+		if(PlayerClass == "MONK") then
+			local MonkChi = self:CreateFontString(nil, 'OVERLAY')
+			MonkChi:SetPoint('CENTER', self, 'RIGHT', cfg.php_count_x or (cfg.target_frame_x_from_player/2), cfg.php_count_y or 0)
+			MonkChi:SetFont(font, cfg.fontsize*3, "OUTLINE")
+			MonkChi:SetJustifyH('CENTER')
+			MonkChi:SetShadowOffset(1, -1)
+			self:Tag(MonkChi, '[lumen:monkchi]')
+		end
+	end
+
 	-- Druid Eclipse Bar Post Unit Aura Update
 	local EclipsePostUnitAura = function(self)
 	
@@ -1955,195 +1782,9 @@
 		}
 	end
 
+	
 -- ------------------------------------------------------------------------
--- > 5. Addons
-	-- ------------------------------------------------------------------------
-
-	-- oUF_AuraWatch
-	local AuraWatch = function(self, unit)
-		
-		if IsAddOnLoaded("oUF_AuraWatch") and cfg.showRaidIconDebuffs then
-			local auras = {}
-			local spellIDs = cfg.IconDebuffs	
-			auras.presentAlpha = 1
-			auras.missingAlpha = 0
-			auras.PostCreateIcon = myPostCreateIconNoCC
-
-			auras.icons = {}
-			for i, sid in pairs(spellIDs) do
-				local icon = CreateFrame("Frame", nil, self)
-				icon:SetPoint("CENTER", self.Health, "CENTER", 0, 0)
-				icon:SetWidth(22)
-				icon:SetHeight(22)
-				icon:SetFrameLevel(4)
-				icon.anyUnit = true
-				icon.onlyShowPresent = true
-				icon.spellID = sid
-				auras.icons[sid] = icon
-			end
-			self.AuraWatch = auras
-		end
-	end
-
-	-- oUF_TotemBar
-	local TotemBars = function(self)
-	
-		if IsAddOnLoaded("oUF_TotemBar") and PlayerClass == "SHAMAN" then
-			self.TotemBar = {}
-			self.TotemBar.Destroy = true
-			
-			self.TotemBar.colors = {{233/255, 46/255, 16/255};{173/255, 217/255, 25/255};{35/255, 127/255, 255/255};{178/255, 53/255, 240/255};}
-			for i = 1, 4 do
-				self.TotemBar[i] = CreateFrame("StatusBar", nil, self)
-				self.TotemBar[i]:SetHeight(cfg.totem_height)
-				self.TotemBar[i]:SetWidth(cfg.totem_width)
-				if (i == 1) then
-					self.TotemBar[i]:SetPoint('LEFT', self, 'RIGHT', cfg.totem_x or ((cfg.target_frame_x_from_player/2) - (((cfg.totem_width + cfg.totem_spacing) * 2) - (cfg.totem_spacing/2))), cfg.totem_y or 0)
-				else
-					self.TotemBar[i]:SetPoint('TOPLEFT', self.TotemBar[i-1], "TOPRIGHT", cfg.totem_spacing, 0)
-				end
-				self.TotemBar[i]:SetStatusBarTexture(fill_texture)
-				self.TotemBar[i]:SetMinMaxValues(0, 1)
-		
-				self.TotemBar[i].bg = self.TotemBar[i]:CreateTexture(nil, "BORDER")
-				self.TotemBar[i].bg:SetAllPoints(self.TotemBar[i])
-				self.TotemBar[i].bg:SetTexture(bg_texture)
-				self.TotemBar[i].bg.multiplier = 0.25
-				self.TotemBar[i].bg:SetAlpha(1.0)
-				if(cfg.show_totem_names) then
-				self.TotemBar[i].Name = createFontstring(self.TotemBar[i], font, cfg.fontsize-3, Outline)
-				self.TotemBar[i].Name:SetPoint("CENTER",self.TotemBar[i],"TOP",0,cfg.totem_height + 2)
-				end
-				SetBackdrop(self.TotemBar[i], 2, 2, 2, 2)
-
-				-- Alpha
-				self:RegisterEvent("PLAYER_ENTERING_WORLD", function(self) self.TotemBar[i]:SetAlpha(cfg.totem_ooc_alpha) end)
-				self:RegisterEvent("PLAYER_REGEN_ENABLED", function(self) self.TotemBar[i]:SetAlpha(cfg.totem_ooc_alpha) end)
-				self:RegisterEvent("PLAYER_REGEN_DISABLED", function(self) self.TotemBar[i]:SetAlpha(1) end)				
-			end
-		end
-	end
-	
-	-- oUF_Smooth
-	local SmoothUpdate = function(self)
-	
-		if IsAddOnLoaded("oUF_Smooth") then
-			self.Health.Smooth = true
-			self.Power.Smooth = true	
-		end	
-	end
-	
-	-- oUF_Swing
-	local function SwingBar(self)
-			
-		if IsAddOnLoaded("oUF_Swing") then
-			self.Swing = CreateFrame("StatusBar", self:GetName().."_Swing", self)
-			self.Swing:SetStatusBarTexture(fill_texture)
-			self.Swing:GetStatusBarTexture():SetHorizTile(false)
-			self.Swing:SetStatusBarColor(unpack(cfg.swingColor))
-			self.Swing:SetPoint("BOTTOM", self.Castbar, "TOP", -10, 5)
-			self.Swing:SetHeight(1)
-			self.Swing:SetWidth(cfg.player_castbar_width+20)
-
-			self.Swing.bg = self.Swing:CreateTexture(nil, "BORDER")
-			self.Swing.bg:SetAllPoints(self.Swing)
-			self.Swing.bg:SetTexture(bg_texture)
-			self.Swing.bg:SetAlpha(0.30)
-
-			SetBackdrop(self.Swing, 2, 2, 2, 2)
-		end
-	end
-	
-	-- oUF_SpellRange
-	local function SpellRange(self)
-	
-		if IsAddOnLoaded("oUF_SpellRange") then	
-			self.SpellRange = {insideAlpha = 1, outsideAlpha = 0.60}		
-		end
-	end
-	
-	-- oUF_CombatFeedback
-	local CombatFeedback = function(self)
-	
-		if IsAddOnLoaded("oUF_CombatFeedback") then
-			local cbft = self.Health:CreateFontString(nil, "ARTWORK")
-			cbft:SetPoint("CENTER", self.Health, "CENTER", -2, 1)
-			self.CombatFeedbackText = cbft	
-			self.CombatFeedbackText:SetFont(font, cfg.fontsize-1, Outline)
-			self.CombatFeedbackText.maxAlpha = 0.75
-			self.CombatFeedbackText.ignoreEnergize = true
-		end
-	end
-		
-	-- oUF_BarFader
-	local BarFader = function(self)
-	
-		if IsAddOnLoaded("oUF_BarFader") then		
-			self.BarFade = true
-			self.BarFaderMinAlpha = cfg.Bar_Fader_Alpha	
-		end
-	end
-
-	-- oUF_Experience
-	local function ExperienceBar(self, unit) 
-	
-		if(IsAddOnLoaded('oUF_Experience')) then
-			
-			local Experience = CreateFrame('StatusBar', nil, self)
-			Experience:SetStatusBarTexture(fill_texture)
-			Experience:SetStatusBarColor(178/255, 53/255, 240/255,1)
-			Experience:SetPoint('BOTTOM', self.InfoBar,'TOP', 0, 6)
-			Experience:SetHeight(cfg.expbar_height)
-			Experience:SetWidth(cfg.mainframe_width)
-					
-			local Rested = CreateFrame('StatusBar', nil, Experience)
-			Rested:SetStatusBarTexture(fill_texture)
-			Rested:SetStatusBarColor(35/255, 127/255, 255/255,1)
-			Rested:SetAllPoints(Experience)
-			SetBackdrop(Rested, 2, 2, 2, 2)
-			
-			self.Experience = Experience
-			self.Experience.Rested = Rested
-			self.Experience.PostUpdate = ExperiencePostUpdate
-			self.Experience.PreUpdate = ExperiencePreUpdate
-				
-			-- Tooltip
-			self.Experience:EnableMouse()
-			self.Experience:HookScript('OnLeave', GameTooltip_Hide)
-			self.Experience:HookScript('OnEnter', XPTooltip)			
-		end
-	end
-	
-	-- oUF_Repuation
-	local function ReputationBar(self, unit)
-		
-		if(IsAddOnLoaded('oUF_Reputation')) then
-			local Reputation = CreateFrame('StatusBar', nil, self)
-			Reputation:SetStatusBarTexture(fill_texture)
-			Reputation:SetPoint('BOTTOM', 0, -8)
-			Reputation:SetHeight(cfg.repbar_height)
-			Reputation:SetWidth(cfg.mainframe_width)
-			SetBackdrop(Reputation, 2, 2, 2, 2)
-			Reputation:SetBackdropColor(cfg.bdc.r,cfg.bdc.g,cfg.bdc.b,0.8)
-
-			self.Reputation = Reputation
-			self.Reputation.PostUpdate = ReputationPostUpdate
-			
-			-- Tooltip
-			self.Reputation:EnableMouse()
-			self.Reputation:HookScript('OnLeave', GameTooltip_Hide)
-			self.Reputation:HookScript('OnEnter', RepTooltip)
-		end
-	end
-	
-	-- oUF_Debuff Highlight
-	local DebuffHighlight = function(self)
-	
-		self.DebuffHighlightBackdrop = true
-	end
-
--- ------------------------------------------------------------------------
--- > 6. Style
+-- > 4. Style
 -- ------------------------------------------------------------------------
 
 	-- The Shared Style Function
@@ -2309,9 +1950,10 @@
 			RaidIcons(self)
 			DruidPowa(self)
 			RunesBar(self)
-			if(cfg.use_Paladin_HP_numbers) then PaladinHolyPowerCount(self) else PaladinHolyPower(self) end
-			if(cfg.use_Warlock_Shards_numbers) then WarlockShardsCount(self) else WarlockShards(self) end
+			if cfg.use_Paladin_HP_numbers then PaladinHolyPowerCount(self) else PaladinHolyPower(self) end
+			if cfg.use_Warlock_Shards_numbers then WarlockShardsCount(self) else WarlockShards(self) end
 			if cfg.show_eclipsebar then MoonkinEclipseBar(self) end
+			MonkChiCount(self)
 			
 			-- Plugins
 			BarFader(self)
@@ -2710,7 +2352,7 @@
 	}
 	
 -- ------------------------------------------------------------------------
--- > 7. Spawn the Frames
+-- > 4. Spawn the Frames
 -- ------------------------------------------------------------------------
 		
 	for unit,layout in next, UnitSpecific do
