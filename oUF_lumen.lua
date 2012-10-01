@@ -575,43 +575,52 @@
 		
 	-- Mirror Bars
 	function MirrorBars()
-		if(MirrorBars) then
+		if(cfg.MirrorBars) then
 			for _, bar in pairs({
-			'MirrorTimer1',
-			'MirrorTimer2',
-			'MirrorTimer3',
+				'MirrorTimer1',
+				'MirrorTimer2',
+				'MirrorTimer3',
 		}) do   
-			local bg = select(1, _G[bar]:GetRegions())
-			bg:Hide()
-			
-			_G[bar]:SetBackdrop({ bgFile = "Interface\\ChatFrame\\ChatFrameBackground", tile = false, tileSize = 0,
-			insets = {top = -2, left = -2, bottom = -2, right = -2}})
-			
-			_G[bar]:SetBackdropColor(0, 0, 0, 1)
-							
-			_G[bar..'Border']:Hide()
-			
-			_G[bar]:SetParent(UIParent)
-			_G[bar]:SetScale(1)
-			_G[bar]:SetHeight(15)
-			_G[bar]:SetWidth(140)
-			  
-			_G[bar..'Background'] = _G[bar]:CreateTexture(bar..'Background', 'BACKGROUND', _G[bar])
-			_G[bar..'Background']:SetTexture('Interface\\Buttons\\WHITE8x8')
-			_G[bar..'Background']:SetAllPoints(_G[bar])
-			_G[bar..'Background']:SetVertexColor(0, 0, 0, 0.5)
+				local bg = select(1, _G[bar]:GetRegions())
+				bg:Hide()
 				
-			_G[bar..'Text']:SetFont(font, cfg.fontsize-1, Outline)
-			_G[bar..'Text']:ClearAllPoints()
-			_G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 1)
-	
-			_G[bar..'StatusBar']:SetStatusBarTexture('\Interface\\AddOns\\oUF_lumen\\media\\texture')
+				_G[bar]:SetBackdrop({ bgFile = "Interface\\ChatFrame\\ChatFrameBackground", tile = false, tileSize = 0,
+				insets = {top = -2, left = -2, bottom = -2, right = -2}})
 				
-			_G[bar..'StatusBar']:SetAllPoints(_G[bar])
+				_G[bar]:SetBackdropColor(0, 0, 0, 1)
+								
+				_G[bar..'Border']:Hide()
+				
+				_G[bar]:SetParent(UIParent)
+				_G[bar]:SetScale(1)
+				_G[bar]:SetHeight(15)
+				_G[bar]:SetWidth(140)
+				  
+				_G[bar..'Background'] = _G[bar]:CreateTexture(bar..'Background', 'BACKGROUND', _G[bar])
+				_G[bar..'Background']:SetTexture('Interface\\Buttons\\WHITE8x8')
+				_G[bar..'Background']:SetAllPoints(_G[bar])
+				_G[bar..'Background']:SetVertexColor(0, 0, 0, 0.5)
+					
+				_G[bar..'Text']:SetFont(font, cfg.fontsize-1, Outline)
+				_G[bar..'Text']:ClearAllPoints()
+				_G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 1)
+		
+				_G[bar..'StatusBar']:SetStatusBarTexture('\Interface\\AddOns\\oUF_lumen\\media\\texture')
+					
+				_G[bar..'StatusBar']:SetAllPoints(_G[bar])
 			end
 		end
 	end
-	
+
+	-- -- Skin BG Countdown Timer
+	-- function BGTimerBar()
+
+	-- end
+
+	-- local bgtimer = CreateFrame("Frame")
+	-- bgtimer:RegisterEvent("START_TIMER")
+	-- bgtimer:SetScript("OnEvent", BGTimerBar)
+
 	-- Castbar Custom Cast TimeText
 	local CustomCastTimeText = function(self, duration)
 
@@ -900,6 +909,7 @@
 		if(cfg.desat_np_debuffs and icon.debuff) then
 			if(unit == "target" or unit == "focus") then	
 				if (unitCaster == 'player' or unitCaster == 'vehicle') then
+					print(unitCaster)
 					icon.icon:SetDesaturated(false)                 
 				elseif(not UnitPlayerControlled(unit)) then -- If Unit is Player Controlled don't desaturate debuffs
 					icon:SetBackdropColor(0, 0, 0)

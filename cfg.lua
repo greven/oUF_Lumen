@@ -15,7 +15,9 @@
 	cfg.shadowAlpha = 0.7
 	
 	cfg.bdc = {r = 0, g = 0, b = 0, a = 1} -- Backdrop Color (Some frames might not be affected)
-	
+
+	cfg.MirrorBars = true -- Skin the Mirror Bars
+	cfg.BGtimer = true -- Skin the BGTimer
 	cfg.hideBlizzCompactRaidFrames = true -- Hide Blizzard Compact Raid Frames
 		
 	-- Frames
