@@ -10,7 +10,5 @@
 cfg.lua
 modules\filters.lua
 modules\colors.lua
-modules\addons.lua
-modules\classes.lua
 modules\tags.lua
 oUF_lumen.lua

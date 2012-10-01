@@ -19,27 +19,27 @@
 	
 		if(UnitAffectingCombat(unit)) then -- 1. Combat
 			if(UnitIsPlayer(unit)) then
-				Status = string.format("|cff%02x%02x%02xcbt|r", unpack(colors.Red))
+				Status = string.format("|cff%02x%02x%02xcbt|r", unpack(colors.TEXT.Red))
 			else
 				local _, status, percent = UnitDetailedThreatSituation('player', 'target')
 				if(percent and percent > 0) then
 					Status = ('%s%d%%|r'):format(Hex(GetThreatStatusColor(status)), percent)
 				else
-					Status = string.format("|cff%02x%02x%02xcbt|r", unpack(colors.Red))
+					Status = string.format("|cff%02x%02x%02xcbt|r", unpack(colors.TEXT.Red))
 				end
 			end	
 		elseif(UnitIsAFK(unit)) then
-			Status = string.format("|cff%02x%02x%02xafk|r", unpack(colors.Yellow)) -- 2. AFK
+			Status = string.format("|cff%02x%02x%02xafk|r", unpack(colors.TEXT.Yellow)) -- 2. AFK
 		elseif(UnitIsDND(unit)) then
-			Status = string.format("|cff%02x%02x%02xdnd|r", unpack(colors.Yellow)) -- 3. DND
+			Status = string.format("|cff%02x%02x%02xdnd|r", unpack(colors.TEXT.Yellow)) -- 3. DND
 		elseif(unit == 'player' and IsResting() and (UnitLevel('player') < MAX_PLAYER_LEVEL)) then
-			Status = string.format("|cff%02x%02x%02xzZz|r", unpack(colors.Blue)) -- 4. Resting and < Max Level
+			Status = string.format("|cff%02x%02x%02xzZz|r", unpack(colors.TEXT.Blue)) -- 4. Resting and < Max Level
 		elseif(unit == 'player' and UnitIsPVP(unit)) then -- 5. PvP
 			local isPvPtimer, PvPtime, PvPdesired = IsPVPTimerRunning(), math.floor(GetPVPTimer()/1000), GetPVPDesired()
 			if isPvPtimer then 
 				Status = string.format("|CFF9bff00PvP|r %d|cffaaaaaa%s|r", (PvPtime > 60 and math.floor(PvPtime/60)) or (PvPtime%60), (PvPtime > 60 and 'm') or 's')
 			elseif(PvPdesired == 1) then 
-				Status = string.format("|cff%02x%02x%02xPvP|r", unpack(colors.Green))
+				Status = string.format("|cff%02x%02x%02xPvP|r", unpack(colors.TEXT.Green))
 			end
 		end
 		return Status
