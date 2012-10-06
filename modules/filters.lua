@@ -5,6 +5,8 @@
 	local addon, ns = ...
 	local filters = CreateFrame("Frame")
 
+	local colors = ns.colors
+
 	filters.Whitelist = {
 	
 	DEATHKNIGHT = {
@@ -71,11 +73,10 @@
 		[GetSpellInfo(53224) or "Improved Steady Shot"] = true,			-- Improved Steady Shot
 		[GetSpellInfo(56453) or "Lock and Load"] = true,				-- Lock and Load
 		[GetSpellInfo(34477) or "Misdirection"] = true,					-- Misdirection
-		-- [GetSpellInfo(82925) or "Ready, Set, Aim..."] = true,			-- Ready, Set, Aim...
+		-- [GetSpellInfo(82925) or "Ready, Set, Aim..."] = true,		-- Ready, Set, Aim...
 		[GetSpellInfo(3045) or "Rapid Fire"] = true,					-- Rapid Fire
 		[GetSpellInfo(35098) or "Rapid Killing"] = true,				-- Rapid Killing
 		[GetSpellInfo(34692) or "The Beast Within"] = true,				-- The Beast Within
-		[GetSpellInfo(77769) or "Trap Launcher"] = true,				-- Trap Launcher
 
 		-- Debuffs
 		[GetSpellInfo(3674) or "Black Arrow"] = true,					-- Black Arrow
@@ -292,16 +293,6 @@
 -- > 2. Corner Indicators Whitelists
 -- ------------------------------------------------------------------------
 	
-	-- Indicators Colors
-	local Colors = {
-		Green = {174/255,255/255,0/255},
-		Red = {235/255,15/255,15/255},
-		Blue = {0/255,186/255,255/255},
-		Purple = {255/255,0/255,125/255},
-		Orange = {255/255,162/255,0/255},
-		White = {255/255,255/255,255/255},
-	}
-	
 	filters.IndicatorsSpells = {
 	
 	DEATHKNIGHT = {
@@ -312,22 +303,22 @@
 	},
 	
 	DRUID = {
-		TL = {[GetSpellInfo(33763) or "Lifebloom"] = {color = Colors.Green, stack = 3}},
-		TR = {[GetSpellInfo(8936) or "Regrowth"] = {color = Colors.Blue, stack = 1}},
-		BL = {[GetSpellInfo(48441) or "Rejuvenation"] = {color = Colors.Purple, stack = 1}},
-		BR = {[GetSpellInfo(48438) or "Wild Growth"] = {color = Colors.Orange, stack = 1}},
+		TL = {[GetSpellInfo(33763) or "Lifebloom"] = {color = colors.INDICATORS.Green, stack = 3}},
+		TR = {[GetSpellInfo(8936) or "Regrowth"] = {color = colors.INDICATORS.Blue, stack = 1}},
+		BL = {[GetSpellInfo(48441) or "Rejuvenation"] = {color = colors.INDICATORS.Purple, stack = 1}},
+		BR = {[GetSpellInfo(48438) or "Wild Growth"] = {color = colors.INDICATORS.Orange, stack = 1}},
 	},
 	
 	HUNTER = {
-		TL = {[GetSpellInfo(34477) or "Misdirection"] = {color = Colors.Blue, stack = 1}},
+		TL = {[GetSpellInfo(34477) or "Misdirection"] = {color = colors.INDICATORS.Blue, stack = 1}},
 		TR = {},
 		BL = {},
 		BR = {},
 	},
 	
 	MAGE = {
-		TL = {[GetSpellInfo(54646) or "Focus Magic"] = {color = Colors.Purple, stack = 1}},
-		TR = {[GetSpellInfo(1459) or "Arcane Brilliance"] = {color = Colors.Blue, stack = 1}},
+		TL = {[GetSpellInfo(54646) or "Focus Magic"] = {color = colors.INDICATORS.Purple, stack = 1}},
+		TR = {[GetSpellInfo(1459) or "Arcane Brilliance"] = {color = colors.INDICATORS.Blue, stack = 1}},
 		BL = {},
 		BR = {},
 	},
@@ -342,40 +333,40 @@
 	PALADIN = {
 		TL = {},
 		TR = {},
-		BL = {[GetSpellInfo(53651) or "Light's Beacon"] = {color = Colors.White, stack = 1}},
-		BR = {[GetSpellInfo(25771) or "Forbearance"] = {color = Colors.Red, stack = 1}},
+		BL = {[GetSpellInfo(53651) or "Light's Beacon"] = {color = colors.INDICATORS.White, stack = 1}},
+		BR = {[GetSpellInfo(25771) or "Forbearance"] = {color = colors.INDICATORS.Red, stack = 1}},
 	},
 	
 	PRIEST = { 
-		TL = {[GetSpellInfo(139) or "Renew"] = {color = Colors.Green, stack = 1}},
-		TR = {[GetSpellInfo(48066) or "Power Word: Shield"] = {color = Colors.Orange, stack = 1}},
-		BL = {[GetSpellInfo(33076) or "Prayer of Mending"] = {color = Colors.Blue, stack = 5}},
-		BR = {[GetSpellInfo(6788) or "Weakened Soul"] = {color = Colors.Red, stack = 1}},
+		TL = {[GetSpellInfo(139) or "Renew"] = {color = colors.INDICATORS.Green, stack = 1}},
+		TR = {[GetSpellInfo(48066) or "Power Word: Shield"] = {color = colors.INDICATORS.Orange, stack = 1}},
+		BL = {[GetSpellInfo(33076) or "Prayer of Mending"] = {color = colors.INDICATORS.Blue, stack = 5}},
+		BR = {[GetSpellInfo(6788) or "Weakened Soul"] = {color = colors.INDICATORS.Red, stack = 1}},
 	},
 	
 	ROGUE = {
-		TL = {[GetSpellInfo(57934) or "Tricks of the Trade"] = {color = Colors.Orange, stack = 1}},
+		TL = {[GetSpellInfo(57934) or "Tricks of the Trade"] = {color = colors.INDICATORS.Orange, stack = 1}},
 		TR = {},
 		BL = {},
 		BR = {},
 	},
 	
 	SHAMAN = {
-		TL = {[GetSpellInfo(61295) or "Riptide"] = {color = Colors.Blue, stack = 1}},
-		TR = {[GetSpellInfo(3345) or "Earthliving"] = {color = Colors.Green, stack = 1}},
-		BL = {[GetSpellInfo(974) or "Earth Shield"] = {color = Colors.Orange, stack = 6}},
+		TL = {[GetSpellInfo(61295) or "Riptide"] = {color = colors.INDICATORS.Blue, stack = 1}},
+		TR = {[GetSpellInfo(3345) or "Earthliving"] = {color = colors.INDICATORS.Green, stack = 1}},
+		BL = {[GetSpellInfo(974) or "Earth Shield"] = {color = colors.INDICATORS.Orange, stack = 6}},
 		BR = {},
 	},
 	
 	WARLOCK = {
-		TL = {[GetSpellInfo(47883) or "Soulstone Resurrection"] = {color = Colors.Purple, stack = 1}},
-		TR = {[GetSpellInfo(85767) or "Dark Intent"] = {color = Colors.Green, stack = 3}},
+		TL = {[GetSpellInfo(47883) or "Soulstone Resurrection"] = {color = colors.INDICATORS.Purple, stack = 1}},
+		TR = {[GetSpellInfo(85767) or "Dark Intent"] = {color = colors.INDICATORS.Green, stack = 3}},
 		BL = {},
 		BR = {},
 	},
 	
 	WARRIOR = {
-		TL = {[GetSpellInfo(50720) or "Vigilance"] = {color = Colors.Blue, stack = 1}},
+		TL = {[GetSpellInfo(50720) or "Vigilance"] = {color = colors.INDICATORS.Blue, stack = 1}},
 		TR = {},
 		BL = {},
 		BR = {},

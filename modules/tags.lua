@@ -147,23 +147,40 @@
 		end
 	end
 	oUF.Tags.Events["lumen:holypower"] = "UNIT_POWER"
+
+	-- Shadow Orbs
+	oUF.Tags.Methods["lumen:shadoworbs"] = function(unit)
 	
-	-- Warlock Shards
-	oUF.Tags.Methods["lumen:warlockshards"] = function(unit)
-	
-		local ss = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
+		local so = UnitPower('player', SPELL_POWER_SHADOW_ORBS)
 		
-		if ss > 0 then
-			if ss == 1 then
-				return string.format("|CFFedc7ff%d|r",ss)
-			elseif ss == 2 then
-				return string.format("|CFFcf68ff%d|r",ss)
-			elseif ss == 3 then
-				return string.format("|CFFae00ff%d|r",ss)
+		if so > 0 then
+			if so == 1 then
+				return string.format("|CFFffffff%d|r",so)
+			elseif so == 2 then
+				return string.format("|CFFfff880%d|r",so)
+			elseif so == 3 then
+				return string.format("|CFFf5e92f%d|r",so)
 			end
 		end
 	end
-	oUF.Tags.Events["lumen:warlockshards"] = "UNIT_POWER"
+	oUF.Tags.Events["lumen:shadoworbs"] = "UNIT_POWER"
+	
+	-- Warlock Shards [DEPRECATED]
+	-- oUF.Tags.Methods["lumen:warlockshards"] = function(unit)
+	
+	-- 	local ss = UnitPower('player', SPELL_POWER_SOUL_SHARDS)
+		
+	-- 	if ss > 0 then
+	-- 		if ss == 1 then
+	-- 			return string.format("|CFFedc7ff%d|r",ss)
+	-- 		elseif ss == 2 then
+	-- 			return string.format("|CFFcf68ff%d|r",ss)
+	-- 		elseif ss == 3 then
+	-- 			return string.format("|CFFae00ff%d|r",ss)
+	-- 		end
+	-- 	end
+	-- end
+	-- oUF.Tags.Events["lumen:warlockshards"] = "UNIT_POWER"
 
 
 	-- Monk Chi

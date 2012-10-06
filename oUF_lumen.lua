@@ -88,6 +88,9 @@
 -- > 3. Functions
 -- ------------------------------------------------------------------------
 	
+	-- Dummy Function
+	local noop = function() return end
+
 	local function UpdateAnchors()
 	
 		if not InCombatLockdown() then
@@ -1541,14 +1544,14 @@
 		CPoints:SetJustifyH('CENTER')
 		CPoints:SetShadowOffset(1, -1)
 		self:Tag(CPoints, '[lumen:cp]')
-		if(PlayerClass == "ROGUE" and cfg.RogueDPT) then
-			DPTracker = self:CreateFontString(nil, 'OVERLAY')
-			DPTracker:SetPoint('BOTTOMLEFT', CPoints, 'TOPRIGHT',0,-10)
-			DPTracker:SetFont(font, cfg.fontsize+1, "OUTLINE")
-			DPTracker:SetJustifyH('CENTER')
-			DPTracker:SetShadowOffset(1, -1)
-			self:Tag(DPTracker, '[lumen:dp]')
-		end
+		-- if(PlayerClass == "ROGUE" and cfg.RogueDPT) then
+		-- 	DPTracker = self:CreateFontString(nil, 'OVERLAY')
+		-- 	DPTracker:SetPoint('BOTTOMLEFT', CPoints, 'TOPRIGHT',0,-10)
+		-- 	DPTracker:SetFont(font, cfg.fontsize+1, "OUTLINE")
+		-- 	DPTracker:SetJustifyH('CENTER')
+		-- 	DPTracker:SetShadowOffset(1, -1)
+		-- 	self:Tag(DPTracker, '[lumen:dp]')
+		-- end
 	end
 	
 	-- DK Runes
@@ -1582,86 +1585,49 @@
 		end
 	end
 	
-	-- Warlock Soul Shards Override
-	local ssOverride = function(self, event, unit, powerType)
-		
-		if(self.unit ~= unit or (powerType and powerType ~= 'SOUL_SHARDS')) then return end
-
-		local ss = self.SoulShards
-
-		local num = UnitPower(unit, SPELL_POWER_SOUL_SHARDS)
-		for i = 1, SHARD_BAR_NUM_SHARDS do
-			if(i <= num) then
-				ss[i]:SetAlpha(1)
-			else
-				ss[i]:SetAlpha(cfg.shards_depleted_alpha)
-			end
-		end
-	end
+	-- Warlock Resources
 	
-	-- Warlock Shards
-	local WarlockShards = function(self)
+	-- Warlock Resources in Number Format
 
-		if(cfg.show_WL_shards and PlayerClass == "WARLOCK") then
-			self.SoulShards = CreateFrame("Frame", nil, self)
-			self.SoulShards.Override = ssOverride
-			
-			for i= 1, 3 do
-				self.SoulShards[i] = CreateFrame("StatusBar", self:GetName().."_Shards"..i, self)
-				self.SoulShards[i]:SetHeight(cfg.WL_shards_height)
-				self.SoulShards[i]:SetWidth((cfg.WL_shards_width))
-				
-				self.SoulShards[i]:SetStatusBarTexture(fill_texture)
-				local color = self.colors.power["SOUL_SHARDS"]
-				self.SoulShards[i]:SetStatusBarColor(color[1], color[2], color[3])	
-				SetBackdrop(self.SoulShards[i], 2, 2, 2, 2)
-				if (i == 1) then
-					self.SoulShards[i]:SetPoint('LEFT', self, 'RIGHT', cfg.shards_x or ((cfg.target_frame_x_from_player/2) - (((cfg.WL_shards_width + cfg.shards_spacing) * 1.5) - (cfg.shards_spacing/2))), cfg.shards_y or 0)
-				else
-					self.SoulShards[i]:SetPoint('TOPLEFT', self.SoulShards[i-1], "TOPRIGHT", cfg.shards_spacing, 0)
-				end	
-			end
-		end
-	end
+	-- Priests Orbs Count
+	local PriestShadowOrbsCount = function(self)
 	
-	-- Warlock Shards in Number Format
-	local WarlockShardsCount = function(self)
-	
-		if(PlayerClass == "WARLOCK") then
-			local SoulShards = self:CreateFontString(nil, 'OVERLAY')
-			SoulShards:SetPoint('CENTER', self, 'RIGHT', cfg.php_count_x or (cfg.target_frame_x_from_player/2), cfg.php_count_y or 0)
-			SoulShards:SetFont(font, cfg.fontsize*3, "OUTLINE")
-			SoulShards:SetJustifyH('CENTER')
-			SoulShards:SetShadowOffset(1, -1)
-			self:Tag(SoulShards, '[lumen:warlockshards]')
+		if(PlayerClass == "PRIEST") then
+			local ShadowOrbs = self:CreateFontString(nil, 'OVERLAY')
+			ShadowOrbs:SetPoint('CENTER', self, 'RIGHT', cfg.php_count_x or (cfg.target_frame_x_from_player/2), cfg.php_count_y or 0)
+			ShadowOrbs:SetFont(font, cfg.fontsize*3, "OUTLINE")
+			ShadowOrbs:SetJustifyH('CENTER')
+			ShadowOrbs:SetShadowOffset(1, -1)
+			self:Tag(ShadowOrbs, '[lumen:shadoworbs]')
 		end
 	end
 	
 	-- Paladin Holy Power with StatusBar
-	local PaladinHolyPower = function(self)
+	PaladinHolyPower = function(self)
 	
 		if(cfg.show_PL_HolyPower and PlayerClass == "PALADIN") then
-			self.HolyPower = CreateFrame("Frame", nil, self)
-			
-			for i= 1, 3 do
-				self.HolyPower[i] = CreateFrame("StatusBar", self:GetName().."_Shards"..i, self)
-				self.HolyPower[i]:SetHeight(cfg.PL_hp_height)
-				self.HolyPower[i]:SetWidth((cfg.PL_hp_width))
-				
-				self.HolyPower[i]:SetStatusBarTexture(fill_texture)
-				--local color = self.colors.power["HOLY_POWER"]
-				--self.HolyPower[i]:SetStatusBarColor(color[1], color[2], color[3])
-				self.HolyPower[i]:SetStatusBarColor(245/255, 102/255, 165/255)
-				SetBackdrop(self.HolyPower[i], 2, 2, 2, 2)
+			local HolyPower = CreateFrame("Frame", nil, self)
+   
+			for i = 1, 5 do
+				local Icon = CreateFrame("StatusBar", nil, HolyPower)
+				Icon:SetStatusBarTexture(fill_texture)
+				Icon:GetStatusBarTexture():SetHorizTile(false)
+				Icon:SetSize(cfg.PL_hp_width, cfg.PL_hp_height)
 				if (i == 1) then
-					self.HolyPower[i]:SetPoint('LEFT', self, 'RIGHT', cfg.PL_hp_x or ((cfg.target_frame_x_from_player/2) - (((cfg.PL_hp_width + cfg.PL_hp_spacing) * 1.5) - (cfg.PL_hp_spacing/2))), cfg.PL_hp_y or 0)
+					Icon:SetPoint('LEFT', self, 'RIGHT', cfg.PL_hp_x or ((cfg.target_frame_x_from_player/2) - (((cfg.PL_hp_width + cfg.PL_hp_spacing) * 1.5) - (cfg.PL_hp_spacing/2))), cfg.PL_hp_y or 0)
 				else
-					self.HolyPower[i]:SetPoint('TOPLEFT', self.HolyPower[i-1], "TOPRIGHT", cfg.PL_hp_spacing, 0)
-				end	
+					Icon:SetPoint('TOPLEFT', HolyPower[i-1], "TOPRIGHT", cfg.PL_hp_spacing, 0)
+				end
+				Icon:SetStatusBarColor(245/255, 102/255, 165/255)
+				SetBackdrop(Icon, 2, 2, 2, 2)
+				Icon.SetVertexColor = noop
+				HolyPower[i] = Icon
 			end
+
+			self.ClassIcons = HolyPower
 		end
 	end
-	
+
 	-- Paladin Holy Power in Number Format
 	local PaladinHolyPowerCount = function(self)
 	
@@ -1675,7 +1641,33 @@
 		end
 	end
 
-	-- Monk Chi
+	-- Monk Chi with Status Bar
+	MonkChi = function(self)
+
+		if(cfg.show_Monk_chi and PlayerClass == "MONK") then
+			local Harmony = CreateFrame("Frame", nil, self)
+   
+			for i = 1, 5 do
+				local Icon = CreateFrame("StatusBar", nil, Harmony)
+				Icon:SetStatusBarTexture(fill_texture)
+				Icon:GetStatusBarTexture():SetHorizTile(false)
+				Icon:SetSize(cfg.Monk_chi_width, cfg.Monk_chi_height)
+				if (i == 1) then
+					Icon:SetPoint('LEFT', self, 'RIGHT', cfg.Monk_chi_x or ((cfg.target_frame_x_from_player/2) - (((cfg.Monk_chi_width + cfg.Monk_chi_spacing) * 1.5) - (cfg.Monk_chi_spacing/2))), cfg.Monk_chi_y or 0)
+				else
+					Icon:SetPoint('TOPLEFT', Harmony[i-1], "TOPRIGHT", cfg.Monk_chi_spacing, 0)
+				end
+				Icon:SetStatusBarColor(0/255, 255/255, 150/255)
+				SetBackdrop(Icon, 2, 2, 2, 2)
+				Icon.SetVertexColor = noop
+				Harmony[i] = Icon
+			end
+
+			self.ClassIcons = Harmony
+		end
+	end
+
+	-- Monk Chi Count
 	local MonkChiCount = function(self)
 
 		if(PlayerClass == "MONK") then
@@ -2139,14 +2131,15 @@
 			end
 			
 			-- Other
-			if(cfg.show_castbars) then CreateCastbar(self, ...) end
+			if cfg.show_castbars then CreateCastbar(self, ...) end
+			if cfg.use_Paladin_HP_numbers then PaladinHolyPowerCount(self) else PaladinHolyPower(self) end
+			-- if cfg.use_Warlock_Resources_numbers then else  end
+			if cfg.show_eclipsebar then MoonkinEclipseBar(self) end
+			if cfg.use_Monk_Chi_numbers then MonkChiCount(self) else MonkChi(self) end
+			if cfg.show_shadowOrbs_count then PriestShadowOrbsCount(self) end
 			RaidIcons(self)
 			DruidPowa(self)
 			RunesBar(self)
-			if cfg.use_Paladin_HP_numbers then PaladinHolyPowerCount(self) else PaladinHolyPower(self) end
-			if cfg.use_Warlock_Shards_numbers then WarlockShardsCount(self) else WarlockShards(self) end
-			if cfg.show_eclipsebar then MoonkinEclipseBar(self) end
-			MonkChiCount(self)
 			
 			-- Plugins
 			BarFader(self)

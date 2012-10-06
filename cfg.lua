@@ -208,35 +208,38 @@
 		cfg.rune_y = false -- Runes Y Position (False is to use default position)
 		cfg.DK_runes_alpha = 0 -- Runes Out of Combat Alpha
 		
-		-- Warlock Shards
-		
-		cfg.use_Warlock_Shards_numbers = false -- If set to true will use Number format like combo points instead of bars
-		cfg.show_WL_shards = true -- Show Warlock Shards
-		cfg.WL_shards_height = 8 -- Warlock Shards frame height
-		cfg.WL_shards_width = 18 -- Warlock Shards frame width
-		cfg.shards_spacing = 7 -- Rune Spacing
-		cfg.shards_x = false -- Shards X Position (False is to use default position)
-		cfg.shards_y = false -- Shards Y Position (False is to use default position)
-		cfg.shards_depleted_alpha = 0.2 -- Shard Depleted Alpha
+		-- Warlock Resources
+
+		-- Monk
+
+		cfg.use_Monk_Chi_numbers = true -- If set to true will use Number format like combo points instead of bars
+		cfg.chi_count_x = false -- Position of the Chi Number Horz (False is to use default position)
+		cfg.chi_count_y = false -- Position of the Chi Number Vert (False is to use default position)
+		cfg.show_Monk_chi = true -- Show Monk Harmony bar
+		cfg.Monk_chi_height = 8 -- Monk Chi frame height
+		cfg.Monk_chi_width = 18 -- Monk Chi frame width
+		cfg.Monk_chi_spacing = 7 -- Chi Spacing
+		cfg.Monk_chi_x = false -- Chi X Position (False is to use default position)
+		cfg.Monk_chi_y = false -- Chi Y Position (False is to use default position)
 		
 		-- Paladin Holy Power
 		
-		cfg.use_Paladin_HP_numbers = false -- If set to true will use Number format like combo points instead of bars
-		cfg.php_count_x = false -- Position of the Holy Power Number Horz
-		cfg.php_count_y = false -- Position of the Holy Power Number Vert
+		cfg.use_Paladin_HP_numbers = true -- If set to true will use Number format like combo points instead of bars
+		cfg.php_count_x = false -- Position of the Holy Power Number Horz (False is to use default position)
+		cfg.php_count_y = false -- Position of the Holy Power Number Vert (False is to use default position)
 		cfg.show_PL_HolyPower = true -- Show Warlock Shards
-		cfg.PL_hp_height = 8 -- Warlock Shards frame height
-		cfg.PL_hp_width = 18 -- Warlock Shards frame width
+		cfg.PL_hp_height = 8 -- Paladin Shards frame height
+		cfg.PL_hp_width = 18 -- Paladin Shards frame width
 		cfg.PL_hp_spacing = 7 -- Rune Spacing
-		cfg.PL_hp_x = false -- Shards X Position (False is to use default position)
-		cfg.PL_hp_y = false -- Shards Y Position (False is to use default position)
+		cfg.PL_hp_x = false -- Holy Bars X Position (False is to use default position)
+		cfg.PL_hp_y = false -- Holy Bars Y Position (False is to use default position)
 		
 		-- Rogue
 		
 		cfg.use_ComboPoints = true -- If you want Combo points, put this as true, ye?
-		cfg.comboPoints_posx = false -- Set a value for Horizontal Position
-		cfg.comboPoints_posy = false -- Vertical Position
-		cfg.RogueDPT = true -- Small Number tracking Deadly Poison Stack next to the Combo Points
+		cfg.comboPoints_posx = false -- Set a value for Horizontal Position (False is to use default position)
+		cfg.comboPoints_posy = false -- Vertical Position (False is to use default position)
+		-- cfg.RogueDPT = true -- Small Number tracking Deadly Poison Stack next to the Combo Points
 		
 		-- Druid
 		
@@ -247,6 +250,12 @@
 		cfg.eclipse_y = false -- Eclipse Bar Y Position (False is to use default position)
 		cfg.eclipse_ooc_alpha = 0.15 -- Eclipse Out of Combat Alpha
 		cfg.showEclipseDirectionText = false -- Shows Direction Text on the Eclipse Bar
+
+		-- Priest
+		cfg.show_shadowOrbs_count = true -- If set to true will use Number shadow orbs
+		cfg.so_count_x = false -- Position of the Shadow Orbs Number Horz (False is to use default position)
+		cfg.so_count_y = false -- Position of the Shadow Orbs Number Vert (False is to use default position)
+
 	
 	-- Addons
 		
