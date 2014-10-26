@@ -1,4 +1,4 @@
-## Interface: 50001
+## Interface: 60000
 ## Author: greven
 ## Title: oUF_|cFF0d87d5l|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
 ## Notes: oUF layout of greven

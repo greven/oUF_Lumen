@@ -8,7 +8,7 @@
 	local colors = ns.colors
 
 	filters.Whitelist = {
-	
+
 	DEATHKNIGHT = {
 
 		-- Buffs
@@ -22,7 +22,7 @@
 		[GetSpellInfo(51271) or "Pillar of Frost"] = true,				-- Pillar of Frost
 		[GetSpellInfo(51271) or "Unbreakable Armor"] = true,			-- Unbreakable Armor
 		[GetSpellInfo(55233) or "Vampiric Blood"] = true,				-- Vampiric Blood
-		
+
 		-- Debuffs
 		[GetSpellInfo(55078) or "Blood Plague"] = true,					-- Blood Plague
 		[GetSpellInfo(45524) or "Chains of Ice"] = true,				-- Chains of Ice
@@ -30,16 +30,16 @@
 		[GetSpellInfo(49203) or "Hungering Cold"] = true,				-- Hungering Cold
 		[GetSpellInfo(47476) or "Strangulate"] = true,					-- Strangulate
 	},
-	
+
 	DRUID = {
-	
+
 		-- Buffs
 		[GetSpellInfo(22812) or "Barkskin"] = true,						-- Barkskin
 		[GetSpellInfo(50334) or "Berserk"] = true,						-- Berserk
 		[GetSpellInfo(1850) or "Dash"] = true,							-- Dash
 		[GetSpellInfo(5229) or "Enrage"] = true, 						-- Enrage
 		[GetSpellInfo(22842) or "Frenzied Regeneration"] = true,		-- Frenzied Regeneration
-		[GetSpellInfo(29166) or "Innervate"] = true,					-- Innervate		
+		[GetSpellInfo(29166) or "Innervate"] = true,					-- Innervate
 		[GetSpellInfo(33763) or "Lifebloom"] = true,					-- Lifebloom
 		[GetSpellInfo(16689) or "Nature's Grasp"] = true,				-- Nature's Grasp
 		[GetSpellInfo(8936) or "Regrowth"] = true,						-- Regrowth
@@ -48,7 +48,7 @@
 		[GetSpellInfo(93400) or "Shooting Stars"] = true,				-- Shooting Stars
 		[GetSpellInfo(61336) or "Survival Instincts"] = true,			-- Survival Instincts
 		[GetSpellInfo(467) or "Thorns"] = true,							-- Thorns
-		
+
 		-- Debuffs
 		[GetSpellInfo(5211) or "Bash"] = true,					    	-- Bash
 		[GetSpellInfo(33786) or "Cyclone"] = true,						-- Cyclone
@@ -64,7 +64,7 @@
 		[GetSpellInfo(1079) or "Rip"] = true,							-- Rip
 		[GetSpellInfo(93402) or "Sunfire"] = true,						-- Sunfire
 	},
-	
+
 	HUNTER = {
 
 		-- Buffs
@@ -83,17 +83,17 @@
 		[GetSpellInfo(35101) or "Concussive Barrage"] = true,			-- Concussive Barrage
 		[GetSpellInfo(5116) or "Concussive Shot"] = true,				-- Concussive Shot
 		[GetSpellInfo(19185) or "Entrapment"] = true,					-- Entrapment
-		[GetSpellInfo(53301) or "Explosive Shot"] = true,				-- Explosive Shot 
+		[GetSpellInfo(53301) or "Explosive Shot"] = true,				-- Explosive Shot
 		[GetSpellInfo(3355) or "Freezing Trap"] = true,  				-- Freezing Trap
-		[GetSpellInfo(51740) or "Immolation Trap"] = true,				-- Immolation Trap 
-		[GetSpellInfo(1513) or "Scare Beast"] = true,					-- Scare Beast 
+		[GetSpellInfo(51740) or "Immolation Trap"] = true,				-- Immolation Trap
+		[GetSpellInfo(1513) or "Scare Beast"] = true,					-- Scare Beast
 		[GetSpellInfo(1978) or "Serpent Sting"] = true,			    	-- Serpent Sting
 		[GetSpellInfo(34490) or "Silencing Shot"] = true,				-- Silencing Shot
 		[GetSpellInfo(2974) or "Wing Clip"] = true,				    	-- Wing Clip
 		[GetSpellInfo(19386) or "Wyvern Sting"] = true,		    		-- Wyvern Sting
-		
+
 	},
-	
+
 	MAGE = {
 
 		-- Buffs
@@ -119,25 +119,25 @@
 	MONK = {
 
 	},
-	
+
 	PALADIN = {
 
 		-- Buffs
 		[GetSpellInfo(31850) or "Ardent Defender"] = true,				-- Ardent Defender
 		[GetSpellInfo(31884) or "Avenging Wrath"] = true,				-- Avenging Wrath
-		[GetSpellInfo(53651) or "Light's Beacon"] = true,				-- Beacon of Light		
+		[GetSpellInfo(53651) or "Light's Beacon"] = true,				-- Beacon of Light
 		[GetSpellInfo(31842) or "Divine Favor"] = true,					-- Divine Favor
 		[GetSpellInfo(54428) or "Divine Plea"] = true,					-- Divine Plea
 		[GetSpellInfo(642) or "Divine Shield"] = true,					-- Divine Shield
 		[GetSpellInfo(90174) or "Hand of Light"] = true,					-- Hand of Light
 		[GetSpellInfo(84963) or "Inquisition"] = true,					-- Inquisition
 		[GetSpellInfo(85696) or "Zealotry"] = true,						-- Zealotry
-		
+
 		-- Debuffs
 		[GetSpellInfo(20066) or "Repentance"] = true,					-- Repentance
-		
+
 	},
-	
+
 	PRIEST = {
 
 		-- Buffs
@@ -159,16 +159,16 @@
 
 		-- Debuffs
 		[GetSpellInfo(2944) or "Devouring Plague"] = true,				-- Devouring Plague
-		[GetSpellInfo(14914) or "Holy Fire"] = true,					-- Holy Fire	
+		[GetSpellInfo(14914) or "Holy Fire"] = true,					-- Holy Fire
 		[GetSpellInfo(87178) or "Mind Spike"] = true,					-- Mind Spike
-		[GetSpellInfo(64044) or "Psychic Horror"] = true,					-- Psychic Horror	
-		[GetSpellInfo(589) or "Shadow Word: Pain"] = true,				-- Shadow Word: Pain	
-		[GetSpellInfo(9484) or "Shackle Undead"] = true,				-- Shackle Undead	
-		[GetSpellInfo(15487) or "Silence"] = true,						-- Silence	
-		[GetSpellInfo(34914) or "Vampiric Touch"] = true,				-- Vampiric Touch	
+		[GetSpellInfo(64044) or "Psychic Horror"] = true,					-- Psychic Horror
+		[GetSpellInfo(589) or "Shadow Word: Pain"] = true,				-- Shadow Word: Pain
+		[GetSpellInfo(9484) or "Shackle Undead"] = true,				-- Shackle Undead
+		[GetSpellInfo(15487) or "Silence"] = true,						-- Silence
+		[GetSpellInfo(34914) or "Vampiric Touch"] = true,				-- Vampiric Touch
 
 	},
-	
+
 	ROGUE = {
 
 		-- Buffs
@@ -194,7 +194,7 @@
 		[GetSpellInfo(79140) or "Vendetta"] = true,						-- Vendetta
 
 	},
-	
+
 	SHAMAN = {
 
 		-- Buffs
@@ -217,7 +217,7 @@
 		[GetSpellInfo(51514) or "Hex"] = true,							-- Hex
 
 	},
-	
+
 	WARLOCK = {
 
 		-- Buffs
@@ -242,7 +242,7 @@
 		[GetSpellInfo(30108) or "Unstable Affliction"] = true,			-- Unstable Affliction
 
 	},
-	
+
 	WARRIOR = {
 
 		-- Buffs
@@ -274,48 +274,48 @@
 		[GetSpellInfo(85388) or "Throwdown"] = true,			    	-- Throwdown
 
 	},
-	
+
 	PET = {
-		
+
 		-- Hunter
 		[GetSpellInfo(6991) or "Feed Pet"] = true,						-- Feed Pet
 		[GetSpellInfo(19615) or "Frenzy Effect"] = true,				-- Frenzy
 		[GetSpellInfo(136) or "Mend Pet"] = true,						-- Mend Pet
-		
+
 		-- Death Knight
 		[GetSpellInfo(63560) or "Dark Transformation"] = true,			-- Dark Transformation
 		[GetSpellInfo(91342) or "Shadow Infusion"] = true,				-- Shadow Infusion
-		
+
 		-- Warlock
 	}}
-	
+
 -- ------------------------------------------------------------------------
 -- > 2. Corner Indicators Whitelists
 -- ------------------------------------------------------------------------
-	
+
 	filters.IndicatorsSpells = {
-	
+
 	DEATHKNIGHT = {
 		TL = {},
 		TR = {},
 		BL = {},
 		BR = {},
 	},
-	
+
 	DRUID = {
-		TL = {[GetSpellInfo(33763) or "Lifebloom"] = {color = colors.INDICATORS.Green, stack = 3}},
+		TL = {[GetSpellInfo(33763) or "Lifebloom"] = {color = colors.INDICATORS.Green, stack = 1}},
 		TR = {[GetSpellInfo(8936) or "Regrowth"] = {color = colors.INDICATORS.Blue, stack = 1}},
 		BL = {[GetSpellInfo(48441) or "Rejuvenation"] = {color = colors.INDICATORS.Purple, stack = 1}},
 		BR = {[GetSpellInfo(48438) or "Wild Growth"] = {color = colors.INDICATORS.Orange, stack = 1}},
 	},
-	
+
 	HUNTER = {
 		TL = {[GetSpellInfo(34477) or "Misdirection"] = {color = colors.INDICATORS.Blue, stack = 1}},
 		TR = {},
 		BL = {},
 		BR = {},
 	},
-	
+
 	MAGE = {
 		TL = {[GetSpellInfo(54646) or "Focus Magic"] = {color = colors.INDICATORS.Purple, stack = 1}},
 		TR = {[GetSpellInfo(1459) or "Arcane Brilliance"] = {color = colors.INDICATORS.Blue, stack = 1}},
@@ -329,74 +329,76 @@
 		BL = {},
 		BR = {},
 	},
-	
+
 	PALADIN = {
 		TL = {},
 		TR = {},
 		BL = {[GetSpellInfo(53651) or "Light's Beacon"] = {color = colors.INDICATORS.White, stack = 1}},
 		BR = {[GetSpellInfo(25771) or "Forbearance"] = {color = colors.INDICATORS.Red, stack = 1}},
 	},
-	
-	PRIEST = { 
+
+	PRIEST = {
 		TL = {[GetSpellInfo(139) or "Renew"] = {color = colors.INDICATORS.Green, stack = 1}},
 		TR = {[GetSpellInfo(48066) or "Power Word: Shield"] = {color = colors.INDICATORS.Orange, stack = 1}},
 		BL = {[GetSpellInfo(33076) or "Prayer of Mending"] = {color = colors.INDICATORS.Blue, stack = 5}},
 		BR = {[GetSpellInfo(6788) or "Weakened Soul"] = {color = colors.INDICATORS.Red, stack = 1}},
 	},
-	
+
 	ROGUE = {
 		TL = {[GetSpellInfo(57934) or "Tricks of the Trade"] = {color = colors.INDICATORS.Orange, stack = 1}},
 		TR = {},
 		BL = {},
 		BR = {},
 	},
-	
+
 	SHAMAN = {
 		TL = {[GetSpellInfo(61295) or "Riptide"] = {color = colors.INDICATORS.Blue, stack = 1}},
 		TR = {[GetSpellInfo(3345) or "Earthliving"] = {color = colors.INDICATORS.Green, stack = 1}},
 		BL = {[GetSpellInfo(974) or "Earth Shield"] = {color = colors.INDICATORS.Orange, stack = 6}},
 		BR = {},
 	},
-	
+
 	WARLOCK = {
 		TL = {[GetSpellInfo(47883) or "Soulstone Resurrection"] = {color = colors.INDICATORS.Purple, stack = 1}},
 		TR = {[GetSpellInfo(85767) or "Dark Intent"] = {color = colors.INDICATORS.Green, stack = 3}},
 		BL = {},
 		BR = {},
 	},
-	
+
 	WARRIOR = {
 		TL = {[GetSpellInfo(50720) or "Vigilance"] = {color = colors.INDICATORS.Blue, stack = 1}},
 		TR = {},
 		BL = {},
 		BR = {},
 	},
-	
+
 	}
-	
+
 -- ------------------------------------------------------------------------
 -- > 3. Raid and other Important Debuffs Whitelist for Icon Display
 -- ------------------------------------------------------------------------
 
 	filters.IconDebuffs = {
-	
+
 		-- PvE --
-		
+
 			-- CATACLYSM --
-			
+
 				-- Blackrock Caverns
 				76188, -- Twilight Corruption: Ascendant Lord Obsidius
-				
+
 				-- Grim Batol
 				74846, --Bleeding Wound: General Umbriss
-				
+
 				--...
 
 			-- MISTS OF PANDARIA --
-		
-		
+
+			-- Warlords of Draenor
+
+
 		-- PvP --
-		
+
 			8122, 	-- Psychic Scream (Priest)
 			15487, 	-- Silence (Priest)
 			20066, 	-- Repentence (Paladin)
@@ -413,7 +415,7 @@
 			3355, 	-- Freezing Trap (Hunter)
 			19386, 	-- Wyvern Sting (Hunter)
 			47476, 	-- Strangulate (Death Knight)
-	
+
 	}
 
 		ns.filters = filters -- Don't change this !!
