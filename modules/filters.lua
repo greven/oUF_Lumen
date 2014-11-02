@@ -129,7 +129,7 @@
 		[GetSpellInfo(31842) or "Divine Favor"] = true,					-- Divine Favor
 		[GetSpellInfo(54428) or "Divine Plea"] = true,					-- Divine Plea
 		[GetSpellInfo(642) or "Divine Shield"] = true,					-- Divine Shield
-		[GetSpellInfo(90174) or "Hand of Light"] = true,					-- Hand of Light
+		[GetSpellInfo(90174) or "Hand of Light"] = true,				-- Hand of Light
 		[GetSpellInfo(84963) or "Inquisition"] = true,					-- Inquisition
 		[GetSpellInfo(85696) or "Zealotry"] = true,						-- Zealotry
 
@@ -161,7 +161,7 @@
 		[GetSpellInfo(2944) or "Devouring Plague"] = true,				-- Devouring Plague
 		[GetSpellInfo(14914) or "Holy Fire"] = true,					-- Holy Fire
 		[GetSpellInfo(87178) or "Mind Spike"] = true,					-- Mind Spike
-		[GetSpellInfo(64044) or "Psychic Horror"] = true,					-- Psychic Horror
+		[GetSpellInfo(64044) or "Psychic Horror"] = true,				-- Psychic Horror
 		[GetSpellInfo(589) or "Shadow Word: Pain"] = true,				-- Shadow Word: Pain
 		[GetSpellInfo(9484) or "Shackle Undead"] = true,				-- Shackle Undead
 		[GetSpellInfo(15487) or "Silence"] = true,						-- Silence
@@ -173,19 +173,25 @@
 
 		-- Buffs
 		[GetSpellInfo(13750) or "Adrenaline Rush"] = true,		    	-- Adrenaline Rush
+		[GetSpellInfo(114015) or "Anticipation"] = true,		    	-- Anticipation
+		[GetSpellInfo(84745) or "Shallow Insight"] = true,			    -- Bandit's Guile
+		[GetSpellInfo(84746) or "Moderate Insight"] = true,			    -- Bandit's Guile
 		[GetSpellInfo(84747) or "Deep Insight"] = true,			    	-- Bandit's Guile
 		[GetSpellInfo(13877) or "Blade Flurry"] = true,			    	-- Blade Flurry
 		[GetSpellInfo(31230) or "Cheat Death"] = true,			    	-- Cheat Death
+		[GetSpellInfo(74001) or "Combat Readiness"] = true,			    -- Combat Readiness
+		[GetSpellInfo(5277) or "Evasion"] = true,			    		-- Evasion
+		[GetSpellInfo(73651) or "Recuperate"] = true,				    -- Recuperate
 		[GetSpellInfo(84617) or "Revealing Strike"] = true,			    -- Revealing Strike
 		[GetSpellInfo(51713) or "Shadow Dance"] = true,			    	-- Shadow Dance
 		[GetSpellInfo(5171) or "Slice and Dice"] = true,				-- Slice and Dice
+		[GetSpellInfo(114014) or "Shuriken Toss"] = true, 				-- Shuriken Toss
+		[GetSpellInfo(48594) or "Sprint"] = true, 						-- Sprint
 
 		-- Debuffs
 		[GetSpellInfo(2094) or "Blind"] = true,					    	-- Blind
 		[GetSpellInfo(1833) or "Cheap Shot"] = true,					-- Cheap Shot
 		[GetSpellInfo(26679) or "Deadly Throw"] = true,			   	 	-- Deadly Throw
-		[GetSpellInfo(51722) or "Dismantle"] = true, 					-- Dismantle
-		[GetSpellInfo(8647) or "Expose Armor"] = true,			    	-- Expose Armor
 		[GetSpellInfo(703) or "Garrote"] = true,						-- Garrote
 		[GetSpellInfo(1776) or "Gouge"] = true,					    	-- Gouge
 		[GetSpellInfo(408) or "Kidney Shot"] = true,					-- Kidney Shot

@@ -792,14 +792,14 @@
 		self.InfoBar:SetAlpha(cfg.InfoBarAlpha)
 
 		self.InfoBar.Classify = createFontstring(self.InfoBar, font, cfg.fontsize-1, Outline)
-		self.InfoBar.Classify:SetPoint("LEFT", self.InfoBar, 4, 0)
+		self.InfoBar.Classify:SetPoint("LEFT", self.InfoBar, 4, 1)
 		self.InfoBar.Classify:SetJustifyH("LEFT")
 		self.InfoBar.Classify:SetWidth(cfg.mainframe_width - 40)
 		self.InfoBar.Classify:SetHeight(cfg.fontsize)
 		self:Tag(self.InfoBar.Classify, "[lumen:level]")
 
 		self.Info = createFontstring(self.InfoBar, font, cfg.fontsize-1, Outline)
-		self.Info:SetPoint("RIGHT", self.InfoBar, "RIGHT", -4, 0)
+		self.Info:SetPoint("RIGHT", self.InfoBar, "RIGHT", -4, 1)
 		self.Info:SetJustifyH("RIGHT")
 		self.Info.frequentUpdates = true
 		self:Tag(self.Info, "[lumen:Info]")
@@ -2120,7 +2120,7 @@
 			createPercentString(self, font, cfg.fontsize+3, Outline, 6, 1, "RIGHT", "LEFT")
 			createPPString(self, font, cfg.fontsize-2, Outline, 0, 0, "CENTER")
 			createPercentPPString(self, font, cfg.fontsize-2, Outline, -2, 0, "RIGHT")
-			createNameString(self, font, cfg.fontsize-2, Outline, 4, 0, "LEFT", cfg.mainframe_width - 52)
+			createNameString(self, font, cfg.fontsize-1, Outline, 4, 0, "LEFT", cfg.mainframe_width - 52)
 
 			-- Health & Power Updates
 			self.Health.PostUpdate = PostUpdateHP
@@ -2180,7 +2180,7 @@
 			createPercentString(self, font, cfg.fontsize+3, Outline, -6, 1, "LEFT", "RIGHT")
 			createPPString(self, font, cfg.fontsize-2, Outline, 0, 0, "CENTER")
 			createPercentPPString(self, font, cfg.fontsize-2, Outline, -2, 0, "RIGHT")
-			createNameString(self, font, cfg.fontsize-2, Outline, 4, 0, "LEFT", cfg.mainframe_width - 52)
+			createNameString(self, font, cfg.fontsize-1, Outline, 4, 0, "LEFT", cfg.mainframe_width - 52)
 
 			-- Health & Power Updates
 			self.Health.PostUpdate = PostUpdateHP
