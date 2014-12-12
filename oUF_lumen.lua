@@ -1,4 +1,3 @@
-
 -- ------------------------------------------------------------------------
 -- > oUF Lumen (Kreoss @ Jaednar EU) <
 -- ------------------------------------------------------------------------
@@ -369,7 +368,6 @@
 
 	-- Post Health Update
 	local PostUpdateHP = function(health, unit, min, max)
-
 		local self = health.__owner
 		local disconnnected = not UnitIsConnected(unit)
 		local dead = UnitIsDead(unit)
@@ -1922,7 +1920,7 @@
 	-- oUF_Experience
 	local function ExperienceBar(self, unit)
 
-		if(IsAddOnLoaded('oUF_Experience')) then
+		if(IsAddOnLoaded('oUF_Experience') and UnitLevel('player') < MAX_PLAYER_LEVEL) then
 
 			local Experience = CreateFrame('StatusBar', nil, self)
 			Experience:SetStatusBarTexture(fill_texture)
@@ -1944,8 +1942,8 @@
 
 			-- Tooltip
 			self.Experience:EnableMouse()
-			self.Experience:HookScript('OnLeave', GameTooltip_Hide)
 			self.Experience:HookScript('OnEnter', XPTooltip)
+			self.Experience:HookScript('OnLeave', GameTooltip_Hide)
 		end
 	end
 

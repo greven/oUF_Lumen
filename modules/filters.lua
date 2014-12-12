@@ -117,6 +117,11 @@
 	},
 
 	MONK = {
+		-- Buffs
+		-- [GetSpellInfo(115307) or "Shuffle"] = true,						-- Shuffle
+		[GetSpellInfo(125359) or "Tiger Powe"] = true,					-- Tiger Power
+
+		-- Debuffs
 
 	},
 
@@ -173,13 +178,14 @@
 
 		-- Buffs
 		[GetSpellInfo(13750) or "Adrenaline Rush"] = true,		    	-- Adrenaline Rush
-		[GetSpellInfo(114015) or "Anticipation"] = true,		    	-- Anticipation
-		[GetSpellInfo(84745) or "Shallow Insight"] = true,			    -- Bandit's Guile
-		[GetSpellInfo(84746) or "Moderate Insight"] = true,			    -- Bandit's Guile
+		-- [GetSpellInfo(114015) or "Anticipation"] = true,		    	-- Anticipation
+		-- [GetSpellInfo(84745) or "Shallow Insight"] = true,			-- Bandit's Guile
+		-- [GetSpellInfo(84746) or "Moderate Insight"] = true,			-- Bandit's Guile
 		[GetSpellInfo(84747) or "Deep Insight"] = true,			    	-- Bandit's Guile
-		[GetSpellInfo(13877) or "Blade Flurry"] = true,			    	-- Blade Flurry
+		-- [GetSpellInfo(13877) or "Blade Flurry"] = true,			    -- Blade Flurry
 		[GetSpellInfo(31230) or "Cheat Death"] = true,			    	-- Cheat Death
 		[GetSpellInfo(74001) or "Combat Readiness"] = true,			    -- Combat Readiness
+		[GetSpellInfo(32645) or "Envenom"] = true,			    		-- Envenom
 		[GetSpellInfo(5277) or "Evasion"] = true,			    		-- Evasion
 		[GetSpellInfo(73651) or "Recuperate"] = true,				    -- Recuperate
 		[GetSpellInfo(84617) or "Revealing Strike"] = true,			    -- Revealing Strike
@@ -187,6 +193,7 @@
 		[GetSpellInfo(5171) or "Slice and Dice"] = true,				-- Slice and Dice
 		[GetSpellInfo(114014) or "Shuriken Toss"] = true, 				-- Shuriken Toss
 		[GetSpellInfo(48594) or "Sprint"] = true, 						-- Sprint
+		[GetSpellInfo(1856) or "Vanish"] = true, 						-- Vanish
 
 		-- Debuffs
 		[GetSpellInfo(2094) or "Blind"] = true,					    	-- Blind
