@@ -126,7 +126,8 @@
 			end
 
 			if(cfg.show_BarTimers and playerAuraWatchers) then
-				playerAuraWatchers:SetPoint("BOTTOMLEFT", oUF_lumenPlayer, "BOTTOMLEFT", 0, cfg.mainframe_height + cfg.secondaryframe_height + cfg.InforBar_height + cfg.BarTimers_height + cfg.InforBar_shift + 3 + exp_shift)
+				playerAuraWatchers:SetPoint("BOTTOMLEFT", oUF_lumenPlayer, "BOTTOMLEFT", 0, cfg.mainframe_height + cfg.secondaryframe_height
+				+ cfg.InforBar_height + cfg.BarTimers_height + cfg.InforBar_shift + 3 + exp_shift)
 			end
 		end
 	end
@@ -397,7 +398,7 @@
 				local r, g, b = oUF.ColorGradient(min, max, unpack(oUF.colors.smooth))
 				if(unit == "player" or unit == "target") then
 					health.value:SetText(ShortNumber(min))
-					health.percent:SetText(floor(min / max * 100).."%")
+					if cfg.showPercent then health.percent:SetText(floor(min / max * 100).."%") end
 					health.percent:SetTextColor(r,g,b)
 				elseif(unit == "targettarget" or unit == "focus") then
 					health.value:SetText(floor(min / max * 100).."%")

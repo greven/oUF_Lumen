@@ -28,6 +28,7 @@
 		cfg.hpColor = {0.3,0.3,0.3,1} -- The Color to use if cfg.useClassColors and cfg.useReactionColor are set to false
 		cfg.useClassColoredPower = false -- Colors the Power by class color
 		cfg.useClassColoredNames = false -- Colors the unit names by Class, useful if cfg.useClassColors and cfg.useReactionColor are set to false
+		cfg.showPercent = true -- Show Frame Percentage string
 
 		-- Sizes
 		cfg.power_height = 2 -- Set the Height of the Power Bar
