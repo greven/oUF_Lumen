@@ -97,22 +97,23 @@
 	MAGE = {
 
 		-- Buffs
-		[GetSpellInfo(12042) or "Arcane Power"] = true,					-- Arcane Power
-		[GetSpellInfo(11426) or "Ice Barrier"] = true,					-- Ice Barrier
-		[GetSpellInfo(45438) or "Ice Block"] = true,					-- Ice Block
-		[GetSpellInfo(66) or "Invisibility"] = true,					-- Invisibility
-		[GetSpellInfo(543) or "Mage Ward"] = true,			    		-- Mage Ward
-		[GetSpellInfo(1463) or "Mana Shield"] = true,			    	-- Mana Shield
-		[GetSpellInfo(130) or "Slow Fall"] = true,				    	-- Slow Fall
+		[GetSpellInfo(12042) or "Arcane Power"] = true,							-- Arcane Power
+		[GetSpellInfo(44549) or "Brain Freeze"] = true,							-- Brain Freeze
+		[GetSpellInfo(112965) or "Fingers of Frost"] = true,				-- Fingers of Frost
+		[GetSpellInfo(12472) or "Icy Veins"] = true,								-- Icy Veins
+		[GetSpellInfo(11426) or "Ice Barrier"] = true,							-- Ice Barrier
+		[GetSpellInfo(45438) or "Ice Block"] = true,								-- Ice Block
+		[GetSpellInfo(110960) or "Greater Invisibility"] = true,		-- Greater Invisibility
+		[GetSpellInfo(130) or "Slow Fall"] = true,				    			-- Slow Fall
 
 		-- Debuffs
-		[GetSpellInfo(44572) or "Deep Freeze"] = true,	    			-- Deep Freeze
-		[GetSpellInfo(122) or "Frost Nova"] = true,			    		-- Frost Nova
+		[GetSpellInfo(44572) or "Deep Freeze"] = true,	    				-- Deep Freeze
+		[GetSpellInfo(122) or "Frost Nova"] = true,			    				-- Frost Nova
 		[GetSpellInfo(11255) or "Improved Counterspell"] = true,		-- Improved Counterspell
-		[GetSpellInfo(44457) or "Living Bomb"] = true,					-- Living Bomb
-		[GetSpellInfo(118) or "Polymorph"] = true,				   	 	-- Polymorph
-		[GetSpellInfo(82676) or "Ring of Frost"] = true,				-- Ring of Frost
-		[GetSpellInfo(31589) or "Slow"] = true,					   		-- Slow
+		[GetSpellInfo(44457) or "Living Bomb"] = true,							-- Living Bomb
+		[GetSpellInfo(118) or "Polymorph"] = true,				   	 			-- Polymorph
+		[GetSpellInfo(82676) or "Ring of Frost"] = true,						-- Ring of Frost
+		[GetSpellInfo(31589) or "Slow"] = true,					   					-- Slow
 
 	},
 
