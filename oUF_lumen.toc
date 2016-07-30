@@ -1,15 +1,14 @@
-## Interface: 60000
+## Interface: 70000
 ## Author: greven
 ## Title: oUF_|cFF0d87d5l|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
-## Notes: oUF layout of greven
+## Version: 7.0
+## Notes: oUF layout by greven (Kreoss @ Quel'Thalas EU)
 ## X-Category: UnitFrame
-## Version: 2.0
-## Dependencies: oUF
-## OptionalDeps: oUF_MovableFrames, oUF_Smooth, oUF_Swing, oUF_SpellRange, oUF_CombatFeedback, oUF_BarFader, oUF_Experience, oUF_TotemBar, oUF_Reputation, oUF_AuraWatch, oUF_DebuffHighlight
+## OptionalDeps: oUF_MovableFrames, oUF_CombatFeedback, oUF_BarFader, oUF_AuraWatch, oUF_DebuffHighlight
 
-cfg.lua
-modules\colors.lua
-modules\filters.lua
-addons\WarlockPower.lua
-modules\tags.lua
+embeds\_embeds.xml
+config.lua
+core\_core.xml
+elements\_elements.xml
+units\_units.xml
 oUF_lumen.lua
