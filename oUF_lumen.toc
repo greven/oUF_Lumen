@@ -7,8 +7,9 @@
 ## OptionalDeps: oUF_MovableFrames, oUF_CombatFeedback, oUF_BarFader, oUF_AuraWatch, oUF_DebuffHighlight
 
 embeds\_embeds.xml
+media\media.lua
 config.lua
 core\_core.xml
 elements\_elements.xml
-units\_units.xml
 oUF_lumen.lua
+units\_units.xml

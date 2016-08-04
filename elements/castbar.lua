@@ -1,9 +1,9 @@
 local _, ns = ...
 
-local core, cfg, oUF = ns.core, ns.cfg, ns.oUF
+local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 
-local font = core.media.font
-local font_big = core.media.font_big
+local font = m.fonts.font
+local font_big = m.fonts.font_big
 
 -- ------------------------------------------------------------------------
 -- > CASTBARS
@@ -17,56 +17,170 @@ local CustomCastTimeText = function(self, duration)
   end
 end
 
+-- Castbar Check for Spell Interrupt
+local CheckForSpellInterrupt = function (self, unit)
+  if unit == "vehicle" then unit = "player" end
+  if(self.interrupt and UnitCanAttack("player", unit)) then
+    self.Glowborder:SetBackdropBorderColor(255/255, 25/255, 25/255, 1)
+    self.Glowborder:Show()
+  else
+    self.Glowborder:Hide()
+  end
+end
+
+-- Castbar PostCast Update
+local myPostCastStart = function(self, unit, name, _, castid)
+  CheckForSpellInterrupt(self, unit)
+end
+
+-- Castbar PostCastChannel Update
+local myPostChannelStart = function(self, unit, name, _, castid)
+  CheckForSpellInterrupt(self, unit)
+end
+
 -- Castbar generator
-function core:createCastbar(fr)
-  fr.Castbar = CreateFrame("StatusBar", "oUF_LumenCastBar"..fr.mystyle, fr)
-  fr.Castbar:SetStatusBarTexture(core.media.status_texture)
-  fr.Castbar:GetStatusBarTexture():SetHorizTile(false)
-  fr.Castbar:SetToplevel(true)
+function core:CreateCastbar(fr)
+  local castbar = CreateFrame("StatusBar", "oUF_LumenCastBar", fr)
+  castbar:SetStatusBarTexture(m.textures.status_texture)
+  castbar:GetStatusBarTexture():SetHorizTile(false)
+  castbar:SetFrameStrata("HIGH")
+  castbar:SetToplevel(true)
 
-  fr.Castbar.Text = fr.Castbar:CreateFontString(nil, "OVERLAY")
-  fr.Castbar.Text:SetTextColor(1, 1, 1)
-  fr.Castbar.Text:SetShadowOffset(1, -1)
-  fr.Castbar.Text:SetJustifyH("LEFT")
-  fr.Castbar.Text:SetHeight(12)
+  castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
+  castbar.Text:SetTextColor(1, 1, 1)
+  castbar.Text:SetShadowOffset(1, -1)
+  castbar.Text:SetJustifyH("LEFT")
+  castbar.Text:SetHeight(12)
 
-  fr.Castbar.Time = fr.Castbar:CreateFontString(nil, "OVERLAY")
-  fr.Castbar.Time:SetTextColor(1, 1, 1)
-  fr.Castbar.Time:SetJustifyH("RIGHT")
+  castbar.Time = castbar:CreateFontString(nil, "OVERLAY")
+  castbar.Time:SetTextColor(1, 1, 1)
+  castbar.Time:SetJustifyH("RIGHT")
 
-  fr.Castbar.Icon = fr.Castbar:CreateTexture(nil, 'ARTWORK')
-  fr.Castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+  castbar.Icon = castbar:CreateTexture(nil, 'ARTWORK')
+  castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
   if(fr.mystyle == "player") then
-    core:setBackdrop(fr.Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
-    fr.Castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
-    fr.Castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
-    fr.Castbar:SetWidth(cfg.units.player.castbar.width * 2 - cfg.units.player.castbar.height + 6)
-    fr.Castbar:SetHeight(cfg.units.player.castbar.height)
-    fr.Castbar:SetPoint("TOPLEFT", "oUF_LumenPlayer", "BOTTOMLEFT", cfg.units.player.castbar.height + 2, -cfg.units.player.castbar.height + 2)
+    core:setBackdrop(castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
+    castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
+    castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
+    castbar:SetWidth(cfg.units.player.castbar.width - cfg.units.player.castbar.height + 6)
+    castbar:SetHeight(cfg.units.player.castbar.height)
+    castbar:SetPoint("TOPLEFT", "oUF_Lumenplayer", "BOTTOMLEFT", cfg.units.player.castbar.height + 2, -42)
 
-    fr.Castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
-    fr.Castbar.Text:SetWidth(cfg.units.player.castbar.width - 50)
-    fr.Castbar.Text:SetPoint("LEFT", fr.Castbar, 4, 0)
+    castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
+    castbar.Text:SetWidth(cfg.units.player.castbar.width - 60)
+    castbar.Text:SetPoint("LEFT", castbar, 4, 0)
 
-    fr.Castbar.Time:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
-    fr.Castbar.Time:SetPoint("RIGHT", fr.Castbar, -6, 0)
+    castbar.Time:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
+    castbar.Time:SetPoint("RIGHT", castbar, -6, 0)
 
-    fr.Castbar.Max = fr.Castbar:CreateFontString(nil, "OVERLAY")
-    fr.Castbar.Max:SetTextColor(200/255, 200/255, 200/255)
-    fr.Castbar.Max:SetJustifyH("RIGHT")
-    fr.Castbar.Max:SetFont(font, cfg.fontsize-2, "THINOUTLINE")
-    fr.Castbar.Max:SetPoint("RIGHT", fr.Castbar.Time, "LEFT", 0, 0)
-    fr.Castbar.CustomTimeText = CustomCastTimeText
+    castbar.Max = castbar:CreateFontString(nil, "OVERLAY")
+    castbar.Max:SetTextColor(200/255, 200/255, 200/255)
+    castbar.Max:SetJustifyH("RIGHT")
+    castbar.Max:SetFont(font, cfg.fontsize-2, "THINOUTLINE")
+    castbar.Max:SetPoint("RIGHT", castbar.Time, "LEFT", 0, 0)
+    castbar.CustomTimeText = CustomCastTimeText
 
-    fr.Castbar.Icon:SetHeight(cfg.units.player.castbar.height)
-    fr.Castbar.Icon:SetWidth(cfg.units.player.castbar.height)
-    fr.Castbar.Icon:SetPoint("LEFT", fr.Castbar, -(cfg.units.player.castbar.height + 2), 0)
+    castbar.Icon:SetHeight(cfg.units.player.castbar.height)
+    castbar.Icon:SetWidth(cfg.units.player.castbar.height)
+    castbar.Icon:SetPoint("LEFT", castbar, -(cfg.units.player.castbar.height + 2), 0)
+
+    -- Add safezone
+    if(cfg.units.player.castbar.latency.show) then
+      castbar.SafeZone = castbar:CreateTexture(nil, "BACKGROUND")
+      castbar.SafeZone:SetTexture(m.textures.status_texture)
+      castbar.SafeZone:SetVertexColor(unpack(cfg.units.player.castbar.latency.color))
+    end
+
+
   elseif(fr.mystyle == "target") then
+    core:setBackdrop(castbar, cfg.units.target.castbar.height + 4, 2, 2, 2)
+    castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
+    castbar:SetStatusBarColor(unpack(cfg.units.target.castbar.color))
+    castbar:SetWidth(cfg.units.target.castbar.width - cfg.units.target.castbar.height + 6)
+    castbar:SetHeight(cfg.units.target.castbar.height)
+    castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 150)
 
-  elseif(fr.mystyle == "targettarget") then
+    castbar.Text:SetFont(font_big, cfg.fontsize - 1, "THINOUTLINE")
+    castbar.Text:SetWidth(cfg.units.target.castbar.width - 55)
+    castbar.Text:SetPoint("LEFT", castbar, 4, 0)
+
+    castbar.Time:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
+    castbar.Time:SetPoint("RIGHT", castbar, -6, 0)
+    castbar.CustomTimeText = CustomCastTimeText
+
+    castbar.Icon:SetHeight(cfg.units.target.castbar.height)
+    castbar.Icon:SetWidth(cfg.units.target.castbar.height)
+    castbar.Icon:SetPoint("LEFT", castbar, -(cfg.units.target.castbar.height + 2), 0)
+
+    -- Interrupt
+    core:setglowBorder(castbar)
+    castbar.Glowborder:SetPoint("TOPLEFT", castbar, "TOPLEFT", - (cfg.units.target.castbar.height + 2) - 6, 6) -- Resize to include icon
+    castbar.PostCastStart = myPostCastStart
+    castbar.PostChannelStart = myPostChannelStart
 
   elseif(fr.mystyle == "focus") then
+    core:setBackdrop(castbar, cfg.units.focus.castbar.height + 4, 2, 2, 2)
+    castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
+    castbar:SetStatusBarColor(unpack(cfg.units.focus.castbar.color))
+    castbar:SetWidth(cfg.units.focus.castbar.width - cfg.units.focus.castbar.height + 6)
+    castbar:SetHeight(cfg.units.focus.castbar.height)
+    castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 115)
 
+    castbar.Text:SetFont(font_big, cfg.fontsize - 1, "THINOUTLINE")
+    castbar.Text:SetWidth(cfg.units.focus.castbar.width - 55)
+    castbar.Text:SetPoint("LEFT", castbar, 4, 0)
+
+    castbar.Time:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
+    castbar.Time:SetPoint("RIGHT", castbar, -6, 0)
+    castbar.CustomTimeText = CustomCastTimeText
+
+    castbar.Icon:SetHeight(cfg.units.focus.castbar.height)
+    castbar.Icon:SetWidth(cfg.units.focus.castbar.height)
+    castbar.Icon:SetPoint("LEFT", castbar, -(cfg.units.focus.castbar.height + 2), 0)
+
+    -- Interrupt
+    core:setglowBorder(castbar)
+    castbar.Glowborder:SetPoint("TOPLEFT", castbar, "TOPLEFT", - (cfg.units.target.castbar.height + 2) - 6, 6) -- Resize to include icon
+    castbar.PostCastStart = myPostCastStart
+    castbar.PostChannelStart = myPostChannelStart
+  end
+
+  fr.Castbar = castbar -- register with oUF
+end
+
+-- -----------------------------------
+-- > MIRROR BARS
+-- -----------------------------------
+
+function core:MirrorBars()
+for _, bar in pairs({'MirrorTimer1', 'MirrorTimer2', 'MirrorTimer3'}) do
+    local bg = select(1, _G[bar]:GetRegions())
+    bg:Hide()
+
+    _G[bar]:SetBackdrop({ bgFile = "Interface\\ChatFrame\\ChatFrameBackground", tile = false, tileSize = 0,
+      insets = {top = -2, left = -2, bottom = -2, right = -2}})
+
+    _G[bar]:SetBackdropColor(0, 0, 0, 1)
+
+    _G[bar..'Border']:Hide()
+
+    _G[bar]:SetParent(UIParent)
+    _G[bar]:SetScale(1)
+    _G[bar]:SetHeight(15)
+    _G[bar]:SetWidth(140)
+
+    _G[bar..'Background'] = _G[bar]:CreateTexture(bar..'Background', 'BACKGROUND', _G[bar])
+    _G[bar..'Background']:SetTexture('Interface\\Buttons\\WHITE8x8')
+    _G[bar..'Background']:SetAllPoints(_G[bar])
+    _G[bar..'Background']:SetVertexColor(0, 0, 0, 0.5)
+
+    _G[bar..'Text']:SetFont(font, cfg.fontsize-2, Outline)
+    _G[bar..'Text']:ClearAllPoints()
+    _G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 1)
+
+    _G[bar..'StatusBar']:SetStatusBarTexture('\Interface\\AddOns\\oUF_lumen\\media\\statusbar')
+
+    _G[bar..'StatusBar']:SetAllPoints(_G[bar])
   end
 end

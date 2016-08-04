@@ -7,10 +7,10 @@ local cfg = ns.cfg
 -- ------------------------------------------------------------------------
 
 -- Hide Blizzard Compact Raid Frames
--- if cfg.hideBlizzardRaidFrames then
---   CompactRaidFrameManager:UnregisterAllEvents()
---   CompactRaidFrameManager:Hide()
---   CompactRaidFrameContainer:UnregisterAllEvents()
---   CompactRaidFrameContainer:Hide()
---   CompactRaidFrameContainer:Hide()
--- end
+if cfg.hideBlizzardRaidFrames then
+  CompactRaidFrameManager:UnregisterAllEvents()
+  CompactRaidFrameManager:Hide()
+  CompactRaidFrameContainer:UnregisterAllEvents()
+  CompactRaidFrameContainer:Hide()
+  CompactRaidFrameContainer:Hide()
+end

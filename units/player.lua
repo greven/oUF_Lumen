@@ -1,9 +1,11 @@
 local _, ns = ...
 
-local core, cfg, oUF = ns.core, ns.cfg, ns.oUF
+local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 
-local font = core.media.font
-local font_big = core.media.font_big
+local font = m.fonts.font
+local font_big = m.fonts.font_big
+
+local frame = "player"
 
 -- ------------------------------------------------------------------------
 -- > PLAYER UNIT SPECIFIC FUNCTiONS
@@ -11,13 +13,13 @@ local font_big = core.media.font_big
 
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
-  if cfg.units.player.health.gradientColored then
+  if cfg.units[frame].health.gradientColored then
     local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
     health:SetStatusBarColor(r, g, b)
   end
 
   -- Class colored text
-  if cfg.units.player.health.classColoredText then
+  if cfg.units[frame].health.classColoredText then
     self.Name:SetTextColor(unpack(core:raidColor(unit)))
   end
 end
@@ -33,7 +35,7 @@ local function PostUpdateClassIcon(element, cur, max, diff, powerType, event)
 		element:UpdateTexture()
 
     local lastIconColor = {
-      DRUID = {255/255, 64/255, 26/255},
+      DRUID = {255/255, 26/255, 48/255},
       MAGE = {238/255, 48/255, 83/255},
       MONK = {0/255, 143/255, 247/255},
       PALADIN = {255/255, 26/255, 48/255},
@@ -96,53 +98,14 @@ local function UpdateClassIconTexture(element)
 	end
 end
 
--- frame bootstrap
-local setupUnitFrame = function(self)
-  self:SetFrameStrata("BACKGROUND")
-
-  self:SetSize(self.cfg.width, self.cfg.height)
-  self:SetPoint(self.cfg.pos.a1, self.cfg.pos.af, self.cfg.pos.a2, self.cfg.pos.x, self.cfg.pos.y)
-
-  self.Health:SetHeight(self.cfg.height - cfg.frames.main.health.margin - self.cfg.power.height)
-  self.Health:SetWidth(self.cfg.width)
-  self.Health.frequentUpdates = self.cfg.health.frequentUpdates
-
-  self.Power:SetHeight(cfg.frames.main.power.height)
-  self.Power:SetWidth(self.cfg.width)
-  self.Power.frequentUpdates = self.cfg.power.frequentUpdates
-
-  -- Health & Power Updates
-  self.Health.PostUpdate = PostUpdateHealth
-  self.Power.PostUpdate = PostUpdatePower
-end
-
--- -----------------------------------
--- > PLAYER STYLE
--- -----------------------------------
-
-local createStyle = function(self)
-  self.mystyle = "player"
-  self.cfg = cfg.units.player
-
-  core:globalStyle(self)
-  setupUnitFrame(self)
-
-  -- Texts
-  core:createNameString(self, font_big, cfg.fontsize, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 55)
-  core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
-  core:createPowerString(self, font, cfg.fontsize -4, "THINOUTLINE", 0, 0, "CENTER")
-
-  -- Castbar
-  core:createCastbar(self)
-
-  -- Class Icons
+-- Create Class Icons (Combo Points...)
+local function CreateClassIcons(self)
   local ClassIcons = {}
   ClassIcons.UpdateTexture = UpdateClassIconTexture
   ClassIcons.PostUpdate = PostUpdateClassIcon
 
   for index = 1, 8 do
-    local ClassIcon = CreateFrame('Frame', nil, self)
+    local ClassIcon = CreateFrame('Frame', "oUF_LumenClassIcons", self)
     ClassIcon:SetHeight(cfg.frames.main.power.height)
     core:setBackdrop(ClassIcon, 2, 2, 2, 2)
 
@@ -152,21 +115,127 @@ local createStyle = function(self)
       ClassIcon:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
     end
 
-    local Texture = ClassIcon:CreateTexture(nil, core.media.status_texture, nil, index > 5 and 1 or 0)
+    local Texture = ClassIcon:CreateTexture(nil, m.textures.status_texture, nil, index > 5 and 1 or 0)
     Texture:SetAllPoints()
     ClassIcon.Texture = Texture
 
     ClassIcons[index] = ClassIcon
   end
   self.ClassIcons = ClassIcons
+end
 
+-- Druid Mana post update callback
+local druidManaPostUpdate = function(self, unit, cur, max)
+  -- Hide DruidMana if full
+  if(cur == max) then
+    self:Hide()
+  else
+    self:Show()
+  end
+end
+
+-- Create alternate power (oUF Druid Mana)
+local function createAlternatePower(self)
+  local height = core.playerClass == "DRUID" and -16 or -10 -- Druid has combo points also
+
+  local DruidMana = CreateFrame("StatusBar", nil, self)
+  DruidMana:SetStatusBarTexture(m.textures.status_texture)
+  DruidMana:GetStatusBarTexture():SetHorizTile(false)
+  DruidMana:SetSize(self.cfg.width, self.cfg.altpower.height)
+  DruidMana:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
+  DruidMana.colorPower = true
+
+  -- Add a background
+  local Background = DruidMana:CreateTexture(nil, 'BACKGROUND')
+  Background:SetAllPoints(DruidMana)
+  Background:SetAlpha(0.20)
+  Background:SetTexture(m.textures.bg_texture)
+
+  -- Value
+  local PowerValue = core:createFontstring(DruidMana, font, cfg.fontsize -4, "THINOUTLINE")
+  PowerValue:SetPoint("RIGHT", DruidMana, -8, 0)
+  PowerValue:SetJustifyH("RIGHT")
+  self:Tag(PowerValue, '[lumen:altpower]')
+
+  -- Backdrop
+  core:setBackdrop(DruidMana, 2, 2, 2, 2)
+
+  -- Post Update
+  DruidMana.PostUpdate = druidManaPostUpdate
+
+  -- Register it with oUF
+  self.DruidMana = DruidMana
+  self.DruidMana.bg = Background
+end
+
+-- Post Update Aura Icon
+local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDebuff)
+	local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+
+	if duration and duration > 0 then
+		icon.timeLeft = expirationTime - GetTime()
+
+	else
+		icon.timeLeft = math.huge
+	end
+
+	icon:SetScript('OnUpdate', function(self, elapsed)
+		auras:AuraTimer_OnUpdate(self, elapsed)
+	end)
+end
+
+-- -----------------------------------
+-- > PLAYER STYLE
+-- -----------------------------------
+
+local createStyle = function(self)
+  self.mystyle = frame
+  self.cfg = cfg.units[frame]
+
+  lum:globalStyle(self)
+  lum:setupUnitFrame(self, "main")
+
+  -- Text strings
+  core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
+  self:Tag(self.Name, '[lumen:level]  [lumen:name] [lumen:classification]')
+  core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
+  self:Tag(self.Health.value, '[lumen:hpvalue]')
+  core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
+  core:createPowerString(self, font, cfg.fontsize -4, "THINOUTLINE", 0, 0, "CENTER")
+
+  -- Health & Power Updates
+  self.Health.PostUpdate = PostUpdateHealth
+  self.Power.PostUpdate = PostUpdatePower
+
+  -- Castbar
+  core:CreateCastbar(self)
+
+  -- Class Icons
+  CreateClassIcons(self)
+
+  -- Alternate Power Bar
+  createAlternatePower(self)
+
+  -- Combat indicator
+  local cbt = core:createFontstring(self, m.fonts.symbols, 40, "THINOUTLINE")
+  cbt:SetPoint("RIGHT", self, "LEFT", -4, 1)
+  cbt:SetText("Q")
+  cbt:SetTextColor(255/255, 26/255, 48/255)
+  self.Combat = cbt
+
+  -- Bar Timers (buffs)
+  local barTimers = CreateBarTimers(self, 8, 100, 25, 4)
+  barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 100)
+  barTimers["growth-y"] = "UP"
+  barTimers.PostUpdateBar = PostUpdateBar
+  self.BarTimers = barTimers
 end
 
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
-if cfg.units.player.show then
-  oUF:RegisterStyle("lumen:player", createStyle)
-  oUF:SetActiveStyle("lumen:player")
-  oUF:Spawn("player", "oUF_LumenPlayer")
+if cfg.units.target.show then
+  oUF:RegisterStyle("lumen:"..frame, createStyle)
+  oUF:SetActiveStyle("lumen:"..frame)
+  oUF:Spawn(frame, "oUF_Lumen"..frame)
 end

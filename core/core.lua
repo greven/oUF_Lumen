@@ -1,24 +1,7 @@
 local _, ns = ...
 
-local core, cfg, oUF = CreateFrame("Frame"), ns.cfg, ns.oUF
+local core, cfg, m, oUF = CreateFrame("Frame"), ns.cfg, ns.m, ns.oUF
 ns.core = core
-
--- ------------------------------------------------------------------------
--- > MEDIA
--- ------------------------------------------------------------------------
-
-core.media = {
-  font = "Interface\\AddOns\\oUF_lumen\\media\\font.ttf",
-  font_big = "Interface\\AddOns\\oUF_lumen\\media\\font2.ttf",
-  status_texture = "Interface\\AddOns\\oUF_lumen\\media\\statusbar",
-  fill_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture",
-  bg_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture_bg",
-  raid_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture",
-  border = "Interface\\AddOns\\oUF_lumen\\media\\border",
-  spark_texture = "Interface\\AddOns\\oUF_lumen\\media\\spark",
-  white_square = "Interface\\AddOns\\oUF_lumen\\media\\white",
-  glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow"
-}
 
 -- ------------------------------------------------------------------------
 -- > CORE FUNCTIONS
@@ -75,7 +58,6 @@ core.media = {
     self.Name:SetJustifyH(point)
     self.Name:SetWidth(width)
     self.Name:SetHeight(size)
-    self:Tag(self.Name, '[lumen:name]')
   end
 
   function core:createHPString(self, font, size, outline, x, y, point)
@@ -83,7 +65,6 @@ core.media = {
 		self.Health.value:SetPoint(point, self.Health, x, y)
 		self.Health.value:SetJustifyH(point)
 		self.Health.value:SetTextColor(1,1,1)
-    self:Tag(self.Health.value, '[lumen:hpvalue]')
 	end
 
   function core:createHPPercentString(self, font, size, outline, x, y, point, layer)
@@ -103,80 +84,14 @@ core.media = {
     self:Tag(self.Power.value, '[lumen:powervalue]')
   end
 
-  local OnEnter = function(self)
-    self.Highlight:Show()  -- Mouseover highlight Show
-    UnitFrame_OnEnter(self)
-  end
-
-  local OnLeave = function(self)
-    self.Highlight:Hide()  -- Mouseover highlight Hide
-    UnitFrame_OnLeave(self)
-  end
-
-  -- -----------------------------------
-  -- > FRAMES STYLE
-  -- -----------------------------------
-
-  -- The Shared Style Function
-  function core:globalStyle(self)
-    self:SetScale(cfg.scale)
-    core:setBackdrop(self, 2, 2, 2, 2)
-
-    self:RegisterForClicks("AnyDown")
-    self:SetScript("OnEnter", OnEnter)
-    self:SetScript("OnLeave", OnLeave)
-
-    -- HP Bar
-    self.Health = CreateFrame("StatusBar", nil, self)
-    self.Health:SetStatusBarTexture(core.media.status_texture)
-    self.Health:SetStatusBarColor(unpack(cfg.colors.health))
-    self.Health:GetStatusBarTexture():SetHorizTile(false)
-    self.Health:SetPoint("TOP")
-    self.Health.frequentUpdates = true
-    self.Health.bg = self.Health:CreateTexture(nil, "BACKGROUND")
-    self.Health.bg:SetAllPoints(self.Health)
-    self.Health.bg:SetAlpha(0.20)
-    self.Health.bg:SetTexture(core.media.bg_texture)
-
-    -- Power Bar
-    self.Power = CreateFrame("StatusBar", nil, self)
-    self.Power:SetStatusBarTexture(core.media.fill_texture)
-    self.Power:GetStatusBarTexture():SetHorizTile(false)
-    self.Power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
-    self.Power.bg = self.Power:CreateTexture(nil, "BACKGROUND")
-    self.Power.bg:SetAllPoints(self.Power)
-    self.Power.bg:SetTexture(core.media.bg_texture)
-    self.Power.bg:SetAlpha(0.20)
-
-    -- Colors
-    if self.cfg.health.classColored then self.Health.colorClass = true end
-    if self.cfg.health.reactionColored then self.Health.colorReaction = true end
-    self.Health.colorDisconnected = true
-    self.Health.colorTapping = true
-
-    if self.cfg.power.classColored then
-      self.Power.colorClass = true
-    else
-      self.Power.colorPower = true
-    end
-    self.Power.colorTapping = true
-    self.Power.colorDisconnected = true
-    self.Power.colorHappiness = false
-
-    -- Mouseover Highlight
-    self.Highlight = self.Health:CreateTexture(nil, "OVERLAY")
-    self.Highlight:SetAllPoints(self)
-    self.Highlight:SetTexture(core.media.white_square)
-    self.Highlight:SetVertexColor(1,1,1,.05)
-    self.Highlight:SetBlendMode("ADD")
-    self.Highlight:Hide()
-
-    -- Smooth Update
-    self.Health.Smooth = self.cfg.health.smooth
-    self.Power.Smooth = self.cfg.power.smooth
-
-    -- Drop Shadow
-    if cfg.frames.shadow.show then
-      core:createDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
-    end
+  -- Create Glow Border
+  function core:setglowBorder(self)
+    self.Glowborder = CreateFrame("Frame", nil, self)
+    self.Glowborder:SetFrameLevel(0)
+    self.Glowborder:SetPoint("TOPLEFT", self, "TOPLEFT", -6, 6)
+    self.Glowborder:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 6, -6)
+    self.Glowborder:SetBackdrop({bgFile = m.textures.white_square, edgeFile =  m.textures.glow_texture,
+      tile = false, tileSize = 16, edgeSize = 4, insets = {left = -4, right = -4, top = -4, bottom = -4}})
+    self.Glowborder:SetBackdropColor(0, 0, 0, 0)
+    self.Glowborder:SetBackdropBorderColor(0, 0, 0, 1)
   end

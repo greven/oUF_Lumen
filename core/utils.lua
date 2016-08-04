@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, cfg, oUF = ns.core, ns.cfg, ns.oUF
+local core, cfg, m, oUF = ns.core, ns.cfg, ns.m, ns.oUF
 
 -- ------------------------------------------------------------------------
 -- > UTILITY FUNCTIONS
@@ -59,7 +59,7 @@ function core:createDropShadow(f, point, edge, color)
   s:SetPoint("BOTTOMRIGHT", f, "BOTTOMRIGHT", point, -point)
   s:SetBackdrop({
     bgFile = "Interface\\Tooltips\\UI-Tooltip-Background",
-    edgeFile = core.media.glow_texture,
+    edgeFile = m.textures.glow_texture,
     tile = false,
     tileSize = 32,
     edgeSize = edge,

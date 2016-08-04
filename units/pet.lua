@@ -5,16 +5,16 @@ local lum, core, auras, cfg, m, oUF = ns.lum, ns.core, ns.auras, ns.cfg, ns.m, n
 local font = m.fonts.font
 local font_big = m.fonts.font_big
 
-local frame = "target"
+local frame = "pet"
 
 -- ------------------------------------------------------------------------
--- > TARGET UNIT SPECIFIC FUNCTiONS
+-- > PET UNIT SPECIFIC FUNCTiONS
 -- ------------------------------------------------------------------------
 
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
   if cfg.units[frame].health.gradientColored then
-    local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
+    local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, 0,0.8,0.5)
     health:SetStatusBarColor(r, g, b)
   end
 
@@ -49,40 +49,25 @@ local createStyle = function(self)
   self.cfg = cfg.units[frame]
 
   lum:globalStyle(self)
-  lum:setupUnitFrame(self, "main")
+  lum:setupUnitFrame(self, "secondary")
 
   -- Texts
-  core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
-  self:Tag(self.Name, '[lumen:level]  [lumen:name] [lumen:classification]')
-  core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  self:Tag(self.Health.value, '[lumen:hpvalue]')
-  core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
-  core:createPowerString(self, font, cfg.fontsize -4, "THINOUTLINE", 0, 0, "CENTER")
+  core:createNameString(self, font_big, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
+  self:Tag(self.Name, '[lumen:name]')
+  -- core:createHPString(self, font, cfg.fontsize - 4, "THINOUTLINE", -4, 0, "RIGHT")
+  -- self:Tag(self.Health.value, '[lumen:hpperc]')
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Buffs
-  local buffs = auras:CreateAura(self, 8, 1, cfg.frames.secondary.height + 4, 2)
-  buffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 2)
+  local buffs = auras:CreateAura(self, 4, 1, cfg.frames.secondary.height + 4, 2)
+  buffs:SetPoint("BOTTOMLEFT", "oUF_Lumenplayer", "TOPLEFT", 0, 6)
+  buffs:SetPoint('LEFT', cfg.frames.secondary.width + 6, 0)
   buffs.initialAnchor = "BOTTOMLEFT"
   buffs["growth-x"] = "RIGHT"
   buffs.PostUpdateIcon = PostUpdateIcon
   self.Buffs = buffs
-
-  -- Debuffs
-  -- local debuffs = auras:createAura(self, 4, 1, cfg.frames.secondary.height + 4)
-  -- debuffs:SetPoint("BOTTOMRIGHT", self, "TOPRIGHT", 0, 6)
-  -- debuffs:SetPoint('RIGHT', 2, 0)
-  -- debuffs.showDebuffType = true
-  -- debuffs.onlyShowPlayer = true
-  -- debuffs.initialAnchor = "BOTTOMRIGHT"
-  -- debuffs["growth-x"] = "LEFT"
-  -- debuffs.PostUpdateIcon = PostUpdateIcon
-  -- self.Debuffs = debuffs
-
-  -- Castbar
-  core:CreateCastbar(self)
 end
 
 -- -----------------------------------
