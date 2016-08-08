@@ -20,6 +20,7 @@ ns.cfg = cfg
     ["INSANITY"] = {149/255, 97/255, 219/255},
     ["LUNAR_POWER"] = {134/255, 143/255, 254/255},
     ["RUNIC_POWER"] = {134/255, 239/255, 254/255},
+    ["RUNES"] = {0/255, 200/255, 255/255},
     ["AMMOSLOT"] = {1, 0.60, 0},
     ["FUEL"] = {0, 0.55, 0.5},
     ['POWER_TYPE_STEAM'] = {0.55, 0.57, 0.61},
@@ -145,8 +146,8 @@ ns.cfg = cfg
       },
       castbar = {
         color = {235/255, 25/255, 25/255},
-        width = cfg.frames.main.width,
-        height = cfg.frames.main.height - 2,
+        width = cfg.frames.main.width * 2,
+        height = cfg.frames.main.height + 4,
       }
     },
     targettarget = {
@@ -172,8 +173,9 @@ ns.cfg = cfg
     focus = {
       show = true,
       width = cfg.frames.secondary.width,
-      height = cfg.frames.main.height,
-      pos = { a1 = "BOTTOMLEFT", a2 = "BOTTOMRIGHT", af = "oUF_Lumentarget", x = cfg.frames.secondary.margin, y = 0 },
+      height = cfg.frames.secondary.height,
+      -- pos = { a1 = "BOTTOMLEFT", a2 = "BOTTOMRIGHT", af = "oUF_Lumentarget", x = cfg.frames.secondary.margin, y = 0 },
+      pos = { a1 = "BOTTOMRIGHT", a2 = "TOPRIGHT", af = "oUF_Lumenplayer", x = 0, y = cfg.frames.secondary.margin },
       health = {
         classColored = true,
         gradientColored = false,
@@ -190,8 +192,8 @@ ns.cfg = cfg
       },
       castbar = {
         color = {123/255, 66/255, 200/255},
-        width = cfg.frames.main.width - 40,
-        height = cfg.frames.main.height - 2,
+        width = cfg.frames.main.width,
+        height = cfg.frames.main.height,
       }
     },
     pet = {
@@ -213,6 +215,9 @@ ns.cfg = cfg
         frequentUpdates = false,
         smooth = true,
       },
+      buffs = {
+        filter = true
+      }
     },
   }
 
@@ -221,6 +226,12 @@ ns.cfg = cfg
       backdrop = {
         color = {r = 0, g = 0, b = 0, a = 0.85},
       }
+    },
+    experiencebar = {
+      show = true,
+      height = 2,
+      width = Minimap:GetWidth() + 4,
+      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = 12 },
     }
   }
 

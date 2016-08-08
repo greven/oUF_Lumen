@@ -1,6 +1,7 @@
 local _, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.font
 local font_big = m.fonts.font_big
@@ -22,11 +23,6 @@ local PostUpdateHealth = function(health, unit, min, max)
   if cfg.units[frame].health.classColoredText then
     self.Name:SetTextColor(unpack(core:raidColor(unit)))
   end
-end
-
--- Post Power Update
-local PostUpdatePower = function(power, unit, min, max)
-
 end
 
 -- Post Update ClassIcon
@@ -124,8 +120,32 @@ local function CreateClassIcons(self)
   self.ClassIcons = ClassIcons
 end
 
+-- Death Knight Runebar
+local CreateRuneBar = function(self)
+  local Runes = {}
+  for index = 1, 6 do
+    local Rune = CreateFrame('StatusBar', nil, self)
+    local numRunes, maxWidth, gap = 6, cfg.frames.main.width, 6
+    local width = ((maxWidth / numRunes) - (((numRunes-1) * gap) / numRunes))
+
+    Rune:SetSize(width, 3)
+    Rune:SetStatusBarTexture(m.textures.status_texture)
+    Rune:SetStatusBarColor(unpack(oUF.colors.power["RUNES"]))
+    core:setBackdrop(Rune, 2, 2, 2, 2) -- Backdrop
+
+    if(index == 1) then
+      Rune:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
+    else
+      Rune:SetPoint('LEFT', Runes[index - 1], 'RIGHT', gap, 0)
+    end
+
+    Runes[index] = Rune
+  end
+  self.Runes = Runes
+end
+
 -- Druid Mana post update callback
-local druidManaPostUpdate = function(self, unit, cur, max)
+local DruidManaPostUpdate = function(self, unit, cur, max)
   -- Hide DruidMana if full
   if(cur == max) then
     self:Hide()
@@ -135,7 +155,7 @@ local druidManaPostUpdate = function(self, unit, cur, max)
 end
 
 -- Create alternate power (oUF Druid Mana)
-local function createAlternatePower(self)
+local CreateAlternatePower = function(self)
   local height = core.playerClass == "DRUID" and -16 or -10 -- Druid has combo points also
 
   local DruidMana = CreateFrame("StatusBar", nil, self)
@@ -161,7 +181,7 @@ local function createAlternatePower(self)
   core:setBackdrop(DruidMana, 2, 2, 2, 2)
 
   -- Post Update
-  DruidMana.PostUpdate = druidManaPostUpdate
+  DruidMana.PostUpdate = DruidManaPostUpdate
 
   -- Register it with oUF
   self.DruidMana = DruidMana
@@ -182,6 +202,53 @@ local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDeb
 	icon:SetScript('OnUpdate', function(self, elapsed)
 		auras:AuraTimer_OnUpdate(self, elapsed)
 	end)
+end
+
+-- oUF_Experience Tooltip
+local function UpdateExperienceTooltip(self)
+	if(not (UnitLevel('player') == MAX_PLAYER_LEVEL and IsWatchingHonorAsXP())) then
+		local cur = UnitXP('player')
+		local max = UnitXPMax('player')
+		local per = math.floor(cur / max * 100 + 0.5)
+		local rested = math.floor((GetXPExhaustion() or 0) / max * 100 + 0.5)
+
+		GameTooltip:SetOwner(self, 'ANCHOR_NONE')
+		-- GameTooltip:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
+    GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
+		GameTooltip:SetText(string.format('%s / %s (%s%%)', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max), per))
+		GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', cur / max * 20, rested))
+		GameTooltip:Show()
+	end
+end
+
+-- Post Update BarTimer Aura
+local PostUpdateBarTimer =  function(icons, unit, icon, index)
+  local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+
+  if duration and duration > 0 then
+    icon.timeLeft = expirationTime - GetTime()
+    icon.bar:SetMinMaxValues(0, duration)
+    icon.spell:SetText(name)
+
+    if icon.isDebuff then
+      icon.bar:SetStatusBarColor(1, 0.1, 0.2)
+    else
+      icon.bar:SetStatusBarColor(0, 0.4, 1)
+    end
+  else
+    icon.timeLeft = math.huge
+  end
+
+  icon:SetScript('OnUpdate', function(self, elapsed)
+    auras:BarTimer_OnUpdate(self, elapsed)
+  end)
+end
+
+-- Filter Buffs
+local PlayerCustomFilter = function(icons, unit, icon, name)
+  if(filters.list[core.playerClass].buffs[name]) then
+    return true
+  end
 end
 
 -- -----------------------------------
@@ -205,30 +272,74 @@ local createStyle = function(self)
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
-  self.Power.PostUpdate = PostUpdatePower
 
   -- Castbar
   core:CreateCastbar(self)
 
   -- Class Icons
-  CreateClassIcons(self)
+  if(core.playerClass == 'ROGUE' or core.playerClass == 'DRUID' or core.playerClass == 'MAGE'
+    or core.playerClass == 'MONK' or core.playerClass == 'PALADIN' or core.playerClass == 'WARLOCK') then
+      CreateClassIcons(self)
+  end
+
+  -- Death Knight Runes
+  if(core.playerClass == 'DEATHKNIGHT') then CreateRuneBar(self) end
 
   -- Alternate Power Bar
-  createAlternatePower(self)
+  if(core.playerClass == 'PRIEST' or core.playerClass == 'MONK' or core.playerClass == 'SHAMAN') then
+    CreateAlternatePower(self)
+  end
 
   -- Combat indicator
-  local cbt = core:createFontstring(self, m.fonts.symbols, 40, "THINOUTLINE")
-  cbt:SetPoint("RIGHT", self, "LEFT", -4, 1)
-  cbt:SetText("Q")
-  cbt:SetTextColor(255/255, 26/255, 48/255)
-  self.Combat = cbt
+  local Combat = core:createFontstring(self, m.fonts.symbols, 40, "THINOUTLINE")
+  Combat:SetPoint("RIGHT", self, "LEFT", -4, 1)
+  Combat:SetText("Q")
+  Combat:SetTextColor(255/255, 26/255, 48/255)
+  self.Combat = Combat
 
-  -- Bar Timers (buffs)
-  local barTimers = CreateBarTimers(self, 8, 100, 25, 4)
-  barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 100)
+  -- Resting
+  local Resting = core:createFontstring(self.Health, font, cfg.fontsize -4, "THINOUTLINE")
+  Resting:SetPoint("CENTER", self.Health, "TOP", 0, 0)
+  Resting:SetText("zZz")
+  Resting:SetTextColor(255/255, 255/255, 255/255, 0.70)
+  self.Resting = Resting
+
+  -- oUF_Experience
+  if(cfg.elements.experiencebar.show) then
+    local Experience = CreateFrame('StatusBar', nil, self)
+    Experience:SetStatusBarTexture(m.textures.status_texture)
+    Experience:SetPoint(cfg.elements.experiencebar.pos.a1, cfg.elements.experiencebar.pos.af,
+      cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
+    Experience:SetHeight(cfg.elements.experiencebar.height)
+    Experience:SetWidth(cfg.elements.experiencebar.width)
+    Experience:SetScript('OnEnter', UpdateExperienceTooltip)
+    Experience:SetScript('OnLeave', GameTooltip_Hide)
+    self.Experience = Experience
+
+    local Rested = CreateFrame('StatusBar', nil, Experience)
+    Rested:SetStatusBarTexture(m.textures.status_texture)
+    Rested:SetAllPoints(Experience)
+    core:setBackdrop(Rested, 2, 2, 2, 2)
+    self.Experience.Rested = Rested
+
+    local ExperienceBG = Rested:CreateTexture(nil, 'BORDER')
+    ExperienceBG:SetAllPoints()
+    ExperienceBG:SetAlpha(0.3)
+    ExperienceBG:SetTexture(m.textures.bg_texture)
+    ExperienceBG:SetColorTexture(1/3, 1/3, 1/3)
+  end
+
+  -- Heal Prediction
+  CreateHealPrediction(self)
+
+  -- BarTimers Auras
+  local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 4)
+  barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
+  barTimers.initialAnchor = "BOTTOMLEFT"
   barTimers["growth-y"] = "UP"
-  barTimers.PostUpdateBar = PostUpdateBar
-  self.BarTimers = barTimers
+  barTimers.CustomFilter = PlayerCustomFilter
+  barTimers.PostUpdateIcon = PostUpdateBarTimer
+  self.Buffs = barTimers
 end
 
 -- -----------------------------------

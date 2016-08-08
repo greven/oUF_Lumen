@@ -46,6 +46,12 @@ function core:CreateCastbar(fr)
   castbar:SetFrameStrata("HIGH")
   castbar:SetToplevel(true)
 
+  castbar.bg = castbar:CreateTexture(nil, 'BORDER')
+  castbar.bg:SetAllPoints()
+  castbar.bg:SetAlpha(0.3)
+  castbar.bg:SetTexture(m.textures.bg_texture)
+  castbar.bg:SetColorTexture(1/3, 1/3, 1/3)
+
   castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
   castbar.Text:SetTextColor(1, 1, 1)
   castbar.Text:SetShadowOffset(1, -1)
@@ -99,13 +105,13 @@ function core:CreateCastbar(fr)
     castbar:SetStatusBarColor(unpack(cfg.units.target.castbar.color))
     castbar:SetWidth(cfg.units.target.castbar.width - cfg.units.target.castbar.height + 6)
     castbar:SetHeight(cfg.units.target.castbar.height)
-    castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 150)
+    castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 350)
 
-    castbar.Text:SetFont(font_big, cfg.fontsize - 1, "THINOUTLINE")
-    castbar.Text:SetWidth(cfg.units.target.castbar.width - 55)
-    castbar.Text:SetPoint("LEFT", castbar, 4, 0)
+    castbar.Text:SetFont(font_big, cfg.fontsize + 2, "THINOUTLINE")
+    castbar.Text:SetWidth(cfg.units.target.castbar.width - 60)
+    castbar.Text:SetPoint("LEFT", castbar, 6, 0)
 
-    castbar.Time:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
+    castbar.Time:SetFont(font, cfg.fontsize + 2, "THINOUTLINE")
     castbar.Time:SetPoint("RIGHT", castbar, -6, 0)
     castbar.CustomTimeText = CustomCastTimeText
 
@@ -125,13 +131,13 @@ function core:CreateCastbar(fr)
     castbar:SetStatusBarColor(unpack(cfg.units.focus.castbar.color))
     castbar:SetWidth(cfg.units.focus.castbar.width - cfg.units.focus.castbar.height + 6)
     castbar:SetHeight(cfg.units.focus.castbar.height)
-    castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 115)
+    castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 300)
 
-    castbar.Text:SetFont(font_big, cfg.fontsize - 1, "THINOUTLINE")
-    castbar.Text:SetWidth(cfg.units.focus.castbar.width - 55)
+    castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
+    castbar.Text:SetWidth(cfg.units.focus.castbar.width - 60)
     castbar.Text:SetPoint("LEFT", castbar, 4, 0)
 
-    castbar.Time:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
+    castbar.Time:SetFont(font, cfg.fontsize, "THINOUTLINE")
     castbar.Time:SetPoint("RIGHT", castbar, -6, 0)
     castbar.CustomTimeText = CustomCastTimeText
 

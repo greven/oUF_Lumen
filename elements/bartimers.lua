@@ -1,151 +1,81 @@
 local _, ns = ...
-local oUF = ns.oUF
+
+local auras = ns.auras
+local core, math, cfg, m, oUF = ns.core, ns.math, ns.cfg, ns.m, ns.oUF
+
+local max = max
 
 -- ------------------------------------------------------------------------
--- > BAR TIMERS
+-- > BARTIME AURAS RELATED FUNCTIONS
 -- ------------------------------------------------------------------------
 
-local VISIBLE = 1
-local HIDDEN = 0
-
-local UpdateTooltip = function(self)
-	GameTooltip:SetUnitAura(self:GetParent().__owner.unit, self:GetID(), self.filter)
-end
-
-local OnEnter = function(self)
-	if(not self:IsVisible()) then return end
-
-	GameTooltip:SetOwner(self, "ANCHOR_BOTTOMRIGHT")
-	self:UpdateTooltip()
-end
-
-local OnLeave = function()
-	GameTooltip:Hide()
-end
-
-local CreateBar = function(bars, index)
-  local bar = CreateFrame("StatusBar", "$parentBar"..index, bars)
-
-  local icon = bar:CreateTexture(nil, 'ARTWORK')
-  icon:SetPoint("TOP")
-  icon:SetPoint("LEFT", bar)
-  icon:SetTexCoord(.1, .93, .07, .93)
-  bar.icon = icon
-
-  local spell = bar:CreateFontString(nil, "OVERLAY")
-  spell:SetFontObject(NumberFontNormal)
-  spell:SetPoint("LEFT", bar, "LEFT", 4, 0)
-  spell:SetJustifyH("LEFT")
-  spell:SetJustifyV("CENTER")
-  bar.spell = spell
-
-  time = bar:createFontstring(nil, "OVERLAY")
-  time:SetFontObject(NumberFontNormal)
-  time:SetPoint("RIGHT", bar, "RIGHT", -4, 0)
-  time:SetTextColor(1, 1, 1)
-  time:SetJustifyH("RIGHT")
-  time:SetJustifyV("CENTER")
-  bar.time = time
-
-  count = bar:createFontstring(nil, "OVERLAY")
-  count:SetFontObject(NumberFontNormal)
-  count:SetPoint("LEFT", bar.spell, "RIGHT", 0, 0)
-  count:SetJustifyH("LEFT")
-  count:SetJustifyV("CENTER")
-  bar.count = count
-
-  -- PostCreateBar Callback
-  if(bars.PostCreateIcon) then bars:PostCreateBar(bar) end
-
-	return bar
-end
-
-local customFilter = function(bars, unit, icon, name, rank, texture, count, dtype, duration, timeLeft, caster)
-	if((icons.onlyShowPlayer and icon.isPlayer) or (not icons.onlyShowPlayer and name)) then
-		return true
-	end
-end
-
-local updateBar = function(unit, icons, index, offset, filter, isDebuff, visible)
-
-end
-
-local SetPosition = function(icons, from, to)
-
-end
-
-local filterBarTimers = function(unit, icons, filter, limit, isDebuff, offset, dontHide)
-
-end
-
-local UpdateBarTimers = function(self, event, unit)
-  if(self.unit ~= unit) then return end
-
-  local bars = self.BarTimers
-  if(bars) then
-    
-  end
-
-  local buffBars = self.BuffBars
-  if(buffBars) then
-
-  end
-
-  local debuffBars = self.DebuffBars
-	if(debuffBars) then
-
-  end
-end
-
-local Update = function(self, event, unit)
-  if(self.unit ~= unit) then return end
-
-  UpdateBarTimers(self, event, unit)
-end
-
-local ForceUpdate = function(element)
-	return Update(element.__owner, 'ForceUpdate', element.__owner.unit)
-end
-
-local Enable = function(self, unit)
-  if(self.BarTimers or self.BuffBars or self.DebuffBars) then
-		self:RegisterEvent("UNIT_AURA", UpdateBarTimers)
-
-    local buffs = self.BuffBars
-		if(buffs) then
-			buffs.__owner = self
-			buffs.ForceUpdate = ForceUpdate
-
-			buffs.createdbars = 0
-			buffs.anchoredbars = 0
+function auras:BarTimer_OnUpdate(icon, elapsed)
+	if icon.timeLeft then
+		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
+		icon.bar:SetValue(icon.timeLeft) -- update the statusbar
+		if icon.timeLeft > 0 and icon.timeLeft < 60 then
+			icon.time:SetFormattedText(math:formatTime(icon.timeLeft))
+			if (icon.timeLeft < 6) then
+				icon.time:SetTextColor(0.9, 0.05, 0.05)
+			else
+				icon.time:SetTextColor(1, 1, 1)
+			end
+		else
+			icon.time:SetText()
 		end
-
-    local debuffs = self.DebuffBars
-    if(debuffs) then
-      debuffs.__owner = self
-      debuffs.ForceUpdate = ForceUpdate
-
-      debuffs.createdbars = 0
-      debuffs.anchoredbars = 0
-    end
-
-    local bars = self.BarTimers
-    if(bars) then
-      bars.__owner = self
-      bars.ForceUpdate = ForceUpdate
-
-      bars.createdbars = 0
-      bars.anchoredbars = 0
-
-      return true
-    end
-  end
-end
-
-local Disable = function(self, unit)
-  if(self.BarTimers or self.BuffBars or self.DebuffBars) then
-		self:UnregisterEvent("UNIT_AURA", UpdateBarTimers)
 	end
 end
 
-oUF:AddElement('BarTimers', Update, Enable, Disable)
+local PostCreateBar = function(Auras, button)
+  button.icon:SetTexCoord(0, 1, 0, 1)
+
+  button.overlay:SetTexture(m.textures.border)
+  button.overlay:SetTexCoord(0, 1, 0, 1)
+  button.overlay.Hide = function(self) self:SetVertexColor(0.3, 0.3, 0.3) end
+
+	button.bar = CreateFrame('StatusBar', nil, button)
+	button.bar:SetStatusBarTexture(m.textures.status_texture)
+	button.bar:SetPoint("TOPLEFT", button, 'TOPRIGHT', 4, -2)
+	button.bar:SetHeight(Auras.size - 4)
+	button.bar:SetWidth(cfg.frames.main.width - Auras.size - 2)
+	core:setBackdrop(button.bar, 2, 2, 2, 2)
+
+	button.bar.bg = button.bar:CreateTexture(nil, 'BORDER')
+	button.bar.bg:SetAllPoints()
+	button.bar.bg:SetAlpha(0.3)
+	button.bar.bg:SetTexture(m.textures.bg_texture)
+	button.bar.bg:SetColorTexture(1/3, 1/3, 1/3)
+
+	button.spell = button.bar:CreateFontString(nil, 'OVERLAY')
+	button.spell:SetPoint("LEFT", button.bar, "LEFT", 4, 0)
+	button.spell:SetFont(m.fonts.font_big, 16, "THINOUTLINE")
+	button.spell:SetWidth(button.bar:GetWidth() - 25)
+	button.spell:SetTextColor(1, 1, 1)
+	button.spell:SetShadowOffset(1, -1)
+	button.spell:SetShadowColor(0, 0, 0, 1)
+	button.spell:SetJustifyH("LEFT")
+	button.spell:SetWordWrap(false)
+
+	button.time = button.bar:CreateFontString(nil, 'OVERLAY')
+	button.time:SetPoint("RIGHT", button.bar, "RIGHT", -4, 0)
+	button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
+	button.time:SetTextColor(1, 1, 1)
+	button.time:SetShadowOffset(1, -1)
+	button.time:SetShadowColor(0, 0, 0, 1)
+	button.time:SetJustifyH('RIGHT')
+
+	button.count:ClearAllPoints()
+	button.count:SetFont(m.fonts.font, 12, 'OUTLINE')
+	button.count:SetPoint('TOPRIGHT', button, 3, 3)
+end
+
+function auras:CreateBarTimer(self, num, rows, size, spacing)
+	local auras = CreateFrame("Frame", nil, self)
+	auras:SetSize( (num * (size + 9)) / rows, (size + 9) * rows)
+	auras.num = num
+	auras.size = size
+	auras.spacing = spacing or 4
+	auras.disableCooldown = true
+	auras.PostCreateIcon = PostCreateBar
+	return auras
+end

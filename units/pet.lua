@@ -1,6 +1,7 @@
 local _, ns = ...
 
-local lum, core, auras, cfg, m, oUF = ns.lum, ns.core, ns.auras, ns.cfg, ns.m, ns.oUF
+local lum, core, auras, oUF = ns.lum, ns.core, ns.auras, ns.oUF
+local cfg, m, filters = ns.cfg, ns.m, ns.filters
 
 local font = m.fonts.font
 local font_big = m.fonts.font_big
@@ -14,7 +15,7 @@ local frame = "pet"
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
   if cfg.units[frame].health.gradientColored then
-    local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, 0,0.8,0.5)
+    local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, 0/255,204/255,180/255) -- Red, Yellow, Full Health Color
     health:SetStatusBarColor(r, g, b)
   end
 
@@ -40,6 +41,13 @@ local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDeb
 	end)
 end
 
+-- Filter Buffs
+local PetBuffsFilter = function(icons, unit, icon, name)
+  if(filters.list.PET[name]) then
+    return true
+  end
+end
+
 -- -----------------------------------
 -- > TARGET STYLE
 -- -----------------------------------
@@ -62,12 +70,16 @@ local createStyle = function(self)
 
   -- Buffs
   local buffs = auras:CreateAura(self, 4, 1, cfg.frames.secondary.height + 4, 2)
-  buffs:SetPoint("BOTTOMLEFT", "oUF_Lumenplayer", "TOPLEFT", 0, 6)
-  buffs:SetPoint('LEFT', cfg.frames.secondary.width + 6, 0)
-  buffs.initialAnchor = "BOTTOMLEFT"
-  buffs["growth-x"] = "RIGHT"
+  buffs:SetPoint("BOTTOMRIGHT", "oUF_Lumenplayer", "TOPLEFT", -6, 6)
+  buffs.initialAnchor = "BOTTOMRIGHT"
+  buffs["growth-x"] = "LEFT"
   buffs.PostUpdateIcon = PostUpdateIcon
+  if(self.cfg.buffs.filter) then buffs.CustomFilter = PetBuffsFilter end
   self.Buffs = buffs
+
+  -- Heal Prediction
+  CreateHealPrediction(self)
+
 end
 
 -- -----------------------------------

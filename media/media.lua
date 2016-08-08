@@ -10,7 +10,7 @@ ns.m = m
 m.fonts = {
   font = "Interface\\AddOns\\oUF_lumen\\media\\font.ttf",
   font_big = "Interface\\AddOns\\oUF_lumen\\media\\font2.ttf",
-  symbols = "Interface\\AddOns\\oUF_lumen\\media\\symbols.otf"
+  symbols = "Interface\\AddOns\\oUF_lumen\\media\\symbols.otf",
 }
 
 m.textures = {
@@ -21,5 +21,5 @@ m.textures = {
   border = "Interface\\AddOns\\oUF_lumen\\media\\border",
   spark_texture = "Interface\\AddOns\\oUF_lumen\\media\\spark",
   white_square = "Interface\\AddOns\\oUF_lumen\\media\\white",
-  glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow"
+  glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow",
 }

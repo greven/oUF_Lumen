@@ -21,7 +21,7 @@ events['lumen:name'] = 'UNIT_NAME_UPDATE UNIT_CONNECTION UNIT_ENTERING_VEHICLE U
 tags['lumen:level'] = function(unit)
   local l = UnitLevel(unit)
 
-  if l <= 0 then l = "!" end
+  if l <= 0 then l = "??" end
 
   return '|cffb9b9b9'..l..'|r'
 end
@@ -31,15 +31,15 @@ events['lumen:level'] = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED'
 tags['lumen:classification'] = function(unit)
 		local c = UnitClassification(unit)
 		if(c == 'rare') then
-			return '|cff008ff7r|r'
+			return '|cff008ff7RARE|r'
 		elseif(c == 'rareelite') then
-			return '|cff41c0c2r+|r'
+			return '|cff008ff7RARE|r |cffffe453ELITE|r'
 		elseif(c == 'elite') then
-			return '|cffedf17f+|r'
+			return '|cffffe453ELITE|r'
 		elseif(c == 'worldboss') then
-			return '|cffec4656++|r'
+			return '|cfff03a4cBOSS|r'
 		elseif(c == 'minus') then
-			return ''
+			return '-'
 		end
 end
 events['lumen:classification'] = 'UNIT_CLASSIFICATION_CHANGED'

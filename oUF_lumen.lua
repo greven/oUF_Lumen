@@ -12,6 +12,54 @@ local font = m.fonts.font
 local font_big = m.fonts.font_big
 
 -- -----------------------------------
+-- > HEAL PREDICTION
+-- -----------------------------------
+
+function CreateHealPrediction(self)
+	local myBar = CreateFrame('StatusBar', nil, self.Health)
+	myBar:SetPoint('TOP')
+	myBar:SetPoint('BOTTOM')
+	myBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+	myBar:SetWidth(self.cfg.width)
+	myBar:SetStatusBarTexture(m.textures.status_texture)
+	myBar:SetStatusBarColor(125/255, 255/255, 50/255, .5)
+
+	local otherBar = CreateFrame('StatusBar', nil, self.Health)
+	otherBar:SetPoint('TOP')
+	otherBar:SetPoint('BOTTOM')
+	otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+	otherBar:SetWidth(self.cfg.width)
+	otherBar:SetStatusBarTexture(m.textures.status_texture)
+	otherBar:SetStatusBarColor(100/255, 235/255, 200/255, .5)
+
+	local absorbBar = CreateFrame('StatusBar', nil, self.Health)
+	absorbBar:SetPoint('TOP')
+	absorbBar:SetPoint('BOTTOM')
+	absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+	absorbBar:SetWidth(self.cfg.width)
+	absorbBar:SetStatusBarTexture(m.textures.status_texture)
+	absorbBar:SetStatusBarColor(220/255, 255/255, 230/255, .4)
+
+	local healAbsorbBar = CreateFrame('StatusBar', nil, self.Health)
+	healAbsorbBar:SetPoint('TOP')
+	healAbsorbBar:SetPoint('BOTTOM')
+	healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+	healAbsorbBar:SetWidth(200)
+	healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
+	healAbsorbBar:SetStatusBarColor(220/255, 228/255, 255/255, .4)
+
+	-- Register with oUF
+	self.HealPrediction = {
+		 myBar = myBar,
+		 otherBar = otherBar,
+		 absorbBar = absorbBar,
+		 healAbsorbBar = healAbsorbBar,
+		 maxOverflow = 1.00,
+		 frequentUpdates = true,
+	}
+end
+
+-- -----------------------------------
 -- > BarTimers
 -- -----------------------------------
 

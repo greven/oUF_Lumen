@@ -1,14 +1,17 @@
 ## Interface: 70000
 ## Author: greven
+## Version: 7.0.1-beta
 ## Title: oUF_|cFF0d87d5l|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
-## Version: 7.0
 ## Notes: oUF layout by greven (Kreoss @ Quel'Thalas EU)
+## SavedVariables: oUF_LumenDB
+## X-SavedVariables: oUF_LumenDB
+## X-SlashCmdList: /lmf
 ## X-Category: UnitFrame
 ## OptionalDeps: oUF_MovableFrames, oUF_CombatFeedback, oUF_BarFader, oUF_AuraWatch, oUF_DebuffHighlight
 
 embeds\_embeds.xml
 media\media.lua
-config.lua
+config\_config.xml
 core\_core.xml
 elements\_elements.xml
 oUF_lumen.lua
