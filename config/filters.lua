@@ -8,7 +8,7 @@ ns.filters = filters
 -- ------------------------------------------------------------------------
 
 filters.list = {
-  DAEMONHUNTER = {
+  DEMONHUNTER = {
     buffs = {
 
     },
@@ -127,15 +127,20 @@ filters.list = {
 
   WARLOCK = {
     buffs = {
+      [GetSpellInfo(216708) or "Deadwind Harvester"] = true,			  	 	     -- Deadwind Harvester
       [GetSpellInfo(108416) or "Dark Pact"] = true,			  	 	               -- Dark Pact
+      [GetSpellInfo(104773) or "Unending Resolve"] = true,			  	 	       -- Unending Resolve
     },
 
     debuffs = {
       [GetSpellInfo(980) or "Agony"] = true,			  	 	                     -- Agony
       [GetSpellInfo(172) or "Corruption"] = true,				  		               -- Corruption
       [GetSpellInfo(603) or "Doom"] = true,								 			             -- Doom
+      [GetSpellInfo(196412) or "Eradication"] = true, 								 			 -- Eradication
       [GetSpellInfo(5785) or "Fear"] = true,								 			           -- Fear
       [GetSpellInfo(348) or "Immolate"] = true,						                   -- Immolate
+      [GetSpellInfo(27243) or "Seed of Corruption"] = true,						       -- Seed of Corruption
+      [GetSpellInfo(63106) or "Siphon Life"] = true,						             -- Siphon Life
       [GetSpellInfo(30108) or "Unstable Affliction"] = true,			           -- Unstable Affliction
     }
   },
