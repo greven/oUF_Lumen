@@ -3,7 +3,7 @@ local _, ns = ...
 local auras = CreateFrame("Frame")
 ns.auras = auras
 
-local core, math, cfg, m, oUF = ns.core, ns.math, ns.cfg, ns.m, ns.oUF
+local core, cfg, m, oUF = ns.core, ns.cfg, ns.m, ns.oUF
 
 local max = max
 
@@ -14,9 +14,11 @@ local max = max
 function auras:AuraTimer_OnUpdate(icon, elapsed)
 	if icon.timeLeft then
 		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
+
+		-- text color
 		if icon.timeLeft > 0 and icon.timeLeft < 60 then
-			icon.time:SetFormattedText(math:formatTime(icon.timeLeft))
-			if (icon.timeLeft < 6) then
+			icon.time:SetFormattedText(core:formatTime(icon.timeLeft))
+			if icon.timeLeft < 6 then
 				icon.time:SetTextColor(0.9, 0.05, 0.05)
 			else
 				icon.time:SetTextColor(1, 1, 0.60)

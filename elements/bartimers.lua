@@ -1,7 +1,7 @@
 local _, ns = ...
 
 local auras = ns.auras
-local core, math, cfg, m, oUF = ns.core, ns.math, ns.cfg, ns.m, ns.oUF
+local core, cfg, m, oUF = ns.core, ns.cfg, ns.m, ns.oUF
 
 local max = max
 
@@ -13,10 +13,14 @@ function auras:BarTimer_OnUpdate(icon, elapsed)
 	if icon.timeLeft then
 		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
 		icon.bar:SetValue(icon.timeLeft) -- update the statusbar
+
+		-- text color
 		if icon.timeLeft > 0 and icon.timeLeft < 60 then
-			icon.time:SetFormattedText(math:formatTime(icon.timeLeft))
-			if (icon.timeLeft < 6) then
-				icon.time:SetTextColor(0.9, 0.05, 0.05)
+			icon.time:SetFormattedText(core:formatTime(icon.timeLeft))
+			if icon.timeLeft < 6 then
+				icon.time:SetTextColor(1, 0.25, 0.25)
+			elseif icon.timeLeft < 10 then
+					icon.time:SetTextColor(1, 0.9, 0.5)
 			else
 				icon.time:SetTextColor(1, 1, 1)
 			end
@@ -24,6 +28,17 @@ function auras:BarTimer_OnUpdate(icon, elapsed)
 			icon.time:SetText()
 		end
 	end
+end
+
+local SortAuras = function(a, b)
+    if a and b and a.timeLeft and b.timeLeft then
+    	return a.timeLeft > b.timeLeft
+    end
+end
+
+local PreSetPosition = function(Auras)
+	table.sort(Auras, SortAuras)
+	return 1
 end
 
 local PostCreateBar = function(Auras, button)
@@ -76,6 +91,7 @@ function auras:CreateBarTimer(self, num, rows, size, spacing)
 	auras.size = size
 	auras.spacing = spacing or 4
 	auras.disableCooldown = true
-	auras.PostCreateIcon = PostCreateBar
+	auras.PreSetPosition = PreSetPosition  -- sort auras by time remaining
+	auras.PostCreateIcon = PostCreateBar -- set overlay, cd, count, timer
 	return auras
 end
