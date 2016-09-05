@@ -40,7 +40,8 @@ ns.core = core
 
   -- Class colors
   function core:raidColor(unit)
-    return oUF.colors.class[core.playerClass]
+    local _, x = UnitClass(unit)
+    return oUF.colors.class[x]
   end
 
   -- -----------------------------------
@@ -54,6 +55,13 @@ ns.core = core
     self.Name:SetJustifyH(point)
     self.Name:SetWidth(width)
     self.Name:SetHeight(size)
+  end
+
+  -- Generates the Party Name String
+  function core:createPartyNameString(self, font, size)
+    self.Name = core:createFontstring(self, font, size, "THINOUTLINE")
+    self.Name:SetPoint("LEFT", self, "RIGHT", 8, 0)
+    self.Name:SetJustifyH("LEFT")
   end
 
   function core:createHPString(self, font, size, outline, x, y, point)

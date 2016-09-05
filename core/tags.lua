@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, cfg, math, oUF = ns.core, ns.cfg, ns.math, ns.oUF
+local core, cfg, oUF = ns.core, ns.cfg, ns.oUF
 
 -- ------------------------------------------------------------------------
 -- > Custom Tags
@@ -39,7 +39,7 @@ tags['lumen:classification'] = function(unit)
 		elseif(c == 'worldboss') then
 			return '|cfff03a4cBOSS|r'
 		elseif(c == 'minus') then
-			return '-'
+			return ''
 		end
 end
 events['lumen:classification'] = 'UNIT_CLASSIFICATION_CHANGED'
@@ -50,7 +50,7 @@ tags['lumen:hpvalue'] = function(unit)
 	if min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
 		return ''
 	end
-	return math:shortNumber(min)
+	return core:shortNumber(min)
 end
 events['lumen:hpvalue'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE'
 
@@ -70,9 +70,13 @@ events['lumen:hpperc'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE'
 -- Power value
 tags['lumen:powervalue'] = function(unit)
 	local min, max = UnitPower(unit, UnitPowerType(unit)), UnitPowerMax(unit,  UnitPowerType(unit))
-	if min == 0 or min == max or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
+	if min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
 		return ''
 	end
+
+  if min == max and cfg.frames.main.power.text.hideMax then
+    return ''
+  end
 
   local _, ptype = UnitPowerType(unit)
   if ptype == 'MANA' then

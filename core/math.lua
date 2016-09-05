@@ -1,30 +1,33 @@
 local _, ns = ...
 
-local math = CreateFrame("Frame")
-ns.math = math
+local core = ns.core
 
 local floor, mod = floor, mod
 
 -- Shortens Numbers
-function math:shortNumber(v)
+function core:shortNumber(v)
   if v > 1E10 then
-    return (floor(v/1E9)).."b"
+    return (floor(v/1E9)).."|cffbbbbbbb|r"
   elseif v > 1E9 then
-    return (floor((v/1E9)*10)/10).."b"
+    return (floor((v/1E9)*10)/10).."|cffbbbbbbb|r"
   elseif v > 1E7 then
-    return (floor(v/1E6)).."m"
+    return (floor(v/1E6)).."|cffbbbbbbm|r"
   elseif v > 1E6 then
-    return (floor((v/1E6)*10)/10).."m"
+    return (floor((v/1E6)*10)/10).."|cffbbbbbbm|r"
   elseif v > 1E4 then
-    return (floor(v/1E3)).."k"
+    return (floor(v/1E3)).."|cffbbbbbbk|r"
   elseif v > 1E3 then
-    return (floor((v/1E3)*10)/10).."k"
+    return (floor((v/1E3)*10)/10).."|cffbbbbbbk|r"
   else
     return v
   end
 end
 
-function math:formatTime(s)
+function core:NumberToPerc(v1, v2)
+	return floor(v1 / v2 * 100 + 0.5)
+end
+
+function core:formatTime(s)
   local day, hour, minute = 86400, 3600, 60
 
   if s >= day then
