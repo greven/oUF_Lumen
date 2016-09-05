@@ -14,6 +14,8 @@ local frame = "target"
 
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
+  local self = health.__owner
+
   if cfg.units[frame].health.gradientColored then
     local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
     health:SetStatusBarColor(r, g, b)
@@ -26,7 +28,7 @@ local PostUpdateHealth = function(health, unit, min, max)
 end
 
 -- Post Update Aura Icon
-local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDebuff)
+local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
 	local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
 	if duration and duration > 0 then
@@ -42,12 +44,13 @@ local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDeb
 end
 
 -- Post Update BarTimer Aura
-local PostUpdateBarTimer =  function(icons, unit, icon, index)
+local PostUpdateBarTimer = function(icons, unit, icon, index)
   local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
   if duration and duration > 0 then
     icon.timeLeft = expirationTime - GetTime()
     icon.bar:SetMinMaxValues(0, duration)
+    icon.bar:SetValue(icon.timeLeft)
     icon.spell:SetText(name)
 
     if icon.isDebuff then
@@ -66,7 +69,7 @@ end
 
 -- Filter Buffs
 local TargetCustomFilter = function(icons, unit, icon, name)
-  if(filters.list[core.playerClass].debuffs[name]) then
+  if(filters.list[core.playerClass].debuffs[name] and icon.isPlayer) then
     return true
   end
 end
@@ -79,8 +82,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self)
-  lum:setupUnitFrame(self, "main")
+  lum:globalStyle(self, "main")
 
   -- Texts
   core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
@@ -107,12 +109,14 @@ local createStyle = function(self)
   self.Buffs = buffs
 
   -- Castbar
-  core:CreateCastbar(self)
+    if self.cfg.castbar.enable then
+      core:CreateCastbar(self)
+    end
 
   -- Quest Icon
-  local QuestIcon = core:createFontstring(self, m.fonts.symbols, 40, "THINOUTLINE")
-  QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 5, 0)
-  QuestIcon:SetText("ñ")
+  local QuestIcon = core:createFontstring(self, font, 26, "THINOUTLINE")
+  QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 5, -2)
+  QuestIcon:SetText("!")
   QuestIcon:SetTextColor(238/255, 217/255, 43/255)
   self.QuestIcon = QuestIcon
 
@@ -133,8 +137,8 @@ end
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
-if cfg.units.target.show then
-  oUF:RegisterStyle("lumen:"..frame, createStyle)
-  oUF:SetActiveStyle("lumen:"..frame)
-  oUF:Spawn(frame, "oUF_Lumen"..frame)
+if cfg.units[frame].show then
+  oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
+  oUF:Spawn(frame, "oUF_Lumen"..frame:gsub("^%l", string.upper))
 end

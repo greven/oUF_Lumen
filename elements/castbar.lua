@@ -71,7 +71,7 @@ function core:CreateCastbar(fr)
     castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
     castbar:SetWidth(cfg.units.player.castbar.width - cfg.units.player.castbar.height + 6)
     castbar:SetHeight(cfg.units.player.castbar.height)
-    castbar:SetPoint("TOPLEFT", "oUF_Lumenplayer", "BOTTOMLEFT", cfg.units.player.castbar.height + 2, -42)
+    castbar:SetPoint("TOPLEFT", "oUF_LumenPlayer", "BOTTOMLEFT", cfg.units.player.castbar.height + 2, -42)
 
     castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
     castbar.Text:SetWidth(cfg.units.player.castbar.width - 60)

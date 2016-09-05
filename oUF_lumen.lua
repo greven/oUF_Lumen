@@ -30,30 +30,30 @@ function CreateHealPrediction(self)
 	otherBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 	otherBar:SetWidth(self.cfg.width)
 	otherBar:SetStatusBarTexture(m.textures.status_texture)
-	otherBar:SetStatusBarColor(100/255, 235/255, 200/255, .5)
+	otherBar:SetStatusBarColor(100/255, 235/255, 200/255, .3)
 
-	local absorbBar = CreateFrame('StatusBar', nil, self.Health)
-	absorbBar:SetPoint('TOP')
-	absorbBar:SetPoint('BOTTOM')
-	absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-	absorbBar:SetWidth(self.cfg.width)
-	absorbBar:SetStatusBarTexture(m.textures.status_texture)
-	absorbBar:SetStatusBarColor(220/255, 255/255, 230/255, .4)
-
-	local healAbsorbBar = CreateFrame('StatusBar', nil, self.Health)
-	healAbsorbBar:SetPoint('TOP')
-	healAbsorbBar:SetPoint('BOTTOM')
-	healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
-	healAbsorbBar:SetWidth(200)
-	healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
-	healAbsorbBar:SetStatusBarColor(220/255, 228/255, 255/255, .4)
+	-- local absorbBar = CreateFrame('StatusBar', nil, self.Health)
+	-- absorbBar:SetPoint('TOP')
+	-- absorbBar:SetPoint('BOTTOM')
+	-- absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+	-- absorbBar:SetWidth(self.cfg.width)
+	-- absorbBar:SetStatusBarTexture(m.textures.status_texture)
+	-- absorbBar:SetStatusBarColor(220/255, 255/255, 230/255, .2)
+	--
+	-- local healAbsorbBar = CreateFrame('StatusBar', nil, self.Health)
+	-- healAbsorbBar:SetPoint('TOP')
+	-- healAbsorbBar:SetPoint('BOTTOM')
+	-- healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
+	-- healAbsorbBar:SetWidth(200)
+	-- healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
+	-- healAbsorbBar:SetStatusBarColor(220/255, 228/255, 255/255, .2)
 
 	-- Register with oUF
 	self.HealPrediction = {
 		 myBar = myBar,
 		 otherBar = otherBar,
-		 absorbBar = absorbBar,
-		 healAbsorbBar = healAbsorbBar,
+		--  absorbBar = absorbBar,
+		--  healAbsorbBar = healAbsorbBar,
 		 maxOverflow = 1.00,
 		 frequentUpdates = true,
 	}
@@ -88,26 +88,16 @@ local OnLeave = function(self)
   UnitFrame_OnLeave(self)
 end
 
--- frame bootstrap
-function lum:setupUnitFrame(self, type)
-  self:SetFrameStrata("BACKGROUND")
-
-  self:SetSize(self.cfg.width, self.cfg.height)
-  self:SetPoint(self.cfg.pos.a1, self.cfg.pos.af, self.cfg.pos.a2, self.cfg.pos.x, self.cfg.pos.y)
-
-  self.Health:SetHeight(self.cfg.height - cfg.frames[type].health.margin - self.cfg.power.height)
-  self.Health:SetWidth(self.cfg.width)
-  self.Health.frequentUpdates = self.cfg.health.frequentUpdates
-
-  self.Power:SetHeight(cfg.frames[type].power.height)
-  self.Power:SetWidth(self.cfg.width)
-  self.Power.frequentUpdates = self.cfg.power.frequentUpdates
-end
-
 -- The Shared Style Function
-function lum:globalStyle(self)
+function lum:globalStyle(self, type)
   self:SetScale(cfg.scale)
+	self:SetFrameStrata("BACKGROUND")
   core:setBackdrop(self, 2, 2, 2, 2)
+
+	self:SetSize(self.cfg.width, self.cfg.height)
+	if(self.mystyle ~= 'party' and self.mystyle ~= 'raid' and self.mystyle ~= 'boss' and self.mystyle ~= 'arena') then
+		self:SetPoint(self.cfg.pos.a1, self.cfg.pos.af, self.cfg.pos.a2, self.cfg.pos.x, self.cfg.pos.y)
+	end
 
   self:RegisterForClicks("AnyDown")
   self:SetScript("OnEnter", OnEnter)
@@ -115,11 +105,13 @@ function lum:globalStyle(self)
 
   -- HP Bar
   self.Health = CreateFrame("StatusBar", nil, self)
+	self.Health:SetHeight(self.cfg.height - cfg.frames[type].health.margin - self.cfg.power.height)
+	self.Health:SetWidth(self.cfg.width)
+	self.Health:SetPoint("TOP")
   self.Health:SetStatusBarTexture(m.textures.status_texture)
   self.Health:SetStatusBarColor(unpack(cfg.colors.health))
   self.Health:GetStatusBarTexture():SetHorizTile(false)
-  self.Health:SetPoint("TOP")
-  self.Health.frequentUpdates = true
+	self.Health.frequentUpdates = self.cfg.health.frequentUpdates
 
   self.Health.bg = self.Health:CreateTexture(nil, "BACKGROUND")
   self.Health.bg:SetAllPoints(self.Health)
@@ -128,9 +120,12 @@ function lum:globalStyle(self)
 
   -- Power Bar
   self.Power = CreateFrame("StatusBar", nil, self)
+	self.Power:SetHeight(cfg.frames[type].power.height)
+	self.Power:SetWidth(self.cfg.width)
   self.Power:SetStatusBarTexture(m.textures.fill_texture)
   self.Power:GetStatusBarTexture():SetHorizTile(false)
   self.Power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
+	self.Power.frequentUpdates = self.cfg.power.frequentUpdates
 
   self.Power.bg = self.Power:CreateTexture(nil, "BACKGROUND")
   self.Power.bg:SetAllPoints(self.Power)

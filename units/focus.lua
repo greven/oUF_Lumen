@@ -13,6 +13,8 @@ local frame = "focus"
 
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
+  local self = health.__owner
+
   if cfg.units[frame].health.gradientColored then
     local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
     health:SetStatusBarColor(r, g, b)
@@ -32,8 +34,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self)
-  lum:setupUnitFrame(self, "secondary")
+  lum:globalStyle(self, "secondary")
 
   -- Texts
   core:createNameString(self, font_big, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 4)
@@ -45,7 +46,9 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Castbar
-  core:CreateCastbar(self)
+  if self.cfg.castbar.enable then
+    core:CreateCastbar(self)
+  end
 
   -- Heal Prediction
   CreateHealPrediction(self)
@@ -55,8 +58,8 @@ end
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
-if cfg.units.target.show then
-  oUF:RegisterStyle("lumen:"..frame, createStyle)
-  oUF:SetActiveStyle("lumen:"..frame)
-  oUF:Spawn(frame, "oUF_Lumen"..frame)
+if cfg.units[frame].show then
+  oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
+  oUF:Spawn(frame, "oUF_Lumen"..frame:gsub("^%l", string.upper))
 end

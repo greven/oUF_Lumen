@@ -4,4 +4,8 @@
 	<Script file='targettarget.lua' />
 	<Script file='pet.lua' />
 	<Script file='focus.lua' />
+	<Script file='party.lua' />
+	<Script file='raid.lua' />
+	<Script file='boss.lua' />
+	<Script file='arena.lua' />
 </Ui>
