@@ -3,6 +3,8 @@ local _, ns = ...
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
+local _G = _G
+
 local font = m.fonts.font
 local font_big = m.fonts.font_big
 
@@ -14,6 +16,8 @@ local frame = "player"
 
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
+  local self = health.__owner
+
   if cfg.units[frame].health.gradientColored then
     local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
     health:SetStatusBarColor(r, g, b)
@@ -146,8 +150,10 @@ end
 
 -- Druid Mana post update callback
 local DruidManaPostUpdate = function(self, unit, cur, max)
+  local powerType = UnitPowerType(unit)
+
   -- Hide DruidMana if full
-  if(cur == max) then
+  if(cur == max or powerType == 0) then
     self:Hide()
   else
     self:Show()
@@ -213,7 +219,6 @@ local function UpdateExperienceTooltip(self)
 		local rested = math.floor((GetXPExhaustion() or 0) / max * 100 + 0.5)
 
 		GameTooltip:SetOwner(self, 'ANCHOR_NONE')
-		-- GameTooltip:SetPoint('BOTTOMLEFT', self, 'TOPLEFT')
     GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
 		GameTooltip:SetText(string.format('%s / %s (%s%%)', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max), per))
 		GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', cur / max * 20, rested))
@@ -221,13 +226,83 @@ local function UpdateExperienceTooltip(self)
 	end
 end
 
+-- AltPower PostUpdate
+local AltPowerPostUpdate = function(self, min, cur, max)
+	if not self.Text then return end
+
+	local _, r, g, b = _G.UnitAlternatePowerTextureInfo(self.__owner.unit, 2)
+
+	if (r == 1 and g == 1 and b == 1) or not b then
+		r, g, b = 1, 0, 0
+	end
+
+	self:SetStatusBarColor(r, g, b)
+
+	if cur < max then
+		if self.isMouseOver then
+			self.Text:SetFormattedText("%s / %s - %d%%", core:shortNumber(cur), core:shortNumber(max), core:NumberToPerc(cur, max))
+		elseif cur > 0 then
+			self.Text:SetFormattedText("%s", core:shortNumber(cur))
+		else
+			self.Text:SetText(nil)
+		end
+	else
+		if self.isMouseOver then
+			self.Text:SetFormattedText("%s", core:shortNumber(cur))
+		else
+			self.Text:SetText(nil)
+		end
+	end
+end
+
+local function AltPowerBarOnEnter(self)
+	if not self:IsVisible() then return end
+
+	self.isMouseOver = true
+	self:ForceUpdate()
+	_G.GameTooltip_SetDefaultAnchor(_G.GameTooltip, self)
+	self:UpdateTooltip()
+end
+
+local function AltPowerBarOnLeave(self)
+	self.isMouseOver = nil
+	self:ForceUpdate()
+	_G.GameTooltip:Hide()
+end
+
+-- AltPower (quest or boss special power)
+local CreateAltPowerBar = function(self)
+	local AltPowerBar = CreateFrame('StatusBar', nil, self)
+	AltPowerBar:SetStatusBarTexture(m.textures.status_texture)
+	core:setBackdrop(AltPowerBar, 2, 2, 2, 2)
+	AltPowerBar:SetHeight(16)
+	AltPowerBar:SetWidth(200)
+	AltPowerBar:SetPoint('CENTER', 'UIParent', 'CENTER', 0, 350)
+
+	AltPowerBar.Text = core:createFontstring(AltPowerBar, font, 10, "THINOUTLINE")
+	AltPowerBar.Text:SetPoint("CENTER", 0, 0)
+
+	local AltPowerBarBG = AltPowerBar:CreateTexture(nil, 'BORDER')
+	AltPowerBarBG:SetAllPoints()
+	AltPowerBarBG:SetAlpha(0.3)
+	AltPowerBarBG:SetTexture(m.textures.bg_texture)
+	AltPowerBarBG:SetColorTexture(1/3, 1/3, 1/3)
+
+	AltPowerBar:EnableMouse(true)
+	AltPowerBar:SetScript("OnEnter", AltPowerBarOnEnter)
+	AltPowerBar:SetScript("OnLeave", AltPowerBarOnLeave)
+	AltPowerBar.PostUpdate = AltPowerPostUpdate
+	self.AltPowerBar = AltPowerBar
+end
+
 -- Post Update BarTimer Aura
-local PostUpdateBarTimer =  function(icons, unit, icon, index)
+local PostUpdateBarTimer = function(icons, unit, icon, index)
   local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
   if duration and duration > 0 then
     icon.timeLeft = expirationTime - GetTime()
     icon.bar:SetMinMaxValues(0, duration)
+    icon.bar:SetValue(icon.timeLeft)
     icon.spell:SetText(name)
 
     if icon.isDebuff then
@@ -259,8 +334,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self)
-  lum:setupUnitFrame(self, "main")
+  lum:globalStyle(self, "main")
 
   -- Text strings
   core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
@@ -274,21 +348,28 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Castbar
-  core:CreateCastbar(self)
+  if self.cfg.castbar.enable then
+    core:CreateCastbar(self)
+  end
 
   -- Class Icons
-  if(core.playerClass == 'ROGUE' or core.playerClass == 'DRUID' or core.playerClass == 'MAGE'
-    or core.playerClass == 'MONK' or core.playerClass == 'PALADIN' or core.playerClass == 'WARLOCK') then
+  if core.playerClass == 'ROGUE' or core.playerClass == 'DRUID' or core.playerClass == 'MAGE'
+    or core.playerClass == 'MONK' or core.playerClass == 'PALADIN' or core.playerClass == 'WARLOCK' then
       CreateClassIcons(self)
   end
 
   -- Death Knight Runes
-  if(core.playerClass == 'DEATHKNIGHT') then CreateRuneBar(self) end
+  if core.playerClass == 'DEATHKNIGHT' then CreateRuneBar(self) end
 
   -- Alternate Power Bar
-  if(core.playerClass == 'PRIEST' or core.playerClass == 'MONK' or core.playerClass == 'SHAMAN') then
+  if core.playerClass == 'PRIEST' or core.playerClass == 'MONK' or core.playerClass == 'SHAMAN' then
     CreateAlternatePower(self)
   end
+
+	-- AltPower (quest or boss special power)
+	if cfg.elements.altpowerbar.show then
+		CreateAltPowerBar(self)
+	end
 
   -- Combat indicator
   local Combat = core:createFontstring(self, m.fonts.symbols, 40, "THINOUTLINE")
@@ -305,11 +386,11 @@ local createStyle = function(self)
   self.Resting = Resting
 
   -- oUF_Experience
-  if(cfg.elements.experiencebar.show) then
-    local Experience = CreateFrame('StatusBar', nil, self)
+  if cfg.elements.experiencebar.show then
+    local Experience = CreateFrame('StatusBar', nil, self, 'AnimatedStatusBarTemplate')
     Experience:SetStatusBarTexture(m.textures.status_texture)
     Experience:SetPoint(cfg.elements.experiencebar.pos.a1, cfg.elements.experiencebar.pos.af,
-      cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
+			cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
     Experience:SetHeight(cfg.elements.experiencebar.height)
     Experience:SetWidth(cfg.elements.experiencebar.width)
     Experience:SetScript('OnEnter', UpdateExperienceTooltip)
@@ -340,13 +421,14 @@ local createStyle = function(self)
   barTimers.CustomFilter = PlayerCustomFilter
   barTimers.PostUpdateIcon = PostUpdateBarTimer
   self.Buffs = barTimers
+
 end
 
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
-if cfg.units.target.show then
-  oUF:RegisterStyle("lumen:"..frame, createStyle)
-  oUF:SetActiveStyle("lumen:"..frame)
-  oUF:Spawn(frame, "oUF_Lumen"..frame)
+if cfg.units[frame].show then
+  oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
+  oUF:Spawn(frame, "oUF_Lumen"..frame:gsub("^%l", string.upper))
 end
