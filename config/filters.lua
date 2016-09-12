@@ -138,7 +138,9 @@ filters.list = {
       [GetSpellInfo(603) or "Doom"] = true,								 			             -- Doom
       [GetSpellInfo(196412) or "Eradication"] = true, 								 			 -- Eradication
       [GetSpellInfo(5785) or "Fear"] = true,								 			           -- Fear
+      [GetSpellInfo(80240) or "Havoc"] = true,								 			         -- Havoc
       [GetSpellInfo(348) or "Immolate"] = true,						                   -- Immolate
+      [GetSpellInfo(205179) or "Phantom Singularity"] = true,                -- Phantom Singularity
       [GetSpellInfo(27243) or "Seed of Corruption"] = true,						       -- Seed of Corruption
       [GetSpellInfo(63106) or "Siphon Life"] = true,						             -- Siphon Life
       [GetSpellInfo(30108) or "Unstable Affliction"] = true,			           -- Unstable Affliction
@@ -159,5 +161,10 @@ filters.list = {
     -- Buffs
     [GetSpellInfo(193396) or "Demonic Empowerment"] = true,                  -- Demonic Empowerment (Warlock)
     [GetSpellInfo(136) or "Mend Pet"] = true,						                     -- Mend Pet (Hunter)
+  },
+
+  PARTY = {
+    -- Debuffs
+    [GetSpellInfo(57723) or "Exhaustion"] = true,                            -- Exhaustion
   }
 }

@@ -90,6 +90,10 @@ ns.cfg = cfg
       show = true, -- Use frame drop shadows
       opacity = 0.7,
     },
+    range = {
+      insideAlpha = 1,
+      outsideAlpha = .25,
+    }
   }
 
   -- -----------------------------------
@@ -227,13 +231,11 @@ ns.cfg = cfg
     },
     boss = {
       show = true,
-      width = 250,
-      height = 32,
-      pos = { a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 700, y = 200 },
+      width = 225,
+      height = 28,
+      pos = { a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 800, y = 200 },
       health = {
-        classColored = true,
         gradientColored = false,
-        classColoredText = false,
         reactionColored = true,
         frequentUpdates = false,
         smooth = true,
@@ -243,7 +245,14 @@ ns.cfg = cfg
         classColored = false,
         frequentUpdates = false,
         smooth = true,
+        text = {
+          show = false
+        },
       },
+      castbar = {
+        enable = true,
+        color = {5/255, 107/255, 246/255},
+      }
     },
     arena = {
       show = true,
@@ -269,7 +278,7 @@ ns.cfg = cfg
       show = true,
       width = 132,
       height = 18,
-      pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -800, y = 200 },
+      pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -800, y = 0 },
       health = {
         classColored = false,
         gradientColored = false,
@@ -296,9 +305,9 @@ ns.cfg = cfg
     },
     experiencebar = {
       show = true,
-      height = 2,
+      height = 3,
       width = Minimap:GetWidth() + 4,
-      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = 12 },
+      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = 14 },
     },
     altpowerbar = {
       show = true
