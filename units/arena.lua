@@ -14,7 +14,7 @@ local frame = "arena"
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
-  
+
   if cfg.units[frame].health.gradientColored then
     local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
     health:SetStatusBarColor(r, g, b)
@@ -58,17 +58,17 @@ end
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
-if cfg.units[frame].show then
-  oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
-  oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
-
-  for index = 1, MAX_BOSS_FRAMES or 5 do
-    local arena = oUF:Spawn("arena" .. index)
-
-  	if(index == 1) then
-  		arena:SetPoint(cfg.units.arena.pos.a1, cfg.units.arena.pos.af, cfg.units.arena.pos.a2, cfg.units.arena.pos.x, cfg.units.arena.pos.y)
-  	else
-  		arena:SetPoint('TOP', _G['oUF_LumenArena' .. index - 1], 'BOTTOM', 0, -8)
-  	end
-  end
-end
+-- if cfg.units[frame].show then
+--   oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
+--   oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
+--
+--   for index = 1, MAX_BOSS_FRAMES or 5 do
+--     local arena = oUF:Spawn("arena" .. index, 'oUF_LumenArena' .. index)
+--
+--   	if(index == 1) then
+--   		arena:SetPoint(cfg.units.arena.pos.a1, cfg.units.arena.pos.af, cfg.units.arena.pos.a2, cfg.units.arena.pos.x, cfg.units.arena.pos.y)
+--   	else
+--   		arena:SetPoint('TOP', _G['oUF_LumenArena' .. index - 1], 'BOTTOM', 0, -8)
+--   	end
+--   end
+-- end
