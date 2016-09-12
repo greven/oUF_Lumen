@@ -1,6 +1,6 @@
 ## Interface: 70000
 ## Author: greven
-## Version: 7.0.3-beta
+## Version: 7.0.4
 ## Title: oUF_|cFF0d87d5l|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
 ## Notes: oUF layout by greven (Kreoss @ Quel'Thalas EU)
 ## SavedVariables: oUF_LumenDB
