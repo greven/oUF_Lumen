@@ -44,25 +44,27 @@ local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebu
 end
 
 -- Post Update BarTimer Aura
-local PostUpdateBarTimer = function(icons, unit, icon, index)
-  local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+local PostUpdateBarTimer = function(element, unit, button, index)
+  local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, button.filter)
 
   if duration and duration > 0 then
-    icon.timeLeft = expirationTime - GetTime()
-    icon.bar:SetMinMaxValues(0, duration)
-    icon.bar:SetValue(icon.timeLeft)
-    icon.spell:SetText(name)
+    button.timeLeft = expirationTime - GetTime()
+    button.bar:SetMinMaxValues(0, duration)
+    button.bar:SetValue(button.timeLeft)
 
-    if icon.isDebuff then
-      icon.bar:SetStatusBarColor(1, 0.1, 0.2)
+    if button.isDebuff then -- bar color
+      button.bar:SetStatusBarColor(1, 0.1, 0.2)
     else
-      icon.bar:SetStatusBarColor(0, 0.4, 1)
+      button.bar:SetStatusBarColor(0, 0.4, 1)
     end
   else
-    icon.timeLeft = math.huge
+    button.timeLeft = math.huge
+    button.bar:SetStatusBarColor(0.6, 0, 0.8) -- permenant buff / debuff
   end
 
-  icon:SetScript('OnUpdate', function(self, elapsed)
+  button.spell:SetText(name) -- set spell name
+
+  button:SetScript('OnUpdate', function(self, elapsed)
     auras:BarTimer_OnUpdate(self, elapsed)
   end)
 end
@@ -131,7 +133,6 @@ local createStyle = function(self)
   barTimers.CustomFilter = TargetCustomFilter
   barTimers.PostUpdateIcon = PostUpdateBarTimer
   self.Debuffs = barTimers
-
 end
 
 -- -----------------------------------
