@@ -1,6 +1,7 @@
 local _, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.font
 local font_big = m.fonts.font_big
@@ -15,9 +16,11 @@ local frame = "party"
 local PostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
   local dead, disconnnected, ghost = UnitIsDead(unit), not UnitIsConnected(unit), UnitIsGhost(unit)
+	local perc = math.floor(min / max * 100 + 0.5)
 
   -- Inverted Colors
   if cfg.units[frame].health.invertedColors then
+    health:SetStatusBarColor(unpack(cfg.colors.health))
     health.bg:SetVertexColor(unpack(core:raidColor(unit)))
     health.bg:SetAlpha(0.9)
   end
@@ -32,6 +35,7 @@ local PostUpdateHealth = function(health, unit, min, max)
 
   if disconnnected or dead or ghost then
     health.value:Hide()
+    self.HPborder:Hide()
     health.bg:SetVertexColor(.4, .4, .4)
     if disconnnected then
       self.status:SetText('DC')
@@ -40,13 +44,20 @@ local PostUpdateHealth = function(health, unit, min, max)
     elseif ghost then
       self.status:SetText('GHOST')
     end
-  else
+  else -- Player alive and kicking!
     health.value:Show()
     self.status:SetText('')
+
     if (min == max) then -- It has max health
       health.value:Hide()
+      self.HPborder:Hide()
     else
       health.value:Show()
+      if perc < 35 then -- Show warning health border
+        self.HPborder:Show()
+      else
+        self.HPborder:Hide()
+      end
     end
   end
 end
@@ -72,6 +83,32 @@ local PostUpdatePower = function(power, unit, min, max)
 		end
 end
 
+-- Post Update Aura Icon
+local PostUpdateIcon = function(element, unit, button, index)
+	local name, _, _, count, type, duration, expirationTime, owner = UnitAura(unit, index, button.filter)
+
+	if duration and duration > 0 then
+		button.timeLeft = expirationTime - GetTime()
+	else
+		button.timeLeft = math.huge
+	end
+
+  local color = DebuffTypeColor[type or 'none']
+	button.overlay:SetVertexColor(color.r, color.g, color.b)
+
+
+	button:SetScript('OnUpdate', function(self, elapsed)
+		auras:AuraTimer_OnUpdate(self, elapsed)
+	end)
+end
+
+-- Filter Debuffs
+local PartyDebuffsFilter = function(icons, unit, icon, name)
+  if(filters.list.PARTY[name]) then -- Ignore debuffs in the party list
+    return false
+  end
+end
+
 -- -----------------------------------
 -- > TARGET STYLE
 -- -----------------------------------
@@ -83,7 +120,7 @@ local createStyle = function(self)
   lum:globalStyle(self, "secondary")
 
   -- Texts
-  core:createPartyNameString(self, font_big, cfg.fontsize + 2)
+  core:createPartyNameString(self, font, cfg.fontsize - 2)
   if self.cfg.health.classColoredText then
     self:Tag(self.Name, '[raidcolor][lumen:name]')
   else
@@ -99,32 +136,52 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
   self.Power.PostUpdate = PostUpdatePower
 
+  -- Defuffs
+  local debuffs = auras:CreateAura(self, 6, 1, self.cfg.height + 4, 2)
+  debuffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 11)
+  debuffs.initialAnchor = "BOTTOMLEFT"
+  debuffs["growth-x"] = "RIGHT"
+  debuffs.CustomFilter = PartyDebuffsFilter
+  debuffs.PostUpdateIcon = PostUpdateIcon
+  self.Debuffs = debuffs
+
   -- Ready Check Icon
   local ReadyCheck = self:CreateTexture()
-  ReadyCheck:SetPoint('RIGHT', self, 'LEFT', 4, 0)
-  ReadyCheck:SetSize(14, 14)
+  ReadyCheck:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+  ReadyCheck:SetSize(16, 16)
   ReadyCheck.finishedTimer = 10
   ReadyCheck.fadeTimer = 2
   self.ReadyCheck = ReadyCheck
 
   -- Role Icon
   local RoleIcon = self:CreateTexture(nil, 'OVERLAY')
-  RoleIcon:SetPoint('RIGHT', self, 'LEFT', -8, 0)
-  RoleIcon:SetSize(14, 14)
+  RoleIcon:SetPoint('RIGHT', self, 'LEFT', -8, 1)
+  RoleIcon:SetSize(16, 16)
   RoleIcon:SetAlpha(0)
   self.LFDRole = RoleIcon
-
-  -- Leader Icon
-  local LeaderIcon = self:CreateTexture(nil, "OVERLAY")
-  LeaderIcon:SetPoint("CENTER", self, "TOP", 0, 0)
-  LeaderIcon:SetSize(14, 14)
-  self.Leader = LeaderIcon
 
   self:HookScript('OnEnter', function() RoleIcon:SetAlpha(1) end)
   self:HookScript('OnLeave', function() RoleIcon:SetAlpha(0) end)
 
+  -- Leader Icon
+  local LeaderIcon = self:CreateTexture(nil, "OVERLAY")
+  LeaderIcon:SetPoint('RIGHT', self, 'LEFT', -8, 1)
+  LeaderIcon:SetSize(16, 16)
+  self.Leader = LeaderIcon
+
+  self:HookScript('OnEnter', function() LeaderIcon:SetAlpha(0) end)
+  self:HookScript('OnLeave', function() LeaderIcon:SetAlpha(1) end)
+
   -- Heal Prediction
   CreateHealPrediction(self)
+
+  -- Health warning border
+  core:CreateHPBorder(self)
+
+  -- Threat warning border
+  core:CreateThreatBorder(self)
+
+  self.Range = cfg.frames.range
 
 end
 
@@ -141,7 +198,7 @@ if cfg.units[frame].show then
 		'showParty', true,
 		'showRaid', false,
 		'showPlayer', true,
-		'yOffset', -6,
+		'yOffset', -24,
 		'groupBy', 'ASSIGNEDROLE',
 		'groupingOrder', 'TANK,HEALER,DAMAGER',
 		'oUF-initialConfigFunction', [[
@@ -149,5 +206,4 @@ if cfg.units[frame].show then
 			self:SetWidth(126)
 		]]
 	):SetPoint(cfg.units.party.pos.a1, cfg.units.party.pos.af, cfg.units.party.pos.a2, cfg.units.party.pos.x, cfg.units.party.pos.y)
-
 end
