@@ -212,18 +212,52 @@ end
 
 -- oUF_Experience Tooltip
 local function UpdateExperienceTooltip(self)
-	if(not (UnitLevel('player') == MAX_PLAYER_LEVEL and IsWatchingHonorAsXP())) then
+  GameTooltip:SetOwner(self, 'ANCHOR_NONE')
+  GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
+
+	if not (UnitLevel('player') == MAX_PLAYER_LEVEL and IsWatchingHonorAsXP()) then
 		local cur = UnitXP('player')
 		local max = UnitXPMax('player')
 		local per = math.floor(cur / max * 100 + 0.5)
 		local rested = math.floor((GetXPExhaustion() or 0) / max * 100 + 0.5)
 
-		GameTooltip:SetOwner(self, 'ANCHOR_NONE')
-    GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
 		GameTooltip:SetText(string.format('%s / %s (%s%%)', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max), per))
 		GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', cur / max * 20, rested))
 		GameTooltip:Show()
+  else -- Honor System
+    local cur = UnitHonor('player')
+		local max = UnitHonorMax('player')
+    local rested = math.floor((GetHonorExhaustion() or 0) / max * 100 + 0.5)
+
+    GameTooltip:SetText(string.format('Honor Rank %s', UnitHonorLevel('player')))
+    GameTooltip:AddLine(string.format('|cffff4444%s / %s Points|r', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max)))
+    GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', cur / max * 5, rested))
+    GameTooltip:Show()
 	end
+end
+
+-- Color the Experience Bar
+local function ExperiencePostUpdate(self)
+  -- Experience
+  if not IsWatchingHonorAsXP() then
+    self:SetStatusBarColor(150/255, 40/255, 200/255)
+    self.Rested:SetStatusBarColor(40/255, 100/255, 200/255)
+  else -- Showing Honor
+    self:SetStatusBarColor(255/255, 68/255, 68/255)
+    self.Rested:SetStatusBarColor(40/255, 100/255, 180/255)
+  end
+end
+
+-- oUF_Reputation Tooltip
+local function UpdateReputationTooltip(self)
+  local name, standing, min, max, value = GetWatchedFactionInfo()
+  local color = FACTION_BAR_COLORS[standing]
+
+  GameTooltip:SetOwner(self, 'ANCHOR_NONE')
+  GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
+  GameTooltip:AddLine(format('|cff%02x%02x%02x%s|r', color.r*255, color.g*255, color.b*255, name))
+  GameTooltip:AddLine(format('|cffcecece%s:|r |cffb7b7b7%d / %d|r', _G["FACTION_STANDING_LABEL"..standing], value - min, max - min))
+  GameTooltip:Show()
 end
 
 -- AltPower PostUpdate
@@ -296,25 +330,27 @@ local CreateAltPowerBar = function(self)
 end
 
 -- Post Update BarTimer Aura
-local PostUpdateBarTimer = function(icons, unit, icon, index)
-  local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+local PostUpdateBarTimer = function(element, unit, button, index)
+  local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, button.filter)
 
   if duration and duration > 0 then
-    icon.timeLeft = expirationTime - GetTime()
-    icon.bar:SetMinMaxValues(0, duration)
-    icon.bar:SetValue(icon.timeLeft)
-    icon.spell:SetText(name)
+    button.timeLeft = expirationTime - GetTime()
+    button.bar:SetMinMaxValues(0, duration)
+    button.bar:SetValue(button.timeLeft)
 
-    if icon.isDebuff then
-      icon.bar:SetStatusBarColor(1, 0.1, 0.2)
+    if button.isDebuff then -- bar color
+      button.bar:SetStatusBarColor(1, 0.1, 0.2)
     else
-      icon.bar:SetStatusBarColor(0, 0.4, 1)
+      button.bar:SetStatusBarColor(0, 0.4, 1)
     end
   else
-    icon.timeLeft = math.huge
+    button.timeLeft = math.huge
+    button.bar:SetStatusBarColor(0.6, 0, 0.8) -- permenant buff / debuff
   end
 
-  icon:SetScript('OnUpdate', function(self, elapsed)
+  button.spell:SetText(name) -- set spell name
+
+  button:SetScript('OnUpdate', function(self, elapsed)
     auras:BarTimer_OnUpdate(self, elapsed)
   end)
 end
@@ -338,7 +374,7 @@ local createStyle = function(self)
 
   -- Text strings
   core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
-  self:Tag(self.Name, '[lumen:level]  [lumen:name] [lumen:classification]')
+  self:Tag(self.Name, '[lumen:level]  [lumen:name]')
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
   self:Tag(self.Health.value, '[lumen:hpvalue]')
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
@@ -379,23 +415,24 @@ local createStyle = function(self)
   self.Combat = Combat
 
   -- Resting
-  local Resting = core:createFontstring(self.Health, font, cfg.fontsize -4, "THINOUTLINE")
-  Resting:SetPoint("CENTER", self.Health, "TOP", 0, 0)
-  Resting:SetText("zZz")
-  Resting:SetTextColor(255/255, 255/255, 255/255, 0.70)
-  self.Resting = Resting
+  if not core:isPlayerMaxLevel() then
+    local Resting = core:createFontstring(self.Health, font, cfg.fontsize -4, "THINOUTLINE")
+    Resting:SetPoint("CENTER", self.Health, "TOP", 0, 0)
+    Resting:SetText("zZz")
+    Resting:SetTextColor(255/255, 255/255, 255/255, 0.70)
+    self.Resting = Resting
+  end
 
   -- oUF_Experience
   if cfg.elements.experiencebar.show then
-    local Experience = CreateFrame('StatusBar', nil, self, 'AnimatedStatusBarTemplate')
+    local Experience = CreateFrame('StatusBar', nil, self)
     Experience:SetStatusBarTexture(m.textures.status_texture)
     Experience:SetPoint(cfg.elements.experiencebar.pos.a1, cfg.elements.experiencebar.pos.af,
 			cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
     Experience:SetHeight(cfg.elements.experiencebar.height)
     Experience:SetWidth(cfg.elements.experiencebar.width)
-    Experience:SetScript('OnEnter', UpdateExperienceTooltip)
-    Experience:SetScript('OnLeave', GameTooltip_Hide)
     self.Experience = Experience
+    self.Experience.PostUpdate = ExperiencePostUpdate
 
     local Rested = CreateFrame('StatusBar', nil, Experience)
     Rested:SetStatusBarTexture(m.textures.status_texture)
@@ -408,7 +445,31 @@ local createStyle = function(self)
     ExperienceBG:SetAlpha(0.3)
     ExperienceBG:SetTexture(m.textures.bg_texture)
     ExperienceBG:SetColorTexture(1/3, 1/3, 1/3)
+
+    Experience:SetScript('OnEnter', UpdateExperienceTooltip)
+    Experience:SetScript('OnLeave', GameTooltip_Hide)
   end
+
+  -- oUF_Reputation
+  local Reputation = CreateFrame('StatusBar', nil, self)
+	Reputation:SetStatusBarTexture(m.textures.status_texture)
+	Reputation:SetPoint(cfg.elements.experiencebar.pos.a1, cfg.elements.experiencebar.pos.af,
+    cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
+	Reputation:SetHeight(cfg.elements.experiencebar.height)
+	Reputation:SetWidth(cfg.elements.experiencebar.width)
+  core:setBackdrop(Reputation, 2, 2, 2, 2)
+  Reputation.colorStanding = true
+	self.Reputation = Reputation
+  self.Reputation.PostUpdate = ReputationPostUpdate
+
+  local ReputationBG = Reputation:CreateTexture(nil, 'BORDER')
+  ReputationBG:SetAllPoints()
+  ReputationBG:SetAlpha(0.3)
+  ReputationBG:SetTexture(m.textures.bg_texture)
+  ReputationBG:SetColorTexture(1/3, 1/3, 1/3)
+
+  Reputation:SetScript('OnEnter', UpdateReputationTooltip)
+  Reputation:SetScript('OnLeave', GameTooltip_Hide)
 
   -- Heal Prediction
   CreateHealPrediction(self)
@@ -421,7 +482,6 @@ local createStyle = function(self)
   barTimers.CustomFilter = PlayerCustomFilter
   barTimers.PostUpdateIcon = PostUpdateBarTimer
   self.Buffs = barTimers
-
 end
 
 -- -----------------------------------
