@@ -39,8 +39,8 @@ local myPostChannelStart = function(self, unit, name, _, castid)
 end
 
 -- Castbar generator
-function core:CreateCastbar(fr)
-  local castbar = CreateFrame("StatusBar", "oUF_LumenCastBar", fr)
+function core:CreateCastbar(self)
+  local castbar = CreateFrame("StatusBar", "oUF_LumenCastBar", self)
   castbar:SetStatusBarTexture(m.textures.status_texture)
   castbar:GetStatusBarTexture():SetHorizTile(false)
   castbar:SetFrameStrata("HIGH")
@@ -65,7 +65,7 @@ function core:CreateCastbar(fr)
   castbar.Icon = castbar:CreateTexture(nil, 'ARTWORK')
   castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
-  if(fr.mystyle == "player") then
+  if(self.mystyle == "player") then
     core:setBackdrop(castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
     castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
     castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
@@ -98,8 +98,7 @@ function core:CreateCastbar(fr)
       castbar.SafeZone:SetVertexColor(unpack(cfg.units.player.castbar.latency.color))
     end
 
-
-  elseif(fr.mystyle == "target") then
+  elseif(self.mystyle == "target") then
     core:setBackdrop(castbar, cfg.units.target.castbar.height + 4, 2, 2, 2)
     castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
     castbar:SetStatusBarColor(unpack(cfg.units.target.castbar.color))
@@ -125,7 +124,7 @@ function core:CreateCastbar(fr)
     castbar.PostCastStart = myPostCastStart
     castbar.PostChannelStart = myPostChannelStart
 
-  elseif(fr.mystyle == "focus") then
+  elseif(self.mystyle == "focus") then
     core:setBackdrop(castbar, cfg.units.focus.castbar.height + 4, 2, 2, 2)
     castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
     castbar:SetStatusBarColor(unpack(cfg.units.focus.castbar.color))
@@ -150,9 +149,29 @@ function core:CreateCastbar(fr)
     castbar.Glowborder:SetPoint("TOPLEFT", castbar, "TOPLEFT", - (cfg.units.target.castbar.height + 2) - 6, 6) -- Resize to include icon
     castbar.PostCastStart = myPostCastStart
     castbar.PostChannelStart = myPostChannelStart
+
+  elseif(self.mystyle == "boss") then
+    core:setBackdrop(castbar, 2, 2, 2, 2)
+    castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
+    castbar:SetStatusBarColor(unpack(cfg.units.boss.castbar.color))
+    castbar:SetHeight(cfg.units.boss.height)
+    castbar:SetPoint("LEFT", self, cfg.units.boss.height + 2, 0)
+    castbar:SetPoint("TOPRIGHT", self, 0, 0)
+
+    castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
+    castbar.Text:SetWidth(cfg.units.boss.width - 50)
+    castbar.Text:SetPoint("LEFT", castbar, 4, 0)
+
+    castbar.Time:SetFont(font, cfg.fontsize, "THINOUTLINE")
+    castbar.Time:SetPoint("RIGHT", castbar, -6, 0)
+    castbar.CustomTimeText = CustomCastTimeText
+
+    castbar.Icon:SetHeight(cfg.units.boss.height)
+    castbar.Icon:SetWidth(cfg.units.boss.height)
+    castbar.Icon:SetPoint("LEFT", self, 0, 0)
   end
 
-  fr.Castbar = castbar -- register with oUF
+  self.Castbar = castbar -- register with oUF
 end
 
 -- -----------------------------------
