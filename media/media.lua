@@ -17,9 +17,7 @@ m.textures = {
   status_texture = "Interface\\AddOns\\oUF_lumen\\media\\statusbar",
   fill_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture",
   bg_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture_bg",
-  raid_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture",
   border = "Interface\\AddOns\\oUF_lumen\\media\\border",
-  spark_texture = "Interface\\AddOns\\oUF_lumen\\media\\spark",
   white_square = "Interface\\AddOns\\oUF_lumen\\media\\white",
   glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow",
 }
