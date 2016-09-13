@@ -471,6 +471,26 @@ local createStyle = function(self)
   Reputation:SetScript('OnEnter', UpdateReputationTooltip)
   Reputation:SetScript('OnLeave', GameTooltip_Hide)
 
+  -- oUF_ArcanePower
+  if cfg.elements.arcanepowerbar.show then
+    local ArtifactPower = CreateFrame("StatusBar", nil, self)
+    ArtifactPower:SetStatusBarTexture(m.textures.status_texture)
+    ArtifactPower:SetStatusBarColor(217/255, 205/255, 145/255)
+    ArtifactPower:SetPoint(cfg.elements.arcanepowerbar.pos.a1, cfg.elements.arcanepowerbar.pos.af,
+			cfg.elements.arcanepowerbar.pos.a2, cfg.elements.arcanepowerbar.pos.x, cfg.elements.arcanepowerbar.pos.y)
+    ArtifactPower:SetHeight(cfg.elements.arcanepowerbar.height)
+    ArtifactPower:SetWidth(cfg.elements.arcanepowerbar.width)
+    core:setBackdrop(ArtifactPower, 2, 2, 2, 2)
+    ArtifactPower:EnableMouse(true)
+    self.ArtifactPower = ArtifactPower
+
+    local ArtifactPowerBG = ArtifactPower:CreateTexture(nil, 'BORDER')
+    ArtifactPowerBG:SetAllPoints()
+    ArtifactPowerBG:SetAlpha(0.3)
+    ArtifactPowerBG:SetTexture(m.textures.bg_texture)
+    ArtifactPowerBG:SetColorTexture(1/3, 1/3, 1/3)
+  end
+
   -- Heal Prediction
   CreateHealPrediction(self)
 

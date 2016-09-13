@@ -129,7 +129,7 @@ ns.cfg = cfg
         width = cfg.frames.main.width * 2,
         height = cfg.frames.main.height,
         latency = {
-          show = true,
+          show = false,
           color = {1, 0, 0, 0.5},
         },
       }
@@ -276,8 +276,8 @@ ns.cfg = cfg
     },
     party = {
       show = true,
-      width = 132,
-      height = 18,
+      width = 134,
+      height = 22,
       pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -800, y = 0 },
       health = {
         classColored = false,
@@ -308,6 +308,12 @@ ns.cfg = cfg
       height = 3,
       width = Minimap:GetWidth() + 4,
       pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = 14 },
+    },
+    arcanepowerbar = {
+      show = true,
+      height = 3,
+      width = Minimap:GetWidth() + 4,
+      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = 4 },
     },
     altpowerbar = {
       show = true
