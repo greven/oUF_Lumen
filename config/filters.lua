@@ -117,11 +117,17 @@ filters.list = {
 
   SHAMAN = {
     buffs = {
-
+      [GetSpellInfo(108281) or "Ancestral Guidance"] = true,			  	 	      -- Ancestral Guidance
+      [GetSpellInfo(201897) or "Boulderfist"] = true,			  	 	              -- Boulderfist
+      [GetSpellInfo(193796) or "Flametongue"] = true,			  	 	              -- Flametongue
+      [GetSpellInfo(196834) or "Frostbrand"] = true,			  	 	              -- Frostbrand
+      [GetSpellInfo(197992) or "Landslide"] = true,			  	 	                -- Landslide
+      [GetSpellInfo(73685) or "Unleash Life"] = true, 			  	 	            -- Unleash Life
     },
 
     debuffs = {
-
+      [GetSpellInfo(188389) or "Flame Shock"] = true,			  	 	              -- Flame Shock
+      [GetSpellInfo(196840) or "Frost Shock"] = true,			  	 	              -- Frost Shock
     }
   },
 
