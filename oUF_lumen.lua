@@ -79,13 +79,19 @@ end
 -- -----------------------------------
 
 local OnEnter = function(self)
+	self:SetAlpha(1) -- Player frame fading
+
   self.Highlight:Show()  -- Mouseover highlight Show
   UnitFrame_OnEnter(self)
 end
 
 local OnLeave = function(self)
-  self.Highlight:Hide()  -- Mouseover highlight Hide
-  UnitFrame_OnLeave(self)
+	if cfg.units.player.fader.enable then -- Player frame fading
+		self:SetAlpha(cfg.units.player.fader.alpha)
+	end
+
+	self.Highlight:Hide()  -- Mouseover highlight Hide
+	UnitFrame_OnLeave(self)
 end
 
 -- The Shared Style Function
@@ -122,7 +128,7 @@ function lum:globalStyle(self, type)
   self.Power = CreateFrame("StatusBar", nil, self)
 	self.Power:SetHeight(cfg.frames[type].power.height)
 	self.Power:SetWidth(self.cfg.width)
-  self.Power:SetStatusBarTexture(m.textures.fill_texture)
+  self.Power:SetStatusBarTexture(m.textures.status_texture)
   self.Power:GetStatusBarTexture():SetHorizTile(false)
   self.Power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
 	self.Power.frequentUpdates = self.cfg.power.frequentUpdates

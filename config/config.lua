@@ -131,7 +131,11 @@ ns.cfg = cfg
         latency = {
           show = false,
           color = {1, 0, 0, 0.5},
-        },
+        }
+      },
+      fader = {
+        enable = false,
+        alpha = 0.3
       }
     },
     target = {

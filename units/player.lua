@@ -383,6 +383,14 @@ local createStyle = function(self)
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
 
+
+  -- Out of Combat Frame Fading
+  if self.cfg.fader.enable then
+    self:SetAlpha(self.cfg.fader.alpha)
+    self:RegisterEvent("PLAYER_REGEN_DISABLED", function(self) self:SetAlpha(1) end)
+    self:RegisterEvent("PLAYER_REGEN_ENABLED", function(self) self:SetAlpha(self.cfg.fader.alpha) end)
+  end
+
   -- Castbar
   if self.cfg.castbar.enable then
     core:CreateCastbar(self)
