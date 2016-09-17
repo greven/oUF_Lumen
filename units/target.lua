@@ -122,6 +122,12 @@ local createStyle = function(self)
   QuestIcon:SetTextColor(238/255, 217/255, 43/255)
   self.QuestIcon = QuestIcon
 
+  -- Raid Icons
+  local RaidIcon = self:CreateTexture(nil, 'OVERLAY')
+  RaidIcon:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+  RaidIcon:SetSize(20, 20)
+  self.RaidIcon = RaidIcon
+
   -- Heal Prediction
   CreateHealPrediction(self)
 
