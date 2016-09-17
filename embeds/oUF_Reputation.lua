@@ -3,35 +3,35 @@ local oUF = ns.oUF or oUF
 assert(oUF, 'oUF Reputation was unable to locate oUF install')
 
 local function GetReputation()
-	local name, standing, min, max, value, id = GetWatchedFactionInfo()
-	local _, friendMin, friendMax, _, _, _, friendStanding, friendThreshold = GetFriendshipReputation(id)
+	local name, _, standingID, min, max, value, _, _, _, _, _, _, _, factionID = GetFactionInfo(GetSelectedFaction())
+	local _, friendMin, friendMax, _, _, _, friendStanding, friendThreshold = GetFriendshipReputation(factionID)
 
 	if(not friendMin) then
-		return value - min, max - min, GetText('FACTION_STANDING_LABEL' .. standing, UnitSex('player'))
+		return value - min, max - min, name, factionID, standingID, GetText('FACTION_STANDING_LABEL' .. standingID, UnitSex('player'))
 	else
-		return friendMin - friendThreshold, math.min(friendMax - friendThreshold, 8400), friendStanding
+		return friendMin - friendThreshold, math.min(friendMax - friendThreshold, 8400), name, factionID, standingID, friendStanding
 	end
 end
 
 for tag, func in next, {
-	['currep'] = function()
-		local min = GetReputation()
-		return min
+	['reputation:cur'] = function()
+		return (GetReputation())
 	end,
-	['maxrep'] = function()
+	['reputation:max'] = function(unit, runit)
 		local _, max = GetReputation()
 		return max
 	end,
-	['perrep'] = function()
-		local min, max = GetReputation()
-		return math.floor(min / max * 100 + 1/2)
+	['reputation:per'] = function()
+		local cur, max = GetReputation()
+		return math.floor(cur / max * 100 + 1/2)
 	end,
-	['standing'] = function()
-		local _, _, standing = GetReputation()
-		return standing
+	['reputation:standing'] = function()
+		local _, _, _, _, _, standingText = GetReputation()
+		return standingText
 	end,
-	['reputation'] = function()
-		return GetWatchedFactionInfo()
+	['reputation:faction'] = function()
+		local _, _, name = GetReputation()
+		return name
 	end,
 } do
 	oUF.Tags.Methods[tag] = func
@@ -41,29 +41,22 @@ end
 oUF.Tags.SharedEvents.UPDATE_FACTION = true
 
 local function Update(self, event, unit)
-	if(self.unit ~= unit) then return end
-
 	local element = self.Reputation
 	if(element.PreUpdate) then element:PreUpdate(unit) end
 
-	local name, standingID, _, _, _, id = GetWatchedFactionInfo()
-	if(not name) then
-		return element:Hide()
-	else
-		element:Show()
-	end
+	local cur, max, name, factionID, standingID, standingText = GetReputation()
+	if(name) then
+		element:SetMinMaxValues(0, max)
+		element:SetValue(cur)
 
-	local min, max, standingText = GetReputation()
-	element:SetMinMaxValues(0, max)
-	element:SetValue(min)
-
-	if(element.colorStanding) then
-		local color = FACTION_BAR_COLORS[standingID]
-		element:SetStatusBarColor(color.r, color.g, color.b)
+		if(element.colorStanding) then
+			local color = FACTION_BAR_COLORS[standingID]
+			element:SetStatusBarColor(color.r, color.g, color.b)
+		end
 	end
 
 	if(element.PostUpdate) then
-		return element:PostUpdate(unit, min, max, name, id, standingID, standingText)
+		return element:PostUpdate(unit, cur, max, name, factionID, standingID, standingText)
 	end
 end
 
@@ -71,8 +64,47 @@ local function Path(self, ...)
 	return (self.Reputation.Override or Update) (self, ...)
 end
 
+local function ElementEnable(self)
+	self:RegisterEvent('UPDATE_FACTION', Path, true)
+
+	self.Reputation:Show()
+
+	Path(self, 'ElementEnable', 'player')
+end
+
+local function ElementDisable(self)
+	self:UnregisterEvent('UPDATE_FACTION', Path)
+
+	self.Reputation:Hide()
+
+	Path(self, 'ElementDisable', 'player')
+end
+
+local function Visibility(self, event, unit, selectedFactionIndex)
+	local shouldEnable
+	local selectedFaction = GetSelectedFaction()
+
+	if(selectedFactionIndex ~= nil) then
+		if(selectedFactionIndex == selectedFaction) then
+			shouldEnable = true
+		end
+	elseif(selectedFaction and select(12, GetFactionInfo(selectedFaction))) then
+		shouldEnable = true
+	end
+
+	if(shouldEnable) then
+		ElementEnable(self)
+	else
+		ElementDisable(self)
+	end
+end
+
+local function VisibilityPath(self, ...)
+	return (self.Reputation.OverrideVisibility or Visibility)(self, ...)
+end
+
 local function ForceUpdate(element)
-	return Path(element.__owner, 'ForceUpdate', element.__owner.unit)
+	return VisibilityPath(element.__owner, 'ForceUpdate', element.__owner.unit)
 end
 
 local function Enable(self, unit)
@@ -81,7 +113,9 @@ local function Enable(self, unit)
 		element.__owner = self
 		element.ForceUpdate = ForceUpdate
 
-		self:RegisterEvent('UPDATE_FACTION', Path, true)
+		hooksecurefunc('SetWatchedFactionIndex', function(selectedFactionIndex)
+			VisibilityPath(self, 'SetWatchedFactionIndex', 'player', selectedFactionIndex)
+		end)
 
 		if(not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
@@ -93,8 +127,8 @@ end
 
 local function Disable(self)
 	if(self.Reputation) then
-		self:UnregisterEvent('UPDATE_FACTION', Path)
+		ElementDisable(self)
 	end
 end
 
-oUF:AddElement('Reputation', Path, Enable, Disable)
+oUF:AddElement('Reputation', VisibilityPath, Enable, Disable)
