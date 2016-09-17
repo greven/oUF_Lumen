@@ -255,7 +255,11 @@ local function UpdateReputationTooltip(self)
 
   GameTooltip:SetOwner(self, 'ANCHOR_NONE')
   GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
-  GameTooltip:AddLine(format('|cff%02x%02x%02x%s|r', color.r*255, color.g*255, color.b*255, name))
+  if color then
+    GameTooltip:AddLine(format('|cff%02x%02x%02x%s|r', color.r*255, color.g*255, color.b*255, name))
+  else
+    GameTooltip:AddLine(format('%s', name))
+  end
   GameTooltip:AddLine(format('|cffcecece%s:|r |cffb7b7b7%d / %d|r', _G["FACTION_STANDING_LABEL"..standing], value - min, max - min))
   GameTooltip:Show()
 end

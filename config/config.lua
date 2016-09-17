@@ -62,7 +62,6 @@ ns.cfg = cfg
 
   cfg.frames = {
     main = {
-      -- width = 170, -- Width of the Player and Target Frames
       width = 209, -- Width of the Player and Target Frames
       height = 26, -- Height of the Player and Target Frames
       health = {
