@@ -121,7 +121,7 @@ filters.list = {
       [GetSpellInfo(201897) or "Boulderfist"] = true,			  	 	              -- Boulderfist
       [GetSpellInfo(193796) or "Flametongue"] = true,			  	 	              -- Flametongue
       [GetSpellInfo(196834) or "Frostbrand"] = true,			  	 	              -- Frostbrand
-      [GetSpellInfo(197992) or "Landslide"] = true,			  	 	                -- Landslide
+      -- [GetSpellInfo(197992) or "Landslide"] = true,			  	 	                -- Landslide
       [GetSpellInfo(73685) or "Unleash Life"] = true, 			  	 	            -- Unleash Life
     },
 
@@ -142,7 +142,8 @@ filters.list = {
       [GetSpellInfo(980) or "Agony"] = true,			  	 	                     -- Agony
       [GetSpellInfo(172) or "Corruption"] = true,				  		               -- Corruption
       [GetSpellInfo(603) or "Doom"] = true,								 			             -- Doom
-      [GetSpellInfo(196412) or "Eradication"] = true, 								 			 -- Eradication
+      [GetSpellInfo(1098) or "Enslave Demon"] = true, 								 			 -- Enslave Demon
+      -- [GetSpellInfo(196412) or "Eradication"] = true, 								 			 -- Eradication
       [GetSpellInfo(5785) or "Fear"] = true,								 			           -- Fear
       [GetSpellInfo(80240) or "Havoc"] = true,								 			         -- Havoc
       [GetSpellInfo(348) or "Immolate"] = true,						                   -- Immolate

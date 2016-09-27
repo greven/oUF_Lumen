@@ -24,6 +24,9 @@ function auras:BarTimer_OnUpdate(icon, elapsed)
 			else
 				icon.time:SetTextColor(1, 1, 1)
 			end
+		elseif icon.timeLeft > 60 and icon.timeLeft < 60 * 5 then
+			icon.time:SetTextColor(1, 1, 1)
+			icon.time:SetFormattedText(core:formatTime(icon.timeLeft))
 		else
 			icon.time:SetText()
 		end

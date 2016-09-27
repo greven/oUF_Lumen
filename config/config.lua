@@ -12,7 +12,7 @@ ns.cfg = cfg
   -- -----------------------------------
 
   oUF.colors.power = {
-    ["ENERGY"] = {255/255, 255/255, 225/255},
+    ["ENERGY"] = {255/255, 250/255, 225/255},
     ["FOCUS"] = {255/255, 192/255, 0/255},
     ["MANA"] = {1/255, 121/255, 228/255},
     ["RAGE"] = {255/255, 26/255, 48/255},
@@ -192,7 +192,7 @@ ns.cfg = cfg
         classColored = true,
         gradientColored = false,
         classColoredText = false,
-        reactionColored =Ttrue,
+        reactionColored = true,
         frequentUpdates = false,
         smooth = true,
       },
