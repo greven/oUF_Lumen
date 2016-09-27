@@ -66,15 +66,25 @@ local createStyle = function(self)
   buffs.PostUpdateIcon = PostUpdateIcon
   self.Buffs = buffs
 
+  -- Debuffs
+  local debuffs = auras:CreateAura(self, 4, 1, self.cfg.height + 4, 2)
+  debuffs:SetPoint("TOPLEFT", self, "RIGHT", 6, self.cfg.height - 3)
+  debuffs.initialAnchor = "BOTTOMLEFT"
+  debuffs["growth-x"] = "RIGHT"
+  debuffs.onlyShowPlayer = true
+  debuffs.PostUpdateIcon = PostUpdateIcon
+  self.Debuffs = debuffs
+
+
   -- Castbar
   if self.cfg.castbar.enable then
     core:CreateCastbar(self)
   end
 
   -- Raid Icons
-  local RaidIcon = self:CreateTexture(nil, 'OVERLAY')
-  RaidIcon:SetPoint('LEFT', self, 'RIGHT', 8, 0)
-  RaidIcon:SetSize(22, 22)
+  local RaidIcon = self:CreateTexture(nil, 'ARTWORK')
+  RaidIcon:SetPoint('RIGHT', self, 'LEFT', -8, 0)
+  RaidIcon:SetSize(20, 20)
   self.RaidIcon = RaidIcon
 
   self.Range = cfg.frames.range
