@@ -243,8 +243,8 @@ local function ExperiencePostUpdate(self)
     self:SetStatusBarColor(150/255, 40/255, 200/255)
     self.Rested:SetStatusBarColor(40/255, 100/255, 200/255)
   else -- Showing Honor
-    self:SetStatusBarColor(255/255, 68/255, 68/255)
-    self.Rested:SetStatusBarColor(40/255, 100/255, 180/255)
+    self:SetStatusBarColor(255/255, 75/255, 75/255)
+    self.Rested:SetStatusBarColor(255/255, 205/255, 90/255)
   end
 end
 
@@ -255,13 +255,11 @@ local function UpdateReputationTooltip(self)
 
   GameTooltip:SetOwner(self, 'ANCHOR_NONE')
   GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
-  if color then
+  if name and color then
     GameTooltip:AddLine(format('|cff%02x%02x%02x%s|r', color.r*255, color.g*255, color.b*255, name))
-  else
-    GameTooltip:AddLine(format('%s', name))
+    GameTooltip:AddLine(format('|cffcecece%s:|r |cffb7b7b7%d / %d|r', _G["FACTION_STANDING_LABEL"..standing], value - min, max - min))
+    GameTooltip:Show()
   end
-  GameTooltip:AddLine(format('|cffcecece%s:|r |cffb7b7b7%d / %d|r', _G["FACTION_STANDING_LABEL"..standing], value - min, max - min))
-  GameTooltip:Show()
 end
 
 -- AltPower PostUpdate
@@ -463,25 +461,27 @@ local createStyle = function(self)
   end
 
   -- oUF_Reputation
-  local Reputation = CreateFrame('StatusBar', nil, self)
-	Reputation:SetStatusBarTexture(m.textures.status_texture)
-	Reputation:SetPoint(cfg.elements.experiencebar.pos.a1, cfg.elements.experiencebar.pos.af,
-    cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
-	Reputation:SetHeight(cfg.elements.experiencebar.height)
-	Reputation:SetWidth(cfg.elements.experiencebar.width)
-  core:setBackdrop(Reputation, 2, 2, 2, 2)
-  Reputation.colorStanding = true
-	self.Reputation = Reputation
-  self.Reputation.PostUpdate = ReputationPostUpdate
+  if cfg.elements.experiencebar.show then
+    local Reputation = CreateFrame('StatusBar', nil, self)
+  	Reputation:SetStatusBarTexture(m.textures.status_texture)
+  	Reputation:SetPoint(cfg.elements.experiencebar.pos.a1, cfg.elements.experiencebar.pos.af,
+      cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
+  	Reputation:SetHeight(cfg.elements.experiencebar.height)
+  	Reputation:SetWidth(cfg.elements.experiencebar.width)
+    core:setBackdrop(Reputation, 2, 2, 2, 2)
+    Reputation.colorStanding = true
+  	self.Reputation = Reputation
+    self.Reputation.PostUpdate = ReputationPostUpdate
 
-  local ReputationBG = Reputation:CreateTexture(nil, 'BORDER')
-  ReputationBG:SetAllPoints()
-  ReputationBG:SetAlpha(0.3)
-  ReputationBG:SetTexture(m.textures.bg_texture)
-  ReputationBG:SetColorTexture(1/3, 1/3, 1/3)
+    local ReputationBG = Reputation:CreateTexture(nil, 'BORDER')
+    ReputationBG:SetAllPoints()
+    ReputationBG:SetAlpha(0.3)
+    ReputationBG:SetTexture(m.textures.bg_texture)
+    ReputationBG:SetColorTexture(1/3, 1/3, 1/3)
 
-  Reputation:SetScript('OnEnter', UpdateReputationTooltip)
-  Reputation:SetScript('OnLeave', GameTooltip_Hide)
+    Reputation:SetScript('OnEnter', UpdateReputationTooltip)
+    Reputation:SetScript('OnLeave', GameTooltip_Hide)
+  end
 
   -- oUF_ArcanePower
   if cfg.elements.arcanepowerbar.show then
