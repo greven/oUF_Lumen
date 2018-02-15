@@ -84,7 +84,8 @@ filters.list = {
     },
 
     debuffs = {
-
+      [GetSpellInfo(589) or "Shadow Word: Pain"] = true,		    	           -- Shadow Word: Pain
+      [GetSpellInfo(34914) or "Vampiric Touch"] = true,   		    	         -- Vampiric Touch
     }
   },
 
