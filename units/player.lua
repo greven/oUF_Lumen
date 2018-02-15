@@ -29,48 +29,54 @@ local PostUpdateHealth = function(health, unit, min, max)
   end
 end
 
--- Post Update ClassIcon
-local function PostUpdateClassIcon(element, cur, max, diff, powerType, event)
-	if(diff or event == 'ClassPowerEnable') then
-		element:UpdateTexture()
+-- Post Update ClassPower
+local function PostUpdateClassPower(element, cur, max, diff, powerType)
+  local lastIconColor = {
+    DRUID = {255/255, 26/255, 48/255},
+    MAGE = {238/255, 48/255, 83/255},
+    MONK = {0/255, 143/255, 247/255},
+    PALADIN = {255/255, 26/255, 48/255},
+    ROGUE = {255/255, 26/255, 48/255},
+    WARLOCK = {255/255, 26/255, 48/255},
+}
 
-    local lastIconColor = {
-      DRUID = {255/255, 26/255, 48/255},
-      MAGE = {238/255, 48/255, 83/255},
-      MONK = {0/255, 143/255, 247/255},
-      PALADIN = {255/255, 26/255, 48/255},
-      ROGUE = {255/255, 26/255, 48/255},
-      WARLOCK = {255/255, 26/255, 48/255},
-    }
+  if(diff) then
+    local maxWidth, gap = cfg.frames.main.width, 6
 
 		for index = 1, max do
-			local ClassIcon = element[index]
-      local maxWidth, gap = cfg.frames.main.width, 6
+      local Bar = element[index]
+      
+			if(max == 3) then
+        Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
+			elseif(max == 4) then
+        Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
+			elseif(max == 5 or max == 10) then
+        Bar:SetWidth(((maxWidth / 5) - ((4 * gap) / 5)))
+			elseif(max == 6) then
+        Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
+			end
 
-      if(max == 5 or max == 8) then
-        ClassIcon:SetWidth(((maxWidth / 5) - ((4 * gap) / 5)))
-      else
-        ClassIcon:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
-      end
-
-			if(max == 8) then -- Rogue anticipation
+			if(max == 10) then
+				-- Rogue anticipation talent
 				if(index == 6) then
-					ClassIcon:ClearAllPoints()
-					ClassIcon:SetPoint('LEFT', element[index - 5])
-				end
-
-				if(index > 5) then
-					ClassIcon.Texture:SetColorTexture(25/255, 255/255, 255/255)
+					Bar:ClearAllPoints()
+					Bar:SetPoint('LEFT', element[index - 5])
+        end
+        
+        -- Color rogue anticipation points >5
+        if(index > 5) then
+					Bar.bg:SetColorTexture(25/255, 255/255, 255/255)
         elseif(index == 5) then
-          ClassIcon.Texture:SetColorTexture(255/255, 26/255, 48/255)
+          Bar.bg:SetColorTexture(255/255, 26/255, 48/255)
 				end
 			else
 				if(index > 1) then
-					ClassIcon:ClearAllPoints()
-					ClassIcon:SetPoint('LEFT', element[index - 1], 'RIGHT', gap, 0)
-				end
+					Bar:ClearAllPoints()
+					Bar:SetPoint('LEFT', element[index - 1], 'RIGHT', gap, 0)
+        end
+        -- Colorize the last bar
         if(index == max) then
-          ClassIcon.Texture:SetColorTexture(unpack(lastIconColor[core.playerClass]))
+          Bar:SetStatusBarColor(unpack(lastIconColor[core.playerClass]))
         end
 			end
 		end
@@ -78,13 +84,14 @@ local function PostUpdateClassIcon(element, cur, max, diff, powerType, event)
 end
 
 -- Post Update ClassIcon Texture
-local function UpdateClassIconTexture(element)
-	local r, g, b = 255/255, 255/255, 102/255
+local function UpdateClassPowerColor(element)
+  local r, g, b = 255/255, 255/255, 102/255
+  
 	if(not UnitHasVehicleUI('player')) then
 		if(core.playerClass == 'MONK') then
 			r, g, b = 0, 4/5, 3/5
 		elseif(core.playerClass == 'WARLOCK') then
-			r, g, b = 161/255, 92/255, 255/255
+      r, g, b = 161/255, 92/255, 255/255
 		elseif(core.playerClass == 'PALADIN') then
 			r, g, b = 255/255, 255/255, 125/255
 		elseif(core.playerClass == 'MAGE') then
@@ -92,36 +99,46 @@ local function UpdateClassIconTexture(element)
 		end
 	end
 
-	for index = 1, 8 do
-		local ClassIcon = element[index]
-		ClassIcon.Texture:SetColorTexture(r, g, b)
+	for index = 1, #element do
+		local Bar = element[index]
+		if(core.playerClass == 'ROGUE' and UnitPowerMax('player', SPELL_POWER_COMBO_POINTS) == 10 and index > 5) then
+			r, g, b = 1, 0, 0
+    end
+    
+		Bar:SetStatusBarColor(r, g, b)
+		Bar.bg:SetColorTexture(r * 1/3, g * 1/3, b * 1/3)
 	end
 end
 
--- Create Class Icons (Combo Points...)
-local function CreateClassIcons(self)
-  local ClassIcons = {}
-  ClassIcons.UpdateTexture = UpdateClassIconTexture
-  ClassIcons.PostUpdate = PostUpdateClassIcon
+-- Create Class Power Bars (Combo Points...)
+local function CreateClassPower(self)
+  local ClassPower = {}
+  ClassPower.UpdateColor = UpdateClassPowerColor
+  ClassPower.PostUpdate = PostUpdateClassPower
 
-  for index = 1, 8 do
-    local ClassIcon = CreateFrame('Frame', "oUF_LumenClassIcons", self)
-    ClassIcon:SetHeight(cfg.frames.main.power.height)
-    core:setBackdrop(ClassIcon, 2, 2, 2, 2)
+  for index = 1, 11 do
+    local Bar = CreateFrame('StatusBar', 'oUF_LumenClassPower', self)
+    Bar:SetHeight(cfg.frames.main.power.height)
+    Bar:SetStatusBarTexture(m.textures.status_texture)
+    core:setBackdrop(Bar, 2, 2, 2, 2)
 
     if(index > 1) then
-      ClassIcon:SetPoint('LEFT', ClassIcons[index - 1], 'RIGHT', 6, 0)
+      Bar:SetPoint('LEFT', ClassPower[index - 1], 'RIGHT', 6, 0)
     else
-      ClassIcon:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
+      Bar:SetPoint('TOPLEFT', self, 'BOTTOMLEFT', 0, -8)
     end
 
-    local Texture = ClassIcon:CreateTexture(nil, m.textures.status_texture, nil, index > 5 and 1 or 0)
-    Texture:SetAllPoints()
-    ClassIcon.Texture = Texture
+    if(index > 5) then
+      Bar:SetFrameLevel(Bar:GetFrameLevel() + 1)
+    end
 
-    ClassIcons[index] = ClassIcon
+    local Background = Bar:CreateTexture(nil, 'BORDER')
+    Background:SetAllPoints()
+    Bar.bg = Background
+
+    ClassPower[index] = Bar
   end
-  self.ClassIcons = ClassIcons
+  self.ClassPower = ClassPower
 end
 
 -- Death Knight Runebar
@@ -148,11 +165,10 @@ local CreateRuneBar = function(self)
   self.Runes = Runes
 end
 
--- Druid Mana post update callback
-local DruidManaPostUpdate = function(self, unit, cur, max)
+-- AdditionalPower post update callback
+local AdditionalPowerPostUpdate = function(self, unit, cur, max)
   local powerType = UnitPowerType(unit)
-
-  -- Hide DruidMana if full
+  -- Hide bar if full
   if(cur == max or powerType == 0) then
     self:Hide()
   else
@@ -160,38 +176,38 @@ local DruidManaPostUpdate = function(self, unit, cur, max)
   end
 end
 
--- Create alternate power (oUF Druid Mana)
-local CreateAlternatePower = function(self)
+-- Create additional power (oUF Druid Mana)
+local CreateAdditionalPower = function(self)
   local height = core.playerClass == "DRUID" and -16 or -10 -- Druid has combo points also
 
-  local DruidMana = CreateFrame("StatusBar", nil, self)
-  DruidMana:SetStatusBarTexture(m.textures.status_texture)
-  DruidMana:GetStatusBarTexture():SetHorizTile(false)
-  DruidMana:SetSize(self.cfg.width, self.cfg.altpower.height)
-  DruidMana:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
-  DruidMana.colorPower = true
+  local AdditionalPower = CreateFrame("StatusBar", nil, self)
+  AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
+  AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
+  AdditionalPower:SetSize(self.cfg.width, self.cfg.altpower.height)
+  AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
+  AdditionalPower.colorPower = true
 
   -- Add a background
-  local Background = DruidMana:CreateTexture(nil, 'BACKGROUND')
-  Background:SetAllPoints(DruidMana)
+  local Background = AdditionalPower:CreateTexture(nil, 'BACKGROUND')
+  Background:SetAllPoints(AdditionalPower)
   Background:SetAlpha(0.20)
   Background:SetTexture(m.textures.bg_texture)
 
   -- Value
-  local PowerValue = core:createFontstring(DruidMana, font, cfg.fontsize -4, "THINOUTLINE")
-  PowerValue:SetPoint("RIGHT", DruidMana, -8, 0)
+  local PowerValue = core:createFontstring(AdditionalPower, font, cfg.fontsize -4, "THINOUTLINE")
+  PowerValue:SetPoint("RIGHT", AdditionalPower, -8, 0)
   PowerValue:SetJustifyH("RIGHT")
   self:Tag(PowerValue, '[lumen:altpower]')
 
   -- Backdrop
-  core:setBackdrop(DruidMana, 2, 2, 2, 2)
+  core:setBackdrop(AdditionalPower, 2, 2, 2, 2)
 
   -- Post Update
-  DruidMana.PostUpdate = DruidManaPostUpdate
+  AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
 
   -- Register it with oUF
-  self.DruidMana = DruidMana
-  self.DruidMana.bg = Background
+  self.AdditionalPower = AdditionalPower
+  self.AdditionalPower.bg = Background
 end
 
 -- Post Update Aura Icon
@@ -263,8 +279,8 @@ local function UpdateReputationTooltip(self)
 end
 
 -- AltPower PostUpdate
-local AltPowerPostUpdate = function(self, min, cur, max)
-	if not self.Text then return end
+local AltPowerPostUpdate = function(self, unit, cur, min, max)
+	if self.unit ~= unit then return end
 
 	local _, r, g, b = _G.UnitAlternatePowerTextureInfo(self.__owner.unit, 2)
 
@@ -273,7 +289,6 @@ local AltPowerPostUpdate = function(self, min, cur, max)
 	end
 
 	self:SetStatusBarColor(r, g, b)
-
 	if cur < max then
 		if self.isMouseOver then
 			self.Text:SetFormattedText("%s / %s - %d%%", core:shortNumber(cur), core:shortNumber(max), core:NumberToPerc(cur, max))
@@ -291,7 +306,7 @@ local AltPowerPostUpdate = function(self, min, cur, max)
 	end
 end
 
-local function AltPowerBarOnEnter(self)
+local function AlternativePowerOnEnter(self)
 	if not self:IsVisible() then return end
 
 	self.isMouseOver = true
@@ -300,35 +315,36 @@ local function AltPowerBarOnEnter(self)
 	self:UpdateTooltip()
 end
 
-local function AltPowerBarOnLeave(self)
+local function AlternativePowerOnLeave(self)
 	self.isMouseOver = nil
 	self:ForceUpdate()
 	_G.GameTooltip:Hide()
 end
 
 -- AltPower (quest or boss special power)
-local CreateAltPowerBar = function(self)
-	local AltPowerBar = CreateFrame('StatusBar', nil, self)
-	AltPowerBar:SetStatusBarTexture(m.textures.status_texture)
-	core:setBackdrop(AltPowerBar, 2, 2, 2, 2)
-	AltPowerBar:SetHeight(16)
-	AltPowerBar:SetWidth(200)
-	AltPowerBar:SetPoint('CENTER', 'UIParent', 'CENTER', 0, 350)
+local CreateAlternativePower = function(self)
+	local AlternativePower = CreateFrame('StatusBar', nil, self)
+	AlternativePower:SetStatusBarTexture(m.textures.status_texture)
+	core:setBackdrop(AlternativePower, 2, 2, 2, 2)
+	AlternativePower:SetHeight(16)
+	AlternativePower:SetWidth(200)
+	AlternativePower:SetPoint('CENTER', 'UIParent', 'CENTER', 0, 350)
 
-	AltPowerBar.Text = core:createFontstring(AltPowerBar, font, 10, "THINOUTLINE")
-	AltPowerBar.Text:SetPoint("CENTER", 0, 0)
+	AlternativePower.Text = core:createFontstring(AlternativePower, font, 10, "THINOUTLINE")
+	AlternativePower.Text:SetPoint("CENTER", 0, 0)
 
-	local AltPowerBarBG = AltPowerBar:CreateTexture(nil, 'BORDER')
-	AltPowerBarBG:SetAllPoints()
-	AltPowerBarBG:SetAlpha(0.3)
-	AltPowerBarBG:SetTexture(m.textures.bg_texture)
-	AltPowerBarBG:SetColorTexture(1/3, 1/3, 1/3)
+	local AlternativePowerBG = AlternativePower:CreateTexture(nil, 'BORDER')
+	AlternativePowerBG:SetAllPoints()
+	AlternativePowerBG:SetAlpha(0.3)
+	AlternativePowerBG:SetTexture(m.textures.bg_texture)
+	AlternativePowerBG:SetColorTexture(1/3, 1/3, 1/3)
 
-	AltPowerBar:EnableMouse(true)
-	AltPowerBar:SetScript("OnEnter", AltPowerBarOnEnter)
-	AltPowerBar:SetScript("OnLeave", AltPowerBarOnLeave)
-	AltPowerBar.PostUpdate = AltPowerPostUpdate
-	self.AltPowerBar = AltPowerBar
+	AlternativePower:EnableMouse(true)
+	AlternativePower:SetScript("OnEnter", AlternativePowerOnEnter)
+	AlternativePower:SetScript("OnLeave", AlternativePowerOnLeave)
+  AlternativePower.PostUpdate = AltPowerPostUpdate
+  
+	self.AlternativePower = AlternativePower
 end
 
 -- Post Update BarTimer Aura
@@ -401,7 +417,7 @@ local createStyle = function(self)
   -- Class Icons
   if core.playerClass == 'ROGUE' or core.playerClass == 'DRUID' or core.playerClass == 'MAGE'
     or core.playerClass == 'MONK' or core.playerClass == 'PALADIN' or core.playerClass == 'WARLOCK' then
-      CreateClassIcons(self)
+      CreateClassPower(self)
   end
 
   -- Death Knight Runes
@@ -409,12 +425,12 @@ local createStyle = function(self)
 
   -- Alternate Power Bar
   if core.playerClass == 'PRIEST' or core.playerClass == 'MONK' or core.playerClass == 'SHAMAN' then
-    CreateAlternatePower(self)
+    CreateAdditionalPower(self)
   end
 
 	-- AltPower (quest or boss special power)
 	if cfg.elements.altpowerbar.show then
-		CreateAltPowerBar(self)
+		CreateAlternativePower(self)
 	end
 
   -- Combat indicator
@@ -422,7 +438,7 @@ local createStyle = function(self)
   Combat:SetPoint("RIGHT", self, "LEFT", -4, 1)
   Combat:SetText("Q")
   Combat:SetTextColor(255/255, 26/255, 48/255)
-  self.Combat = Combat
+  self.CombatIndicator = Combat
 
   -- Resting
   if not core:isPlayerMaxLevel() then
@@ -430,7 +446,7 @@ local createStyle = function(self)
     Resting:SetPoint("CENTER", self.Health, "TOP", 0, 0)
     Resting:SetText("zZz")
     Resting:SetTextColor(255/255, 255/255, 255/255, 0.70)
-    self.Resting = Resting
+    self.RestingIndicator = Resting
   end
 
   -- oUF_Experience

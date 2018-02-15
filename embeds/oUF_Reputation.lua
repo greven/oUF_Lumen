@@ -3,14 +3,36 @@ local oUF = ns.oUF or oUF
 assert(oUF, 'oUF Reputation was unable to locate oUF install')
 
 local function GetReputation()
-	local name, _, standingID, min, max, value, _, _, _, _, _, _, _, factionID = GetFactionInfo(GetSelectedFaction())
-	local _, friendMin, friendMax, _, _, _, friendStanding, friendThreshold = GetFriendshipReputation(factionID)
+	local pendingReward
+	local name, standingID, min, max, cur, factionID = GetWatchedFactionInfo()
 
-	if(not friendMin) then
-		return value - min, max - min, name, factionID, standingID, GetText('FACTION_STANDING_LABEL' .. standingID, UnitSex('player'))
+	local friendID, _, _, _, _, _, standingText, _, nextThreshold = GetFriendshipReputation(factionID)
+	if(friendID) then
+		if(not nextThreshold) then
+			min, max, cur = 0, 1, 1 -- force a full bar when maxed out
+		end
+		standingID = 5 -- force friends' color
 	else
-		return friendMin - friendThreshold, math.min(friendMax - friendThreshold, 8400), name, factionID, standingID, friendStanding
+		local value, nextThreshold, _, hasRewardPending = C_Reputation.GetFactionParagonInfo(factionID)
+		if(value) then
+			cur = value % nextThreshold
+			min = 0
+			max = nextThreshold
+			pendingReward = hasRewardPending
+			standingID = MAX_REPUTATION_REACTION + 1 -- force paragon's color
+			standingText = PARAGON
+		end
 	end
+
+	max = max - min
+	cur = cur - min
+	-- cur and max are both 0 for maxed out factions
+	if(cur == max) then
+		cur, max = 1, 1
+	end
+	standingText = standingText or GetText('FACTION_STANDING_LABEL' .. standingID, UnitSex('player'))
+
+	return cur, max, name, factionID, standingID, standingText, pendingReward
 end
 
 for tag, func in next, {
@@ -39,24 +61,61 @@ for tag, func in next, {
 end
 
 oUF.Tags.SharedEvents.UPDATE_FACTION = true
+oUF.colors.reaction[MAX_REPUTATION_REACTION + 1] = {0, 0.5, 0.9} -- paragon color
+
+local function UpdateTooltip(element)
+	local cur, max, name, factionID, standingID, standingText, pendingReward = GetReputation()
+	local _, desc = GetFactionInfoByID(factionID)
+	local color = element.__owner.colors.reaction[standingID]
+
+	GameTooltip:SetText(name, color[1], color[2], color[3])
+	GameTooltip:AddLine(desc, nil, nil, nil, true)
+	if(cur ~= max) then
+		GameTooltip:AddLine(format("%s (%s / %s)", standingText, BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max)), 1, 1, 1)
+	else
+		GameTooltip:AddLine(standingText, 1, 1, 1)
+	end
+	GameTooltip:Show()
+end
+
+local function OnEnter(element)
+	element:SetAlpha(element.inAlpha)
+	GameTooltip:SetOwner(element, element.tooltipAnchor)
+	element:UpdateTooltip()
+end
+
+local function OnLeave(element)
+	GameTooltip:Hide()
+	element:SetAlpha(element.outAlpha)
+end
+
+local function OnMouseUp()
+	ToggleCharacter("ReputationFrame")
+end
 
 local function Update(self, event, unit)
 	local element = self.Reputation
 	if(element.PreUpdate) then element:PreUpdate(unit) end
 
-	local cur, max, name, factionID, standingID, standingText = GetReputation()
+	local cur, max, name, factionID, standingID, standingText, pendingReward = GetReputation()
 	if(name) then
 		element:SetMinMaxValues(0, max)
 		element:SetValue(cur)
 
 		if(element.colorStanding) then
-			local color = FACTION_BAR_COLORS[standingID]
-			element:SetStatusBarColor(color.r, color.g, color.b)
+			local colors = self.colors.reaction[standingID]
+			element:SetStatusBarColor(colors[1], colors[2], colors[3])
+		end
+
+		if(element.Reward) then
+			-- no idea what this function actually does, but Blizzard uses it as well
+			C_Reputation.RequestFactionParagonPreloadRewardData(factionID)
+			element.Reward:SetShown(pendingReward)
 		end
 	end
 
 	if(element.PostUpdate) then
-		return element:PostUpdate(unit, cur, max, name, factionID, standingID, standingText)
+		return element:PostUpdate(unit, cur, max, name, factionID, standingID, standingText, pendingReward)
 	end
 end
 
@@ -65,9 +124,11 @@ local function Path(self, ...)
 end
 
 local function ElementEnable(self)
+	local element = self.Reputation
 	self:RegisterEvent('UPDATE_FACTION', Path, true)
 
-	self.Reputation:Show()
+	element:Show()
+	element:SetAlpha(element.outAlpha or 1)
 
 	Path(self, 'ElementEnable', 'player')
 end
@@ -82,13 +143,11 @@ end
 
 local function Visibility(self, event, unit, selectedFactionIndex)
 	local shouldEnable
-	local selectedFaction = GetSelectedFaction()
-
 	if(selectedFactionIndex ~= nil) then
-		if(selectedFactionIndex == selectedFaction) then
+		if(selectedFactionIndex > 0) then
 			shouldEnable = true
 		end
-	elseif(selectedFaction and select(12, GetFactionInfo(selectedFaction))) then
+	elseif(not not (GetWatchedFactionInfo())) then
 		shouldEnable = true
 	end
 
@@ -114,11 +173,36 @@ local function Enable(self, unit)
 		element.ForceUpdate = ForceUpdate
 
 		hooksecurefunc('SetWatchedFactionIndex', function(selectedFactionIndex)
-			VisibilityPath(self, 'SetWatchedFactionIndex', 'player', selectedFactionIndex)
+			if(self:IsElementEnabled('Reputation')) then
+				VisibilityPath(self, 'SetWatchedFactionIndex', 'player', selectedFactionIndex or 0)
+			end
 		end)
 
 		if(not element:GetStatusBarTexture()) then
 			element:SetStatusBarTexture([[Interface\TargetingFrame\UI-StatusBar]])
+		end
+
+		if(element.Reward and element.Reward:IsObjectType('Texture') and not element.Reward:GetTexture()) then
+			element.Reward:SetAtlas('ParagonReputation_Bag')
+		end
+
+		if(element:IsMouseEnabled()) then
+			element.UpdateTooltip = element.UpdateTooltip or UpdateTooltip
+			element.tooltipAnchor = element.tooltipAnchor or 'ANCHOR_BOTTOMRIGHT'
+			element.inAlpha = element.inAlpha or 1
+			element.outAlpha = element.outAlpha or 1
+
+			if(not element:GetScript('OnEnter')) then
+				element:SetScript('OnEnter', OnEnter)
+			end
+
+			if(not element:GetScript('OnLeave')) then
+				element:SetScript('OnLeave', OnLeave)
+			end
+
+			if(not element:GetScript('OnMouseUp')) then
+				element:SetScript('OnMouseUp', OnMouseUp)
+			end
 		end
 
 		return true

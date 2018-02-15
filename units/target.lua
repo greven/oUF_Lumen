@@ -120,7 +120,7 @@ local createStyle = function(self)
   QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 5, -2)
   QuestIcon:SetText("!")
   QuestIcon:SetTextColor(238/255, 217/255, 43/255)
-  self.QuestIcon = QuestIcon
+  self.QuestIndicator = QuestIcon
 
   -- Raid Icons
   local RaidIcon = self:CreateTexture(nil, 'OVERLAY')

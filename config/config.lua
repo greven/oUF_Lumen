@@ -127,7 +127,6 @@ ns.cfg = cfg
         color = {5/255, 107/255, 246/255},
         width = cfg.frames.main.width * 2,
         height = cfg.frames.main.height,
-        pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height + 2, y = -42 },
         latency = {
           show = false,
           color = {1, 0, 0, 0.5},
