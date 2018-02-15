@@ -69,6 +69,7 @@ events['lumen:hpperc'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE'
 
 -- Power value
 tags['lumen:powervalue'] = function(unit)
+	-- Hide it if DC, Ghost or Dead!
 	local min, max = UnitPower(unit, UnitPowerType(unit)), UnitPowerMax(unit,  UnitPowerType(unit))
 	if min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
 		return ''
@@ -80,7 +81,9 @@ tags['lumen:powervalue'] = function(unit)
 
   local _, ptype = UnitPowerType(unit)
   if ptype == 'MANA' then
-	   return floor(min / max * 100)..'%'
+		 return floor(min / max * 100)..'%'
+	elseif ptype == 'INSANITY' then
+			return min / 100
   else
     return min
   end
