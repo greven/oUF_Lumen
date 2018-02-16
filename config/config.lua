@@ -310,13 +310,13 @@ ns.cfg = cfg
       show = true,
       height = 3,
       width = Minimap:GetWidth() + 4,
-      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = 14 },
+      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -12 },
     },
     arcanepowerbar = {
       show = true,
       height = 3,
       width = Minimap:GetWidth() + 4,
-      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = 4 },
+      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24 },
     },
     altpowerbar = {
       show = true
