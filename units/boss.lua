@@ -26,7 +26,6 @@ local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebu
 
 	if duration and duration > 0 then
 		icon.timeLeft = expirationTime - GetTime()
-
 	else
 		icon.timeLeft = math.huge
 	end

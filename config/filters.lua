@@ -80,78 +80,78 @@ filters.list = {
 
   PRIEST = {
     buffs = {
-
+      [GetSpellInfo(15286) or "Vampiric Embrace"] = true,
     },
 
     debuffs = {
-      [GetSpellInfo(589) or "Shadow Word: Pain"] = true,		    	           -- Shadow Word: Pain
-      [GetSpellInfo(34914) or "Vampiric Touch"] = true,   		    	         -- Vampiric Touch
+      [GetSpellInfo(589) or "Shadow Word: Pain"] = true,		    	           
+      [GetSpellInfo(34914) or "Vampiric Touch"] = true,   		    	         
     }
   },
 
   ROGUE = {
     buffs = {
-      [GetSpellInfo(13750) or "Adrenaline Rush"] = true,		    	           -- Adrenaline Rush
-      [GetSpellInfo(193356) or "Broadsides"] = true,						             -- Broadsides (Roll the Bones)
-      [GetSpellInfo(199600) or "Buried Treasure"] = true,						         -- Buried Treasure (Roll the Bones)
-      [GetSpellInfo(5277) or "Evasion"] = true,			    		                 -- Evasion
-      [GetSpellInfo(193358) or "Grand Melee"] = true,						             -- Grand Melee (Roll the Bones)
-      [GetSpellInfo(199603) or "Jolly Roger"] = true,						             -- Jolly Roger (Roll the Bones)
-      [GetSpellInfo(51713) or "Shadow Dance"] = true,			    	             -- Shadow Dance
-      [GetSpellInfo(193357) or "Shark Infested Waters"] = true,						   -- Shark Infested Waters (Roll the Bones)
-      [GetSpellInfo(5171) or "Slice and Dice"] = true,				               -- Slice and Dice
-      [GetSpellInfo(48594) or "Sprint"] = true,                						   -- Sprint
-      [GetSpellInfo(193359) or "True Bearing"] = true,						           -- True Bearing (Roll the Bones)
+      [GetSpellInfo(13750) or "Adrenaline Rush"] = true,		    	           
+      [GetSpellInfo(193356) or "Broadsides"] = true,						             
+      [GetSpellInfo(199600) or "Buried Treasure"] = true,						         
+      [GetSpellInfo(5277) or "Evasion"] = true,			    		                 
+      [GetSpellInfo(193358) or "Grand Melee"] = true,						             
+      [GetSpellInfo(199603) or "Jolly Roger"] = true,						             
+      [GetSpellInfo(51713) or "Shadow Dance"] = true,			    	             
+      [GetSpellInfo(193357) or "Shark Infested Waters"] = true,						   
+      [GetSpellInfo(5171) or "Slice and Dice"] = true,				               
+      [GetSpellInfo(48594) or "Sprint"] = true,                						   
+      [GetSpellInfo(193359) or "True Bearing"] = true,						           
     },
 
     debuffs = {
-      [GetSpellInfo(2094) or "Blind"] = true,					    	                 -- Blind
-      [GetSpellInfo(1833) or "Cheap Shot"] = true,										       -- Cheap Shot
-      [GetSpellInfo(703) or "Garrote"] = true,											         -- Garrote
-      [GetSpellInfo(1776) or "Gouge"] = true,					    						       -- Gouge
-      [GetSpellInfo(408) or "Kidney Shot"] = true,										       -- Kidney Shot
-      [GetSpellInfo(1943) or "Rupture"] = true,											         -- Rupture
-      [GetSpellInfo(6770) or "Sap"] = true,												           -- Sap
-      [GetSpellInfo(79140) or "Vendetta"] = true,								 			       -- Vendetta
+      [GetSpellInfo(2094) or "Blind"] = true,					    	                 
+      [GetSpellInfo(1833) or "Cheap Shot"] = true,										       
+      [GetSpellInfo(703) or "Garrote"] = true,											         
+      [GetSpellInfo(1776) or "Gouge"] = true,					    						        
+      [GetSpellInfo(408) or "Kidney Shot"] = true,										       
+      [GetSpellInfo(1943) or "Rupture"] = true,											         
+      [GetSpellInfo(6770) or "Sap"] = true,												           
+      [GetSpellInfo(79140) or "Vendetta"] = true,								 			       
     }
   },
 
   SHAMAN = {
     buffs = {
-      [GetSpellInfo(108281) or "Ancestral Guidance"] = true,			  	 	      -- Ancestral Guidance
-      [GetSpellInfo(201897) or "Boulderfist"] = true,			  	 	              -- Boulderfist
-      [GetSpellInfo(193796) or "Flametongue"] = true,			  	 	              -- Flametongue
-      [GetSpellInfo(196834) or "Frostbrand"] = true,			  	 	              -- Frostbrand
-      -- [GetSpellInfo(197992) or "Landslide"] = true,			  	 	                -- Landslide
-      [GetSpellInfo(73685) or "Unleash Life"] = true, 			  	 	            -- Unleash Life
+      [GetSpellInfo(108281) or "Ancestral Guidance"] = true,			  	 	      
+      [GetSpellInfo(201897) or "Boulderfist"] = true,			  	 	              
+      [GetSpellInfo(193796) or "Flametongue"] = true,			  	 	              
+      [GetSpellInfo(196834) or "Frostbrand"] = true,			  	 	              
+      -- [GetSpellInfo(197992) or "Landslide"] = true,			  	 	             
+      [GetSpellInfo(73685) or "Unleash Life"] = true, 			  	 	            
     },
 
     debuffs = {
-      [GetSpellInfo(188389) or "Flame Shock"] = true,			  	 	              -- Flame Shock
-      [GetSpellInfo(196840) or "Frost Shock"] = true,			  	 	              -- Frost Shock
-    }
+      [GetSpellInfo(188389) or "Flame Shock"] = true,			  	 	              
+      [GetSpellInfo(196840) or "Frost Shock"] = true,
+    }		  	 	              
   },
 
   WARLOCK = {
     buffs = {
-      [GetSpellInfo(216708) or "Deadwind Harvester"] = true,			  	 	     -- Deadwind Harvester
-      [GetSpellInfo(108416) or "Dark Pact"] = true,			  	 	               -- Dark Pact
-      [GetSpellInfo(104773) or "Unending Resolve"] = true,			  	 	       -- Unending Resolve
+      [GetSpellInfo(216708) or "Deadwind Harvester"] = true,			  	 	     
+      [GetSpellInfo(108416) or "Dark Pact"] = true,			  	 	               
+      [GetSpellInfo(104773) or "Unending Resolve"] = true,			  	 	       
     },
 
     debuffs = {
-      [GetSpellInfo(980) or "Agony"] = true,			  	 	                     -- Agony
-      [GetSpellInfo(172) or "Corruption"] = true,				  		               -- Corruption
-      [GetSpellInfo(603) or "Doom"] = true,								 			             -- Doom
-      [GetSpellInfo(1098) or "Enslave Demon"] = true, 								 			 -- Enslave Demon
-      -- [GetSpellInfo(196412) or "Eradication"] = true, 								 			 -- Eradication
-      [GetSpellInfo(5785) or "Fear"] = true,								 			           -- Fear
-      [GetSpellInfo(80240) or "Havoc"] = true,								 			         -- Havoc
-      [GetSpellInfo(348) or "Immolate"] = true,						                   -- Immolate
-      [GetSpellInfo(205179) or "Phantom Singularity"] = true,                -- Phantom Singularity
-      [GetSpellInfo(27243) or "Seed of Corruption"] = true,						       -- Seed of Corruption
-      [GetSpellInfo(63106) or "Siphon Life"] = true,						             -- Siphon Life
-      [GetSpellInfo(30108) or "Unstable Affliction"] = true,			           -- Unstable Affliction
+      [GetSpellInfo(980) or "Agony"] = true,			  	 	                     
+      [GetSpellInfo(172) or "Corruption"] = true,				  		               
+      [GetSpellInfo(603) or "Doom"] = true,								 			             
+      [GetSpellInfo(1098) or "Enslave Demon"] = true, 								 			 
+      -- [GetSpellInfo(196412) or "Eradication"] = true, 								 		
+      [GetSpellInfo(5785) or "Fear"] = true,								 			          
+      [GetSpellInfo(80240) or "Havoc"] = true,								 			         
+      [GetSpellInfo(348) or "Immolate"] = true,						                   
+      [GetSpellInfo(205179) or "Phantom Singularity"] = true,                
+      [GetSpellInfo(27243) or "Seed of Corruption"] = true,						       
+      [GetSpellInfo(63106) or "Siphon Life"] = true,						             
+      [GetSpellInfo(30108) or "Unstable Affliction"] = true,			           
     }
   },
 
@@ -161,18 +161,18 @@ filters.list = {
     },
 
     debuffs = {
-      [GetSpellInfo(710) or "Banish"] = true,				  			                 -- Banish
+      [GetSpellInfo(710) or "Banish"] = true,				  			                
     }
   },
 
   PET = {
     -- Buffs
-    [GetSpellInfo(193396) or "Demonic Empowerment"] = true,                  -- Demonic Empowerment (Warlock)
-    [GetSpellInfo(136) or "Mend Pet"] = true,						                     -- Mend Pet (Hunter)
+    [GetSpellInfo(193396) or "Demonic Empowerment"] = true,                  
+    [GetSpellInfo(136) or "Mend Pet"] = true,						                    
   },
 
   PARTY = {
     -- Debuffs
-    [GetSpellInfo(57723) or "Exhaustion"] = true,                            -- Exhaustion
+    [GetSpellInfo(57723) or "Exhaustion"] = true,                         
   }
 }

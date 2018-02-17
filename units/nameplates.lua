@@ -25,6 +25,42 @@ local cvars = {
   nameplateSelfScale = 1,
 }
 
+-- Post Update Aura Icon
+local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
+	local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+
+	if duration and duration > 0 then
+		icon.timeLeft = expirationTime - GetTime()
+	else
+		icon.timeLeft = math.huge
+	end
+
+	icon:SetScript('OnUpdate', function(self, elapsed)
+		auras:AuraTimer_OnUpdate(self, elapsed)
+	end)
+end
+
+local PostCreateIcon = function(Auras, button)
+	local count = button.count
+	count:ClearAllPoints()
+	count:SetFont(m.fonts.font, 8, 'OUTLINE')
+	count:SetPoint('TOPRIGHT', button, 3, 3)
+
+  button.icon:SetTexCoord(.07, .93, .07, .93)
+
+  button.overlay:SetTexture(m.textures.border)
+  button.overlay:SetTexCoord(0, 1, 0, 1)
+  button.overlay.Hide = function(self) self:SetVertexColor(0.3, 0.3, 0.3) end
+
+	button.time = button:CreateFontString(nil, 'OVERLAY')
+	button.time:SetFont(m.fonts.font, 8, "THINOUTLINE")
+	button.time:SetPoint("BOTTOMLEFT", button, -2, -2)
+	button.time:SetTextColor(1, 1, 0.65)
+	button.time:SetShadowOffset(1, -1)
+	button.time:SetShadowColor(0, 0, 0, 1)
+	button.time:SetJustifyH('CENTER')
+end
+
 -- -----------------------------------
 -- > NAMEPLATES STYLE
 -- -----------------------------------
@@ -105,6 +141,19 @@ local createStyle = function(self, unit)
     castbar.Text:SetPoint("CENTER", castbar, 0, -10)
 
     self.Castbar = castbar
+  end
+
+  -- Debuffs
+  if cfg.units.nameplate.debuffs then
+    local debuffs = auras:CreateAura(self, 6, 1, 16, 1)
+    debuffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
+    debuffs.initialAnchor = "BOTTOMLEFT"
+    debuffs["growth-x"] = "RIGHT"
+    debuffs['growth-y'] = "UP"
+    debuffs.onlyShowPlayer = true
+    debuffs.PostUpdateIcon = PostUpdateIcon
+    debuffs.PostCreateIcon = PostCreateIcon
+    self.Debuffs = debuffs
   end
 
   -- Size and position

@@ -306,6 +306,7 @@ ns.cfg = cfg
       width = 100,
       height = 8,
       pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0 },
+      debuffs = true,
       castbar = {
         enable = true,
         color = {235/255, 25/255, 25/255},
