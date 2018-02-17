@@ -151,14 +151,14 @@ local createStyle = function(self)
   ReadyCheck:SetSize(16, 16)
   ReadyCheck.finishedTimer = 10
   ReadyCheck.fadeTimer = 2
-  self.ReadyCheck = ReadyCheck
+  self.ReadyCheckIndicator = ReadyCheck
 
   -- Role Icon
   local RoleIcon = self:CreateTexture(nil, 'OVERLAY')
   RoleIcon:SetPoint('RIGHT', self, 'LEFT', -8, 1)
   RoleIcon:SetSize(16, 16)
   RoleIcon:SetAlpha(0)
-  self.LFDRole = RoleIcon
+  self.GroupRoleIndicator = RoleIcon
 
   self:HookScript('OnEnter', function() RoleIcon:SetAlpha(1) end)
   self:HookScript('OnLeave', function() RoleIcon:SetAlpha(0) end)
@@ -167,7 +167,7 @@ local createStyle = function(self)
   local LeaderIcon = self:CreateTexture(nil, "OVERLAY")
   LeaderIcon:SetPoint('RIGHT', self, 'LEFT', -8, 1)
   LeaderIcon:SetSize(16, 16)
-  self.Leader = LeaderIcon
+  self.LeaderIndicator = LeaderIcon
 
   self:HookScript('OnEnter', function() LeaderIcon:SetAlpha(0) end)
   self:HookScript('OnLeave', function() LeaderIcon:SetAlpha(1) end)

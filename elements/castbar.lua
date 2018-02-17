@@ -142,7 +142,7 @@ function core:CreateCastbar(self)
 
     castbar.Icon:SetHeight(cfg.units.focus.castbar.height)
     castbar.Icon:SetWidth(cfg.units.focus.castbar.height)
-    castbar.Icon:SetPoint("LEFT", castbar, -(cfg.units.focus.castbar.height + 2), 0)
+    castbar.Icon:SetPoint("LEFT", castbar, - (cfg.units.focus.castbar.height + 2), 0)
 
     -- Interrupt
     core:setglowBorder(castbar)

@@ -20,10 +20,20 @@ events['lumen:name'] = 'UNIT_NAME_UPDATE UNIT_CONNECTION UNIT_ENTERING_VEHICLE U
 -- Unit smart level
 tags['lumen:level'] = function(unit)
   local l = UnitLevel(unit)
-
-  if l <= 0 then l = "??" end
-
+	if l <= 0 then l = "??" end
   return '|cffb9b9b9'..l..'|r'
+end
+events['lumen:level'] = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED'
+
+-- Unit smart level with color
+tags['lumen:levelplus'] = function(unit)
+	local c = UnitClassification(unit)
+	local l = UnitLevel(unit)
+	local d = GetQuestDifficultyColor(l)
+
+	if l <= 0 then l = "??" end
+	
+  return string.format("|cff%02x%02x%02x%s",d.r*255, d.g*255, d.b*255, l)
 end
 events['lumen:level'] = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED'
 
@@ -90,7 +100,7 @@ tags['lumen:powervalue'] = function(unit)
 end
 events['lumen:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
 
--- Alternate Power Percent (oUF Druid Mana)
+-- Alternate Power Percent (oUF Alternate Power)
 oUF.Tags.Methods["lumen:altpower"] = function(unit)
   local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 

@@ -126,7 +126,7 @@ local createStyle = function(self)
   local RaidIcon = self:CreateTexture(nil, 'OVERLAY')
   RaidIcon:SetPoint('LEFT', self, 'RIGHT', 8, 0)
   RaidIcon:SetSize(20, 20)
-  self.RaidIcon = RaidIcon
+  self.RaidTargetIndicator = RaidIcon
 
   -- Heal Prediction
   CreateHealPrediction(self)

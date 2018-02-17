@@ -10,9 +10,9 @@ local font_big = m.fonts.font_big
 
 local frame = "player"
 
--- ------------------------------------------------------------------------
--- > PLAYER UNIT SPECIFIC FUNCTiONS
--- ------------------------------------------------------------------------
+-- -----------------------------------
+-- > PLAYER UNIT SPECIFIC FUNCTIONS
+-- -----------------------------------
 
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
@@ -231,25 +231,25 @@ local function UpdateExperienceTooltip(self)
   GameTooltip:SetOwner(self, 'ANCHOR_NONE')
   GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
 
-	if not (UnitLevel('player') == MAX_PLAYER_LEVEL and IsWatchingHonorAsXP()) then
-		local cur = UnitXP('player')
-		local max = UnitXPMax('player')
-		local per = math.floor(cur / max * 100 + 0.5)
-		local rested = math.floor((GetXPExhaustion() or 0) / max * 100 + 0.5)
+  local isHonor = IsWatchingHonorAsXP()
+	local cur = (isHonor and UnitHonor or UnitXP)('player')
+	local max = (isHonor and UnitHonorMax or UnitXPMax)('player')
+	local per = math.floor(cur / max * 100 + 0.5)
+	local bars = cur / max * (isHonor and 5 or 20)
 
-		GameTooltip:SetText(string.format('%s / %s (%s%%)', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max), per))
-		GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', cur / max * 20, rested))
-		GameTooltip:Show()
-  else -- Honor System
-    local cur = UnitHonor('player')
-		local max = UnitHonorMax('player')
-    local rested = math.floor((GetHonorExhaustion() or 0) / max * 100 + 0.5)
-
+	local rested = (isHonor and GetHonorExhaustion or GetXPExhaustion)() or 0
+  rested = math.floor(rested / max * 100 + 0.5)
+  
+  if isHonor then
     GameTooltip:SetText(string.format('Honor Rank %s', UnitHonorLevel('player')))
     GameTooltip:AddLine(string.format('|cffff4444%s / %s Points|r', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max)))
-    GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', cur / max * 5, rested))
+    GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', bars, rested))
     GameTooltip:Show()
-	end
+  else 
+    GameTooltip:SetText(string.format('%s / %s (%s%%)', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max), per))
+		GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', bars, rested))
+		GameTooltip:Show()
+  end
 end
 
 -- Color the Experience Bar
@@ -266,11 +266,12 @@ end
 
 -- oUF_Reputation Tooltip
 local function UpdateReputationTooltip(self)
+  GameTooltip:SetOwner(self, 'ANCHOR_NONE')
+  GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
+  
   local name, standing, min, max, value = GetWatchedFactionInfo()
   local color = FACTION_BAR_COLORS[standing]
 
-  GameTooltip:SetOwner(self, 'ANCHOR_NONE')
-  GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
   if name and color then
     GameTooltip:AddLine(format('|cff%02x%02x%02x%s|r', color.r*255, color.g*255, color.b*255, name))
     GameTooltip:AddLine(format('|cffcecece%s:|r |cffb7b7b7%d / %d|r', _G["FACTION_STANDING_LABEL"..standing], value - min, max - min))
@@ -457,23 +458,24 @@ local createStyle = function(self)
 			cfg.elements.experiencebar.pos.a2, cfg.elements.experiencebar.pos.x, cfg.elements.experiencebar.pos.y)
     Experience:SetHeight(cfg.elements.experiencebar.height)
     Experience:SetWidth(cfg.elements.experiencebar.width)
-    self.Experience = Experience
-    self.Experience.PostUpdate = ExperiencePostUpdate
 
     local Rested = CreateFrame('StatusBar', nil, Experience)
     Rested:SetStatusBarTexture(m.textures.status_texture)
     Rested:SetAllPoints(Experience)
     core:setBackdrop(Rested, 2, 2, 2, 2)
-    self.Experience.Rested = Rested
-
+    
     local ExperienceBG = Rested:CreateTexture(nil, 'BORDER')
     ExperienceBG:SetAllPoints()
     ExperienceBG:SetAlpha(0.3)
     ExperienceBG:SetTexture(m.textures.bg_texture)
     ExperienceBG:SetColorTexture(1/3, 1/3, 1/3)
 
-    Experience:SetScript('OnEnter', UpdateExperienceTooltip)
-    Experience:SetScript('OnLeave', GameTooltip_Hide)
+    Experience:EnableMouse(true)
+    Experience.UpdateTooltip = UpdateExperienceTooltip
+    Experience.PostUpdate = ExperiencePostUpdate
+    
+    self.Experience = Experience
+    self.Experience.Rested = Rested
   end
 
   -- oUF_Reputation
@@ -486,8 +488,6 @@ local createStyle = function(self)
   	Reputation:SetWidth(cfg.elements.experiencebar.width)
     core:setBackdrop(Reputation, 2, 2, 2, 2)
     Reputation.colorStanding = true
-  	self.Reputation = Reputation
-    self.Reputation.PostUpdate = ReputationPostUpdate
 
     local ReputationBG = Reputation:CreateTexture(nil, 'BORDER')
     ReputationBG:SetAllPoints()
@@ -495,8 +495,11 @@ local createStyle = function(self)
     ReputationBG:SetTexture(m.textures.bg_texture)
     ReputationBG:SetColorTexture(1/3, 1/3, 1/3)
 
-    Reputation:SetScript('OnEnter', UpdateReputationTooltip)
-    Reputation:SetScript('OnLeave', GameTooltip_Hide)
+    Reputation:EnableMouse(true)
+    Reputation.UpdateTooltip = UpdateReputationTooltip
+    Reputation.PostUpdate = ReputationPostUpdate
+
+    self.Reputation = Reputation
   end
 
   -- oUF_ArcanePower

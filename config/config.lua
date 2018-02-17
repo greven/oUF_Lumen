@@ -91,7 +91,7 @@ ns.cfg = cfg
     },
     range = {
       insideAlpha = 1,
-      outsideAlpha = .25,
+      outsideAlpha = 0.25,
     }
   }
 
@@ -159,7 +159,7 @@ ns.cfg = cfg
       castbar = {
         enable = true,
         color = {235/255, 25/255, 25/255},
-        width = cfg.frames.main.width * 2,
+        width = cfg.frames.main.width * 1.75,
         height = cfg.frames.main.height + 4,
       }
     },
@@ -298,6 +298,20 @@ ns.cfg = cfg
         smooth = true,
       },
     },
+    raid = {
+      show = true
+    },
+    nameplate = {
+      show = true,
+      width = 100,
+      height = 8,
+      pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0 },
+      castbar = {
+        enable = true,
+        color = {235/255, 25/255, 25/255},
+        height = 2,
+      }
+    }
   }
 
   cfg.elements = {
