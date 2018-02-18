@@ -38,7 +38,7 @@ function CreateHealPrediction(self)
 	absorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 	absorbBar:SetWidth(self.cfg.width)
 	absorbBar:SetStatusBarTexture(m.textures.status_texture)
-	absorbBar:SetStatusBarColor(220/255, 255/255, 230/255, .25)
+	absorbBar:SetStatusBarColor(180/255, 255/255, 205/255, .35)
 
 	local healAbsorbBar = CreateFrame('StatusBar', nil, self.Health)
 	healAbsorbBar:SetPoint('TOP')
@@ -46,7 +46,7 @@ function CreateHealPrediction(self)
 	healAbsorbBar:SetPoint('LEFT', self.Health:GetStatusBarTexture(), 'RIGHT')
 	healAbsorbBar:SetWidth(self.cfg.width)
 	healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
-	healAbsorbBar:SetStatusBarColor(220/255, 228/255, 255/255, .25)
+	healAbsorbBar:SetStatusBarColor(183/255, 244/255, 255/255, .35)
 
 	-- Register with oUF
 	self.HealthPrediction = {
