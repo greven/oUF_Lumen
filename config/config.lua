@@ -309,7 +309,7 @@ ns.cfg = cfg
       debuffs = true,
       castbar = {
         enable = true,
-        color = {235/255, 25/255, 25/255},
+        color = {123/255, 66/255, 200/255},
         height = 2,
       }
     }
