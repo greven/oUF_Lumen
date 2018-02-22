@@ -73,10 +73,6 @@ local createStyle = function(self, unit)
     return
   end
 
-  self:SetScale(cfg.scale)
-  core:setBackdrop(self, 2, 2, 2, 2)
-  core:createDropShadow(self, 4, 4, {0, 0, 0, cfg.frames.shadow.opacity})
-
   -- Health bar
   local health = CreateFrame("StatusBar", nil, self)
   health:SetAllPoints()
@@ -95,7 +91,7 @@ local createStyle = function(self, unit)
   self.Health = health
 
   -- Name strings
-  core:createNameString(self, font_big, cfg.fontsize - 2, "THINOUTLINE", 0, 4, "CENTER", self.cfg.width - 8)
+  core:createNameString(self, font_big, cfg.fontsize - 3, "THINOUTLINE", 0, 4, "CENTER", self.cfg.width - 4)
   self:Tag(self.Name, '[lumen:name]')
 
   -- Level
@@ -158,7 +154,10 @@ local createStyle = function(self, unit)
 
   -- Size and position
   self:SetSize(self.cfg.width, self.cfg.height)
-  self:SetPoint("CENTER", 0, 0)
+  self:SetPoint("CENTER", 0, -10)
+  self:SetScale(cfg.scale) -- self:SetScale(UIParent:GetEffectiveScale() * 1)
+  core:setBackdrop(self, 2, 2, 2, 2)
+  core:createDropShadow(self, 4, 4, {0, 0, 0, cfg.frames.shadow.opacity})
 end
 
 -- -----------------------------------

@@ -31,14 +31,14 @@ end
 
 -- Post Update ClassPower
 local function PostUpdateClassPower(element, cur, max, diff, powerType)
-  local lastIconColor = {
+  local lastBarColor = {
     DRUID = {255/255, 26/255, 48/255},
     MAGE = {238/255, 48/255, 83/255},
     MONK = {0/255, 143/255, 247/255},
     PALADIN = {255/255, 26/255, 48/255},
     ROGUE = {255/255, 26/255, 48/255},
-    WARLOCK = {255/255, 26/255, 48/255},
-}
+    WARLOCK = {255/255, 26/255, 48/255}
+  }
 
   if(diff) then
     local maxWidth, gap = cfg.frames.main.width, 6
@@ -56,13 +56,12 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
         Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
 			end
 
-			if(max == 10) then
-				-- Rogue anticipation talent
-				if(index == 6) then
+			if(max == 10) then -- Rogue anticipation talent
+        -- draw bars on top of the first 5
+        if(index == 6) then
 					Bar:ClearAllPoints()
 					Bar:SetPoint('LEFT', element[index - 5])
         end
-        
         -- Color rogue anticipation points >5
         if(index > 5) then
 					Bar.bg:SetColorTexture(25/255, 255/255, 255/255)
@@ -76,14 +75,14 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
         end
         -- Colorize the last bar
         if(index == max) then
-          Bar:SetStatusBarColor(unpack(lastIconColor[core.playerClass]))
+          Bar:SetStatusBarColor(unpack(lastBarColor[core.playerClass]))
         end
 			end
 		end
 	end
 end
 
--- Post Update ClassIcon Texture
+-- Post Update ClassPower Texture
 local function UpdateClassPowerColor(element)
   local r, g, b = 255/255, 255/255, 102/255
   
@@ -167,9 +166,13 @@ end
 
 -- AdditionalPower post update callback
 local AdditionalPowerPostUpdate = function(self, unit, cur, max)
-  local powerType = UnitPowerType(unit)
+  local powertype = UnitPowerType(unit)
+  if unit ~= 'player' or (powertype and powertype ~= ADDITIONAL_POWER_BAR_NAME) then return end
+  print(powertype)
+  print(ADDITIONAL_POWER_BAR_NAME)
+
   -- Hide bar if full
-  if(cur == max or powerType == 0) then
+  if cur == max or powertype == 0 then
     self:Hide()
   else
     self:Show()
@@ -178,7 +181,12 @@ end
 
 -- Create additional power (oUF Druid Mana)
 local CreateAdditionalPower = function(self)
-  local height = core.playerClass == "DRUID" and -16 or -10 -- Druid has combo points also
+  local height = -10 
+  
+  -- Classes which also have Class Power
+  if core.playerClass == "DRUID" or core.playerClass == "MONK" then
+    height = -16
+  end
 
   local AdditionalPower = CreateFrame("StatusBar", nil, self)
   AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
@@ -186,6 +194,9 @@ local CreateAdditionalPower = function(self)
   AdditionalPower:SetSize(self.cfg.width, self.cfg.altpower.height)
   AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
   AdditionalPower.colorPower = true
+
+  -- Post Update
+  AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
 
   -- Add a background
   local Background = AdditionalPower:CreateTexture(nil, 'BACKGROUND')
@@ -201,9 +212,6 @@ local CreateAdditionalPower = function(self)
 
   -- Backdrop
   core:setBackdrop(AdditionalPower, 2, 2, 2, 2)
-
-  -- Post Update
-  AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
 
   -- Register it with oUF
   self.AdditionalPower = AdditionalPower
@@ -414,7 +422,7 @@ local createStyle = function(self)
     core:CreateCastbar(self)
   end
 
-  -- Class Icons
+  -- Class Power (Combo Points, etc...)
   if core.playerClass == 'ROGUE' or core.playerClass == 'DRUID' or core.playerClass == 'MAGE'
     or core.playerClass == 'MONK' or core.playerClass == 'PALADIN' or core.playerClass == 'WARLOCK' then
       CreateClassPower(self)
