@@ -31,15 +31,6 @@ end
 
 -- Post Update ClassPower
 local function PostUpdateClassPower(element, cur, max, diff, powerType)
-  local lastBarColor = {
-    DRUID = {255/255, 26/255, 48/255},
-    MAGE = {238/255, 48/255, 83/255},
-    MONK = {0/255, 143/255, 247/255},
-    PALADIN = {255/255, 26/255, 48/255},
-    ROGUE = {255/255, 26/255, 48/255},
-    WARLOCK = {255/255, 26/255, 48/255}
-  }
-
   if(diff) then
     local maxWidth, gap = cfg.frames.main.width, 6
 
@@ -73,13 +64,22 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
 					Bar:ClearAllPoints()
 					Bar:SetPoint('LEFT', element[index - 1], 'RIGHT', gap, 0)
         end
-        -- Colorize the last bar
-        if(index == max) then
-          Bar:SetStatusBarColor(unpack(lastBarColor[core.playerClass]))
-        end
 			end
 		end
-	end
+  end
+
+  -- Colorize the last bar
+  local lastBarColor = {
+    DRUID = {255/255, 26/255, 48/255},
+    MAGE = {238/255, 48/255, 83/255},
+    MONK = {0/255, 143/255, 247/255},
+    PALADIN = {255/255, 26/255, 48/255},
+    ROGUE = {255/255, 26/255, 48/255},
+    WARLOCK = {255/255, 26/255, 48/255}
+  }
+  
+  local lastBar = element[max]
+  lastBar:SetStatusBarColor(unpack(lastBarColor[core.playerClass]))
 end
 
 -- Post Update ClassPower Texture
@@ -167,10 +167,7 @@ end
 -- AdditionalPower post update callback
 local AdditionalPowerPostUpdate = function(self, unit, cur, max)
   local powertype = UnitPowerType(unit)
-  if unit ~= 'player' or (powertype and powertype ~= ADDITIONAL_POWER_BAR_NAME) then return end
-  print(powertype)
-  print(ADDITIONAL_POWER_BAR_NAME)
-
+  if unit ~= 'player' or powertype == 0 then return end
   -- Hide bar if full
   if cur == max or powertype == 0 then
     self:Hide()
@@ -195,9 +192,6 @@ local CreateAdditionalPower = function(self)
   AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
   AdditionalPower.colorPower = true
 
-  -- Post Update
-  AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
-
   -- Add a background
   local Background = AdditionalPower:CreateTexture(nil, 'BACKGROUND')
   Background:SetAllPoints(AdditionalPower)
@@ -216,6 +210,7 @@ local CreateAdditionalPower = function(self)
   -- Register it with oUF
   self.AdditionalPower = AdditionalPower
   self.AdditionalPower.bg = Background
+  self.AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
 end
 
 -- Post Update Aura Icon
