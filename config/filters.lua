@@ -30,11 +30,13 @@ filters.list = {
 
   DRUID = {
     buffs = {
-
+      [GetSpellInfo(77764) or "Stampeding Roar"] = true,
     },
 
     debuffs = {
-
+      [GetSpellInfo(203123) or "Maim"] = true,
+      [GetSpellInfo(155722) or "Rake"] = true,
+      [GetSpellInfo(1079) or "Rip"] = true,
     }
   },
 
@@ -157,11 +159,11 @@ filters.list = {
 
   WARRIOR = {
     buffs = {
-
+      [GetSpellInfo(184364) or "Enraged Regeneration"] = true,	
     },
 
     debuffs = {
-      [GetSpellInfo(710) or "Banish"] = true,				  			                
+			  			                
     }
   },
 
