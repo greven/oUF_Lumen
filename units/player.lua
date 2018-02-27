@@ -78,8 +78,10 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
     WARLOCK = {255/255, 26/255, 48/255}
   }
   
-  local lastBar = element[max]
-  lastBar:SetStatusBarColor(unpack(lastBarColor[core.playerClass]))
+  if max then
+    local lastBar = element[max]
+    lastBar:SetStatusBarColor(unpack(lastBarColor[core.playerClass]))
+  end
 end
 
 -- Post Update ClassPower Texture
