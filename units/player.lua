@@ -152,7 +152,7 @@ local CreateRuneBar = function(self)
 
     Rune:SetSize(width, 3)
     Rune:SetStatusBarTexture(m.textures.status_texture)
-    Rune:SetStatusBarColor(unpack(oUF.colors.power["RUNES"]))
+    -- Rune:SetStatusBarColor(unpack(oUF.colors.power["RUNES"]))
     core:setBackdrop(Rune, 2, 2, 2, 2) -- Backdrop
 
     if(index == 1) then
@@ -163,6 +163,7 @@ local CreateRuneBar = function(self)
 
     Runes[index] = Rune
   end
+  Runes.colorSpec = true -- color runes by spec
   self.Runes = Runes
 end
 
