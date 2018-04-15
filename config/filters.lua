@@ -4,7 +4,7 @@ local filters = {}
 ns.filters = filters
 
 -- ------------------------------------------------------------------------
--- > AURAS FILTER LIST
+-- > BARTIMERS AURAS FILTER LIST
 -- ------------------------------------------------------------------------
 
 filters.list = {
@@ -20,11 +20,18 @@ filters.list = {
 
   DEATHKNIGHT = {
     buffs = {
-
+      -- [GetSpellInfo(195181) or "Bone Shield"] = true,
+      [GetSpellInfo(48792) or "Icebound Fortitude"] = true,
+      [GetSpellInfo(196770) or "Remorseless Winter"] = true,
+      [GetSpellInfo(207256) or "Obliteration"] = true,
+      [GetSpellInfo(55233) or "Vampiric Blood"] = true,
     },
 
     debuffs = {
-
+      [GetSpellInfo(55078) or "Blood Plague"] = true,
+      [GetSpellInfo(194310) or "Festering Wound"] = true,
+      [GetSpellInfo(191587) or "Virulent Plague"] = true,
+      [GetSpellInfo(191748) or "Scourge of Worlds"] = true, -- Artifact Weapon
     }
   },
 
@@ -83,6 +90,7 @@ filters.list = {
   PRIEST = {
     buffs = {
       [GetSpellInfo(15286) or "Vampiric Embrace"] = true,
+      [GetSpellInfo(194249) or "Voidform"] = true,
     },
 
     debuffs = {
@@ -136,6 +144,7 @@ filters.list = {
 
   WARLOCK = {
     buffs = {
+      [GetSpellInfo(117828) or "Backdraft"] = true,	
       [GetSpellInfo(216708) or "Deadwind Harvester"] = true,			  	 	     
       [GetSpellInfo(108416) or "Dark Pact"] = true,			  	 	               
       [GetSpellInfo(104773) or "Unending Resolve"] = true,			  	 	       
@@ -175,6 +184,7 @@ filters.list = {
 
   PARTY = {
     -- Debuffs
-    [GetSpellInfo(57723) or "Exhaustion"] = true,                         
+    [GetSpellInfo(57723) or "Exhaustion"] = true,
+    [GetSpellInfo(80354) or "Temporal Displacement"] = true,                   
   }
 }

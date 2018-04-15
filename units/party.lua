@@ -201,9 +201,9 @@ if cfg.units[frame].show then
 		'yOffset', -24,
 		'groupBy', 'ASSIGNEDROLE',
 		'groupingOrder', 'TANK,HEALER,DAMAGER',
-		'oUF-initialConfigFunction', [[
-			self:SetHeight(16)
-			self:SetWidth(126)
-		]]
-	):SetPoint(cfg.units.party.pos.a1, cfg.units.party.pos.af, cfg.units.party.pos.a2, cfg.units.party.pos.x, cfg.units.party.pos.y)
+		'oUF-initialConfigFunction', ([[
+			self:SetHeight(%d)
+			self:SetWidth(%d)
+		]]):format(cfg.units[frame].height, cfg.units[frame].width)
+	):SetPoint(cfg.units[frame].pos.a1, cfg.units[frame].pos.af, cfg.units[frame].pos.a2, cfg.units[frame].pos.x, cfg.units[frame].pos.y)
 end

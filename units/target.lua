@@ -132,7 +132,7 @@ local createStyle = function(self)
   CreateHealPrediction(self)
 
   -- BarTimers Auras
-  local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 4)
+  local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
   barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
   barTimers.initialAnchor = "BOTTOMLEFT"
   barTimers["growth-y"] = "UP"

@@ -1,7 +1,7 @@
 local _, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local auras, filters, debuffs = ns.auras, ns.filters, ns.debuffs
 
 local _G = _G
 
@@ -216,21 +216,6 @@ local CreateAdditionalPower = function(self)
   self.AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
 end
 
--- Post Update Aura Icon
-local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDebuff)
-	local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-	if duration and duration > 0 then
-		icon.timeLeft = expirationTime - GetTime()
-	else
-		icon.timeLeft = math.huge
-	end
-
-	icon:SetScript('OnUpdate', function(self, elapsed)
-		auras:AuraTimer_OnUpdate(self, elapsed)
-	end)
-end
-
 -- oUF_Experience Tooltip
 local function UpdateExperienceTooltip(self)
   GameTooltip:SetOwner(self, 'ANCHOR_NONE')
@@ -353,6 +338,53 @@ local CreateAlternativePower = function(self)
 	self.AlternativePower = AlternativePower
 end
 
+local PostCreateIcon = function(Auras, button)
+	local count = button.count
+	count:ClearAllPoints()
+	count:SetFont(m.fonts.font, 12, 'OUTLINE')
+	count:SetPoint('TOPRIGHT', button, 3, 3)
+
+  button.icon:SetTexCoord(.07, .93, .07, .93)
+
+  button.overlay:SetTexture(m.textures.border)
+  button.overlay:SetTexCoord(0, 1, 0, 1)
+  button.overlay.Hide = function(self) self:SetVertexColor(0.3, 0.3, 0.3) end
+
+  button.spell = button:CreateFontString(nil, 'OVERLAY')
+	button.spell:SetPoint("RIGHT", button, "LEFT", -4, 0)
+	button.spell:SetFont(m.fonts.font_big, 16, "THINOUTLINE")
+	button.spell:SetTextColor(1, 1, 1)
+	button.spell:SetShadowOffset(1, -1)
+	button.spell:SetShadowColor(0, 0, 0, 1)
+	button.spell:SetJustifyH("RIGHT")
+	button.spell:SetWordWrap(false)
+
+	button.time = button:CreateFontString(nil, 'OVERLAY')
+	button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
+	button.time:SetPoint("BOTTOMLEFT", button, -2, -2)
+	button.time:SetTextColor(1, 1, 0.65)
+	button.time:SetShadowOffset(1, -1)
+	button.time:SetShadowColor(0, 0, 0, 1)
+	button.time:SetJustifyH('CENTER')
+end
+
+-- Post Update Aura Icon
+local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDebuff)
+	local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+
+	if duration and duration > 0 then
+		icon.timeLeft = expirationTime - GetTime()
+	else
+		icon.timeLeft = math.huge
+  end
+  
+  icon.spell:SetText(name) -- set spell name
+
+	icon:SetScript('OnUpdate', function(self, elapsed)
+		auras:AuraTimer_OnUpdate(self, elapsed)
+	end)
+end
+
 -- Post Update BarTimer Aura
 local PostUpdateBarTimer = function(element, unit, button, index)
   local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, button.filter)
@@ -384,6 +416,14 @@ local PlayerCustomFilter = function(icons, unit, icon, name)
   if(filters.list[core.playerClass].buffs[name]) then
     return true
   end
+end
+
+-- Debuffs Filter (Blacklist)
+local DebuffsCustomFilter = function(icons, unit, icon, name)
+  if(debuffs.list[frame][name]) then
+    return false
+  end
+  return true
 end
 
 -- -----------------------------------
@@ -440,9 +480,9 @@ local createStyle = function(self)
 	end
 
   -- Combat indicator
-  local Combat = core:createFontstring(self, m.fonts.symbols, 40, "THINOUTLINE")
-  Combat:SetPoint("RIGHT", self, "LEFT", -4, 1)
-  Combat:SetText("Q")
+  local Combat = core:createFontstring(self, m.fonts.symbols, 20, "THINOUTLINE")
+  Combat:SetPoint("RIGHT", self, "LEFT", -8, 2)
+  Combat:SetText("")
   Combat:SetTextColor(255/255, 26/255, 48/255)
   self.CombatIndicator = Combat
 
@@ -478,7 +518,7 @@ local createStyle = function(self)
     Experience:EnableMouse(true)
     Experience.UpdateTooltip = UpdateExperienceTooltip
     Experience.PostUpdate = ExperiencePostUpdate
-    
+
     self.Experience = Experience
     self.Experience.Rested = Rested
   end
@@ -502,14 +542,13 @@ local createStyle = function(self)
 
     Reputation:EnableMouse(true)
     Reputation.UpdateTooltip = UpdateReputationTooltip
-    Reputation.PostUpdate = ReputationPostUpdate
 
     self.Reputation = Reputation
   end
 
   -- oUF_ArcanePower
   if cfg.elements.arcanepowerbar.show then
-    local ArtifactPower = CreateFrame("StatusBar", nil, self)
+    local ArtifactPower = CreateFrame('StatusBar', nil, self)
     ArtifactPower:SetStatusBarTexture(m.textures.status_texture)
     ArtifactPower:SetStatusBarColor(217/255, 205/255, 145/255)
     ArtifactPower:SetPoint(cfg.elements.arcanepowerbar.pos.a1, cfg.elements.arcanepowerbar.pos.af,
@@ -530,8 +569,19 @@ local createStyle = function(self)
   -- Heal Prediction
   CreateHealPrediction(self)
 
+  -- Debuffs
+  local debuffs = auras:CreateAura(self, 12, 12, cfg.frames.main.height + 4, 4)
+  debuffs:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2)
+  debuffs.initialAnchor = "BOTTOMRIGHT"
+  debuffs["growth-y"] = "UP"
+  debuffs.showDebuffType = true
+  debuffs.CustomFilter = DebuffsCustomFilter
+  debuffs.PostCreateIcon = PostCreateIcon
+  debuffs.PostUpdateIcon = PostUpdateIcon
+  self.Debuffs = debuffs
+
   -- BarTimers Auras
-  local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 4)
+  local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
   barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
   barTimers.initialAnchor = "BOTTOMLEFT"
   barTimers["growth-y"] = "UP"

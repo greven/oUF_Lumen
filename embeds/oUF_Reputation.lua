@@ -104,7 +104,7 @@ local function Update(self, event, unit)
 
 		if(element.colorStanding) then
 			local colors = self.colors.reaction[standingID]
-			element:SetStatusBarColor(colors[1], colors[2], colors[3])
+				element:SetStatusBarColor(colors[1], colors[2], colors[3])
 		end
 
 		if(element.Reward) then

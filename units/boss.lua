@@ -44,6 +44,8 @@ local createStyle = function(self)
   self.cfg = cfg.units[frame]
 
   lum:globalStyle(self, "secondary")
+  
+  self:SetSize(self.cfg.width, self.cfg.height)
 
   -- Texts
   core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)

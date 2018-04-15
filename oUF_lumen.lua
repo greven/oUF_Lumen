@@ -5,7 +5,9 @@
 -- ------------------------------------------------------------------------
 
 local _, ns = ...
-local lum, core, cfg, m, oUF = CreateFrame("Frame", "oUF_lumen"), ns.core, ns.cfg, ns.m, ns.oUF or oUF
+
+local lum = CreateFrame("Frame", "oUF_lumen")
+local core, cfg, m, oUF = ns.core, ns.cfg, ns.m, ns.oUF or oUF
 ns.lum, ns.oUF = lum, oUF
 
 local font = m.fonts.font
@@ -96,12 +98,10 @@ end
 
 -- The Shared Style Function
 function lum:globalStyle(self, type)
-  self:SetScale(cfg.scale)
-	self:SetFrameStrata("BACKGROUND")
-  core:setBackdrop(self, 2, 2, 2, 2)
+	core:setBackdrop(self, 2, 2, 2, 2)
 
-	self:SetSize(self.cfg.width, self.cfg.height)
 	if(self.mystyle ~= 'party' and self.mystyle ~= 'raid' and self.mystyle ~= 'boss' and self.mystyle ~= 'arena') then
+		self:SetSize(self.cfg.width, self.cfg.height)
 		self:SetPoint(self.cfg.pos.a1, self.cfg.pos.af, self.cfg.pos.a2, self.cfg.pos.x, self.cfg.pos.y)
 	end
 

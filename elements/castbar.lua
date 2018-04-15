@@ -19,12 +19,18 @@ end
 
 -- Castbar Check for Spell Interrupt
 local CheckForSpellInterrupt = function (self, unit)
+  local color = cfg.units[unit].castbar.color
+
   if unit == "vehicle" then unit = "player" end
-  if(self.interrupt and UnitCanAttack("player", unit)) then
+  if(self.notInterruptible and UnitCanAttack("player", unit)) then
     self.Glowborder:SetBackdropBorderColor(255/255, 25/255, 25/255, 1)
     self.Glowborder:Show()
+    self.Icon:SetDesaturated(true)
+    self:SetStatusBarColor(0.3, 0.3, 0.3)
   else
     self.Glowborder:Hide()
+    self.Icon:SetDesaturated(false)
+    self:SetStatusBarColor(unpack(color))
   end
 end
 
@@ -36,6 +42,13 @@ end
 -- Castbar PostCastChannel Update
 local myPostChannelStart = function(self, unit, name, _, castid)
   CheckForSpellInterrupt(self, unit)
+end
+
+local setInterruptIcon = function(f)
+  core:setglowBorder(f)
+  f.Glowborder:SetPoint("TOPLEFT", f, "TOPLEFT", - (f:GetHeight() + 2) - 6, 6) -- Resize to include icon
+  f.PostCastStart = myPostCastStart
+  f.PostChannelStart = myPostChannelStart
 end
 
 -- Castbar generator
@@ -119,10 +132,7 @@ function core:CreateCastbar(self)
     castbar.Icon:SetPoint("LEFT", castbar, -(cfg.units.target.castbar.height + 2), 0)
 
     -- Interrupt
-    core:setglowBorder(castbar)
-    castbar.Glowborder:SetPoint("TOPLEFT", castbar, "TOPLEFT", - (cfg.units.target.castbar.height + 2) - 6, 6) -- Resize to include icon
-    castbar.PostCastStart = myPostCastStart
-    castbar.PostChannelStart = myPostChannelStart
+    setInterruptIcon(castbar)
 
   elseif(self.mystyle == "focus") then
     core:setBackdrop(castbar, cfg.units.focus.castbar.height + 4, 2, 2, 2)
@@ -145,10 +155,7 @@ function core:CreateCastbar(self)
     castbar.Icon:SetPoint("LEFT", castbar, - (cfg.units.focus.castbar.height + 2), 0)
 
     -- Interrupt
-    core:setglowBorder(castbar)
-    castbar.Glowborder:SetPoint("TOPLEFT", castbar, "TOPLEFT", - (cfg.units.target.castbar.height + 2) - 6, 6) -- Resize to include icon
-    castbar.PostCastStart = myPostCastStart
-    castbar.PostChannelStart = myPostChannelStart
+    setInterruptIcon(castbar)
 
   elseif(self.mystyle == "boss") then
     core:setBackdrop(castbar, 2, 2, 2, 2)
@@ -191,18 +198,17 @@ for _, bar in pairs({'MirrorTimer1', 'MirrorTimer2', 'MirrorTimer3'}) do
     _G[bar..'Border']:Hide()
 
     _G[bar]:SetParent(UIParent)
-    _G[bar]:SetScale(1)
-    _G[bar]:SetHeight(15)
-    _G[bar]:SetWidth(140)
+    _G[bar]:SetHeight(20)
+    _G[bar]:SetWidth(152)
 
     _G[bar..'Background'] = _G[bar]:CreateTexture(bar..'Background', 'BACKGROUND', _G[bar])
     _G[bar..'Background']:SetTexture('Interface\\Buttons\\WHITE8x8')
     _G[bar..'Background']:SetAllPoints(_G[bar])
     _G[bar..'Background']:SetVertexColor(0, 0, 0, 0.5)
 
-    _G[bar..'Text']:SetFont(font, cfg.fontsize-2, Outline)
+    _G[bar..'Text']:SetFont(font, cfg.fontsize-2, "THINOUTLINE")
     _G[bar..'Text']:ClearAllPoints()
-    _G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 1)
+    _G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 0)
 
     _G[bar..'StatusBar']:SetStatusBarTexture('\Interface\\AddOns\\oUF_lumen\\media\\statusbar')
 

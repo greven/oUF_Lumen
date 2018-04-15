@@ -32,9 +32,9 @@ ns.cfg = cfg
   }
 
   oUF.colors.runes = {
-    [1] = {250/255, 50/255, 50/255},
+    [1] = {225/255, 75/255, 75/255},
     [2] = {50/255, 160/255, 250/255},
-    [3] = {50/255, 255/255, 110/255},
+    [3] = {100/255, 225/255, 125/255},
   }
 
   oUF.colors.reaction = {
@@ -60,7 +60,7 @@ ns.cfg = cfg
   -- -----------------------------------
 
   cfg.fontsize = 14 -- The Global Font Size
-  cfg.scale = 1 -- The Frames Scale
+  cfg.scale = 1 -- The elements Scale
 
   -- -----------------------------------
   -- > FRAMES
@@ -106,6 +106,7 @@ ns.cfg = cfg
   -- -----------------------------------
 
   cfg.units = {
+
     player = {
       show = true,
       width = cfg.frames.main.width,
@@ -143,6 +144,7 @@ ns.cfg = cfg
         alpha = 0.3
       }
     },
+
     target = {
       show = true,
       width = cfg.frames.main.width,
@@ -169,6 +171,7 @@ ns.cfg = cfg
         height = cfg.frames.main.height + 4,
       }
     },
+
     targettarget = {
       show = true,
       width = cfg.frames.secondary.width,
@@ -189,6 +192,7 @@ ns.cfg = cfg
         smooth = true,
       },
     },
+
     focus = {
       show = true,
       width = cfg.frames.secondary.width,
@@ -215,6 +219,7 @@ ns.cfg = cfg
         height = cfg.frames.main.height,
       }
     },
+
     pet = {
       show = true,
       width = cfg.frames.secondary.width,
@@ -238,11 +243,12 @@ ns.cfg = cfg
         filter = true
       }
     },
+
     boss = {
       show = true,
-      width = 225,
+      width = 200,
       height = 28,
-      pos = { a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 800, y = 200 },
+      pos = { a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 675, y = 50 },
       health = {
         gradientColored = false,
         reactionColored = true,
@@ -263,6 +269,7 @@ ns.cfg = cfg
         color = {5/255, 107/255, 246/255},
       }
     },
+
     arena = {
       show = true,
       width = 250,
@@ -283,6 +290,7 @@ ns.cfg = cfg
         smooth = true,
       },
     },
+
     party = {
       show = true,
       width = 134,
@@ -304,41 +312,47 @@ ns.cfg = cfg
         smooth = true,
       },
     },
+
     raid = {
       show = true
     },
+
     nameplate = {
       show = true,
-      width = 100,
-      height = 8,
+      width = 120,
+      height = 10,
       pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0 },
       debuffs = true,
       castbar = {
         enable = true,
         color = {5/255, 107/255, 246/255},
-        height = 2,
+        height = 3,
       }
     }
   }
 
   cfg.elements = {
+
     castbar = {
       backdrop = {
         color = {r = 0, g = 0, b = 0, a = 0.85},
       }
     },
+
     experiencebar = {
       show = true,
       height = 3,
       width = Minimap:GetWidth() + 4,
       pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -12 },
     },
+
     arcanepowerbar = {
       show = true,
       height = 3,
       width = Minimap:GetWidth() + 4,
       pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24 },
     },
+    
     altpowerbar = {
       show = true
     },
