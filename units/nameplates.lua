@@ -61,6 +61,56 @@ local PostCreateIcon = function(Auras, button)
 	button.time:SetJustifyH('CENTER')
 end
 
+-- Castbar Check for Spell Interrupt
+local CheckForSpellInterrupt = function (self, unit)
+  local color = cfg.units.nameplate.castbar.color
+
+  if unit == "vehicle" then unit = "player" end
+  if(self.notInterruptible and UnitCanAttack("player", unit)) then
+    self.Icon:SetDesaturated(true)
+    self:SetStatusBarColor(0.3, 0.3, 0.3)
+  else
+    self.Icon:SetDesaturated(false)
+    self:SetStatusBarColor(unpack(color))
+  end
+end
+
+-- Castbar PostCastStart
+local myPostCastStart = function(self, unit, name, castID, spellID)
+  CheckForSpellInterrupt(self, unit)
+  self.iconborder:Show()
+end
+
+-- Castbar PostCastStop
+local myPostCastStop = function(self, unit, name, castID, spellID)
+  self.iconborder:Hide()
+end
+
+-- Castbar PostCastFailed
+local myPostCastFailed = function(self, unit, spellname, castID, spellID)
+  self.iconborder:Hide()
+end
+
+-- Castbar PostCastChannel Update
+local myPostChannelStart = function(self, unit, name, castID, spellID)
+  CheckForSpellInterrupt(self, unit)
+  self.iconborder:Show()
+end
+
+-- Castbar PostCastChannelStop
+local myPostChannelStop = function(self, unit, name, castID, spellID)
+  self.iconborder:Hide()
+end
+
+local OnTargetChanged = function(self)
+  -- new target
+  if UnitIsUnit(self.unit, 'target') then
+    self.arrow:SetAlpha(1)
+  else
+    self.arrow:SetAlpha(0)
+  end
+end
+
 -- -----------------------------------
 -- > NAMEPLATES STYLE
 -- -----------------------------------
@@ -72,6 +122,8 @@ local createStyle = function(self, unit)
   if not unit:match("nameplate") then
     return
   end
+
+  self:RegisterEvent('PLAYER_TARGET_CHANGED', OnTargetChanged)
 
   -- Health bar
   local health = CreateFrame("StatusBar", nil, self)
@@ -104,9 +156,15 @@ local createStyle = function(self, unit)
 
   -- Raid Icons
   local RaidIcon = self:CreateTexture(nil, 'OVERLAY')
-  RaidIcon:SetPoint('LEFT', self, 'RIGHT', 8, 0)
-  RaidIcon:SetSize(16, 16)
+  RaidIcon:SetPoint('CENTER', self, 'CENTER', 0, 50)
+  RaidIcon:SetSize(24, 24)
   self.RaidTargetIndicator = RaidIcon
+
+  -- Targeted Arrow
+  self.arrow = core:createFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
+  self.arrow:SetPoint("CENTER", self, "CENTER", 0, 62)
+  self.arrow:SetText("")
+  self.arrow:SetTextColor(250/255, 10/255, 50/255)
 
   -- Castbar
   if self.cfg.castbar.enable then
@@ -127,21 +185,39 @@ local createStyle = function(self, unit)
     castbar:SetHeight(cfg.units.nameplate.castbar.height)
     castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -5)
 
+    -- Spell name
     castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
-    castbar.Text:SetTextColor(2/3, 2/3, 2/3)
+    castbar.Text:SetTextColor(4/5, 4/5, 4/5)
     castbar.Text:SetShadowOffset(1, -1)
     castbar.Text:SetJustifyH("CENTER")
     castbar.Text:SetHeight(12)
-    castbar.Text:SetFont(font_big, cfg.fontsize - 5, "THINOUTLINE")
+    castbar.Text:SetFont(font_big, cfg.fontsize - 4, "THINOUTLINE")
     castbar.Text:SetWidth(cfg.units.nameplate.width - 4)
     castbar.Text:SetPoint("CENTER", castbar, 0, -10)
+
+    -- Spell Icon
+    castbar.Icon = castbar:CreateTexture(nil, 'ARTWORK')
+    castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    castbar.Icon:SetHeight(self.cfg.height + cfg.units.nameplate.castbar.height + 5)
+    castbar.Icon:SetWidth(self.cfg.height + cfg.units.nameplate.castbar.height + 5)
+    castbar.Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
+    castbar.iconborder = CreateFrame("Frame", nil, self)
+    core:createBorder(castbar.Icon, castbar.iconborder, 4, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+    castbar.iconborder:SetBackdropColor(0, 0, 0, 1)
+    castbar.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
+
+    castbar.PostCastStart = myPostCastStart
+    castbar.PostCastStop = myPostCastStop
+    castbar.PostCastFailed = myPostCastFailed
+    castbar.PostChannelStart = myPostChannelStart
+    castbar.PostChannelStop = myPostChannelStop
 
     self.Castbar = castbar
   end
 
   -- Debuffs
   if cfg.units.nameplate.debuffs then
-    local debuffs = auras:CreateAura(self, 6, 1, 16, 1)
+    local debuffs = auras:CreateAura(self, 6, 1, 18, 1)
     debuffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
     debuffs.initialAnchor = "BOTTOMLEFT"
     debuffs["growth-x"] = "RIGHT"
@@ -166,5 +242,5 @@ end
 if cfg.units[frame].show then
   oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
   oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
-  oUF:SpawnNamePlates("oUF_Lumen"..frame:gsub("^%l", string.upper), nil, cvars)
+  oUF:SpawnNamePlates("oUF_Lumen"..frame:gsub("^%l", string.upper), OnTargetChanged, cvars)
 end
