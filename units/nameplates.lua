@@ -103,6 +103,7 @@ local myPostChannelStop = function(self, unit, name, castID, spellID)
 end
 
 local OnTargetChanged = function(self)
+  self.Castbar.iconborder:Hide()
   -- new target
   if UnitIsUnit(self.unit, 'target') then
     self.arrow:SetAlpha(1)
