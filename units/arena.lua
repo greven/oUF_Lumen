@@ -35,7 +35,7 @@ local createStyle = function(self)
   self.cfg = cfg.units[frame]
 
   lum:globalStyle(self, "secondary")
-  
+
   self:SetSize(self.cfg.width, self.cfg.height)
 
   -- Texts

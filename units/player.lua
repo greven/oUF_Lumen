@@ -36,7 +36,7 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
 
 		for index = 1, max do
       local Bar = element[index]
-      
+
 			if(max == 3) then
         Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
 			elseif(max == 4) then
@@ -77,7 +77,7 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
     ROGUE = {255/255, 26/255, 48/255},
     WARLOCK = {255/255, 26/255, 48/255}
   }
-  
+
   if max then
     local lastBar = element[max]
     lastBar:SetStatusBarColor(unpack(lastBarColor[core.playerClass]))
@@ -87,7 +87,7 @@ end
 -- Post Update ClassPower Texture
 local function UpdateClassPowerColor(element)
   local r, g, b = 255/255, 255/255, 102/255
-  
+
 	if(not UnitHasVehicleUI('player')) then
 		if(core.playerClass == 'MONK') then
 			r, g, b = 0, 4/5, 3/5
@@ -105,7 +105,7 @@ local function UpdateClassPowerColor(element)
 		if(core.playerClass == 'ROGUE' and UnitPowerMax('player', SPELL_POWER_COMBO_POINTS) == 10 and index > 5) then
 			r, g, b = 1, 0, 0
     end
-    
+
 		Bar:SetStatusBarColor(r, g, b)
 		Bar.bg:SetColorTexture(r * 1/3, g * 1/3, b * 1/3)
 	end
@@ -181,8 +181,8 @@ end
 
 -- Create additional power (oUF Druid Mana)
 local CreateAdditionalPower = function(self)
-  local height = -10 
-  
+  local height = -10
+
   -- Classes which also have Class Power
   if core.playerClass == "DRUID" or core.playerClass == "MONK" then
     height = -16
@@ -229,13 +229,13 @@ local function UpdateExperienceTooltip(self)
 
 	local rested = (isHonor and GetHonorExhaustion or GetXPExhaustion)() or 0
   rested = math.floor(rested / max * 100 + 0.5)
-  
+
   if isHonor then
     GameTooltip:SetText(string.format('Honor Rank %s', UnitHonorLevel('player')))
     GameTooltip:AddLine(string.format('|cffff4444%s / %s Points|r', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max)))
     GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', bars, rested))
     GameTooltip:Show()
-  else 
+  else
     GameTooltip:SetText(string.format('%s / %s (%s%%)', BreakUpLargeNumbers(cur), BreakUpLargeNumbers(max), per))
 		GameTooltip:AddLine(string.format('|cffffffff%.1f bars|r, |cff2581e9%s%% rested|r', bars, rested))
 		GameTooltip:Show()
@@ -258,7 +258,7 @@ end
 local function UpdateReputationTooltip(self)
   GameTooltip:SetOwner(self, 'ANCHOR_NONE')
   GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
-  
+
   local name, standing, min, max, value = GetWatchedFactionInfo()
   local color = FACTION_BAR_COLORS[standing]
 
@@ -334,7 +334,7 @@ local CreateAlternativePower = function(self)
 	AlternativePower:SetScript("OnEnter", AlternativePowerOnEnter)
 	AlternativePower:SetScript("OnLeave", AlternativePowerOnLeave)
   AlternativePower.PostUpdate = AltPowerPostUpdate
-  
+
 	self.AlternativePower = AlternativePower
 end
 
@@ -377,7 +377,7 @@ local PostUpdateIcon =  function(icons, unit, icon, index, offset, filter, isDeb
 	else
 		icon.timeLeft = math.huge
   end
-  
+
   icon.spell:SetText(name) -- set spell name
 
 	icon:SetScript('OnUpdate', function(self, elapsed)
@@ -420,8 +420,10 @@ end
 
 -- Debuffs Filter (Blacklist)
 local DebuffsCustomFilter = function(icons, unit, icon, name)
-  if(debuffs.list[frame][name]) then
-    return false
+  if name then
+    if debuffs.list[frame][name] then
+      return false
+    end
   end
   return true
 end
@@ -508,7 +510,7 @@ local createStyle = function(self)
     Rested:SetStatusBarTexture(m.textures.status_texture)
     Rested:SetAllPoints(Experience)
     core:setBackdrop(Rested, 2, 2, 2, 2)
-    
+
     local ExperienceBG = Rested:CreateTexture(nil, 'BORDER')
     ExperienceBG:SetAllPoints()
     ExperienceBG:SetAlpha(0.3)
