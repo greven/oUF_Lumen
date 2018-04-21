@@ -1,6 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 	<Include file="oUF\oUF.xml"/>
 	<Script file="oUF_Experience.lua"/>
+	<Script file="PARAGON.lua"/>
 	<Script file="oUF_Reputation.lua"/>
 	<Script file="oUF_ArtifactPower.lua"/>
 	<Script file="oUF_MovableFrames.lua"/>
