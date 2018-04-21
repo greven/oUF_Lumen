@@ -1,0 +1,3 @@
+[submodule "embeds/oUF"]
+	path = embeds/oUF
+	url = git@github.com:oUF-wow/oUF.git
