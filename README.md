@@ -8,3 +8,7 @@ oUF Lumen is a layout for the [oUF](https://github.com/oUF-wow/oUF) frames addon
 
 __Current version:__ 7.3 (Legion).
 WOWInterface Download [Link](http://www.wowinterface.com/downloads/info16885-oUF_lumen.html)
+
+### Clone Project
+
+    git clone --recurse-submodules git@github.com:greven/oUF_lumen.git
