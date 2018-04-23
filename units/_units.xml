@@ -8,5 +8,4 @@
 	<Script file='raid.lua' />
 	<Script file='boss.lua' />
 	<Script file='arena.lua' />
-	<Script file='nameplates.lua' />
 </Ui>
