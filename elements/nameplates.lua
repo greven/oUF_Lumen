@@ -136,6 +136,7 @@ local createStyle = function(self, unit)
   health.colorReaction = true
   health.colorTapping = true
   health.colorDisconnected = true
+  health.frequentUpdates = true
 
   health.bg = health:CreateTexture(nil, "BACKGROUND")
   health.bg:SetAllPoints(health)
