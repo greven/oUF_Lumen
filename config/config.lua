@@ -256,7 +256,7 @@ cfg.units = {
     show = true,
     width = 134,
     height = 22,
-    pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -800, y = 0 },
+    pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -525, y = -100 },
     health = {
       classColored = false,
       gradientColored = false,
