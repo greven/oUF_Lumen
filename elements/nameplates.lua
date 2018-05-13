@@ -102,13 +102,16 @@ local myPostChannelStop = function(self, unit, name, castID, spellID)
   self.iconborder:Hide()
 end
 
+-- Target selected
 local OnTargetChanged = function(self)
   self.Castbar.iconborder:Hide()
   -- new target
   if UnitIsUnit(self.unit, 'target') then
     self.arrow:SetAlpha(1)
+    self.glow:SetAlpha(1)
   else
     self.arrow:SetAlpha(0)
+    self.glow:SetAlpha(0)
   end
 end
 
@@ -148,13 +151,21 @@ local createStyle = function(self, unit)
   core:createNameString(self, font_big, cfg.fontsize - 3, "THINOUTLINE", 0, 4, "CENTER", self.cfg.width - 4)
   self:Tag(self.Name, '[lumen:name]')
 
+  -- Health Percentage
+  health.percent = core:createFontstring(self.Health, font_big, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
+  health.percent:SetPoint("LEFT", self.Health, 23, 0)
+  health.percent:SetJustifyH("RIGHT")
+  health.percent:SetWidth(self.cfg.width)
+  health.percent:SetTextColor(0.8, 0.8, 0.8, 0.8)
+  self:Tag(health.percent, '[lumen:hpperc]')
+
   -- Level
-  self.Level = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
-  self.Level:SetPoint("TOPRIGHT", self.Health, -18, 0)
-  self.Level:SetJustifyH("LEFT")
-  self.Level:SetWidth(self.cfg.width)
-  self.Level:SetHeight(self.cfg.height)
-  self:Tag(self.Level, '[lumen:levelplus]')
+  self.level = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
+  self.level:SetPoint("TOPRIGHT", self.Health, -18, 0)
+  self.level:SetJustifyH("LEFT")
+  self.level:SetWidth(self.cfg.width)
+  self.level:SetHeight(self.cfg.height)
+  self:Tag(self.level, '[lumen:levelplus]')
 
   -- Raid Icons
   local RaidIcon = self:CreateTexture(nil, 'OVERLAY')
@@ -163,10 +174,21 @@ local createStyle = function(self, unit)
   self.RaidTargetIndicator = RaidIcon
 
   -- Targeted Arrow
+  local selectedColor = {50/255, 240/255, 210/255, 0.7}
   self.arrow = core:createFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
   self.arrow:SetPoint("CENTER", self, "CENTER", 0, 62)
   self.arrow:SetText("")
-  self.arrow:SetTextColor(250/255, 10/255, 50/255)
+  self.arrow:SetTextColor(unpack(selectedColor))
+
+  -- Targeted Glow
+  self.glow = CreateFrame("Frame", nil, self)
+  self.glow:SetFrameLevel(0)
+  self.glow:SetPoint("TOPLEFT", self, "TOPLEFT", -4, 5)
+  self.glow:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 4, -5)
+  self.glow:SetBackdrop({bgFile = m.textures.white_square, edgeFile =  m.textures.glow_texture,
+  tile = false, tileSize = 16, edgeSize = 4, insets = {left = -4, right = -4, top = -4, bottom = -4}})
+  self.glow:SetBackdropBorderColor(unpack(selectedColor))
+  self.glow:SetBackdropColor(0, 0, 0, 0)
 
   -- Castbar
   if self.cfg.castbar.enable then
