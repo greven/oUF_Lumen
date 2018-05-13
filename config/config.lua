@@ -312,7 +312,7 @@ cfg.elements = {
     width = Minimap:GetWidth() + 4,
     pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24 },
   },
-  
+
   altpowerbar = {
     show = true
   },

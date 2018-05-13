@@ -30,12 +30,11 @@ tags['lumen:levelplus'] = function(unit)
 	local c = UnitClassification(unit)
 	local l = UnitLevel(unit)
 	local d = GetQuestDifficultyColor(l)
-
+  
 	if l <= 0 then l = "??" end
-	
   return string.format("|cff%02x%02x%02x%s|r",d.r*255, d.g*255, d.b*255, l)
 end
-events['lumen:level'] = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED'
+events['lumen:levelplus'] = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED'
 
 -- Unit classification
 tags['lumen:classification'] = function(unit)
