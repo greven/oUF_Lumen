@@ -33,7 +33,7 @@ local cvars = {
 
 -- Post Update Aura Icon
 local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
-	local name, _, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+	local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
 	if duration and duration > 0 then
 		icon.timeLeft = expirationTime - GetTime()

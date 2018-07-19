@@ -97,7 +97,7 @@ tags['lumen:powervalue'] = function(unit)
     return min
   end
 end
-events['lumen:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
+events['lumen:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
 
 -- Alternate Power Percent (oUF Alternate Power)
 oUF.Tags.Methods["lumen:altpower"] = function(unit)
@@ -107,4 +107,4 @@ oUF.Tags.Methods["lumen:altpower"] = function(unit)
     return floor(min / max * 100)..'%'
   end
 end
-oUF.Tags.Events["lumen:altpower"] = "UNIT_MAXPOWER UNIT_POWER"
+oUF.Tags.Events["lumen:altpower"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
