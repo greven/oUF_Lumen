@@ -176,7 +176,7 @@ local createStyle = function(self)
   CreateHealPrediction(self)
 
   -- Health warning border
-  core:CreateHPBorder(self)
+  core:CreateHPBorder(self) -- FIXME: No events registered...
 
   -- Threat warning border
   core:CreateThreatBorder(self)

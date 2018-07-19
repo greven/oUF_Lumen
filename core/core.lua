@@ -147,7 +147,7 @@ function core:CreateTargetBorder(self)
 end
 
 -- Create Party / Raid health warning status border
-function core:CreateHPBorder(self)
+function core:CreateHPBorder(self) -- FIXME: No events registered...
 	self.HPborder = CreateFrame("Frame", nil, self)
 	core:createBorder(self, self.HPborder, 1, 5, "Interface\\ChatFrame\\ChatFrameBackground")
 	self.HPborder:SetBackdropBorderColor(180/255, 255/255, 0/255, 1)

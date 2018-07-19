@@ -20,9 +20,15 @@ local cvars = {
   NamePlateVerticalScale = 1,
   nameplateLargerScale = 1,
   nameplateMaxScale = 1,
-  nameplateMinScale = 1,
+  nameplateMinScale = 0.8,
   nameplateSelectedScale = 1,
   nameplateSelfScale = 1,
+  -- nameplateShowAll = 0,
+  nameplateMinAlpha = 0.5,
+  nameplateMinAlphaDistance = 10,
+  nameplateMaxAlpha = 1,
+  nameplateMaxAlphaDistance = 10,
+  nameplateMaxDistance = 60,
 }
 
 -- Post Update Aura Icon
