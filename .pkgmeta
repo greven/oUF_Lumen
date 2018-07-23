@@ -1,0 +1,25 @@
+package-as: oUF_lumen
+
+externals:
+  embeds/oUF:
+    url: git://github.com/oUF-wow/oUF
+    tag: latest
+  embeds/oUF_MovableFrames:
+    url: git://github.com/oUF-wow/oUF_MovableFrames
+    tag: latest
+  embeds/oUF_Experience:
+    url: git://github.com/p3lim-wow/oUF_Experience
+    tag: latest
+  embeds/oUF_Experience:
+    url: git://github.com/p3lim-wow/oUF_Experience
+    tag: latest
+  embeds/oUF_Reputation:
+    url: git://github.com/p3lim-wow/oUF_Reputation
+    tag: latest
+
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+
+ignore:
+  - README.md

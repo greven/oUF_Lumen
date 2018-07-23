@@ -10,3 +10,9 @@ Desktop.ini
 
 # Mac crap
 .DS_Store
+
+# Project Files
+embeds/oUF
+embeds/oUF_Experience
+embeds/oUF_Reputation
+embeds/oUF_MovableFrames

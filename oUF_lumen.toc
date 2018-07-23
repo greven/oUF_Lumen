@@ -9,6 +9,8 @@
 ## X-Category: UnitFrame
 ## OptionalDeps: oUF_MovableFrames, oUF_CombatFeedback, oUF_BarFader, oUF_AuraWatch, oUF_DebuffHighlight
 
+## X-WoWI-ID: 16885
+
 embeds\_embeds.xml
 media\media.lua
 config\_config.xml
@@ -16,3 +18,4 @@ core\_core.xml
 elements\_elements.xml
 oUF_lumen.lua
 units\_units.xml
+
