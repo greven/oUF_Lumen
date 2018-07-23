@@ -87,6 +87,9 @@ cfg.units = {
       frequentUpdates =Ttrue,
       smooth = true,
     },
+    name = {
+      show = true
+    },
     altpower = {
       height = 3
     },
@@ -124,6 +127,9 @@ cfg.units = {
       classColored = false,
       frequentUpdates = true,
       smooth = true,
+    },
+    name = {
+      show = false
     },
     castbar = {
       enable = true,

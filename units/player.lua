@@ -439,8 +439,10 @@ local createStyle = function(self)
   lum:globalStyle(self, "main")
 
   -- Text strings
-  core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 60)
-  self:Tag(self.Name, '[lumen:level]  [lumen:name]')
+  if self.cfg.name.show then
+    core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 60)
+    self:Tag(self.Name, '[lumen:level]  [lumen:name]')
+  end
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
   self:Tag(self.Health.value, '[lumen:hpvalue]')
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
