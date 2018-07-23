@@ -1,3 +1,8 @@
+### Version 8.0.2:
+
+* Add options to hide player and target auras.
+
+
 ### Version 8.0.1:
 
 * Option to hide name and level from player and target frame.
