@@ -10,9 +10,6 @@ externals:
   embeds/oUF_Experience:
     url: git://github.com/p3lim-wow/oUF_Experience
     tag: latest
-  embeds/oUF_Experience:
-    url: git://github.com/p3lim-wow/oUF_Experience
-    tag: latest
   embeds/oUF_Reputation:
     url: git://github.com/p3lim-wow/oUF_Reputation
     tag: latest

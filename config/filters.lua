@@ -20,7 +20,6 @@ filters.list = {
 
   DEATHKNIGHT = {
     buffs = {
-      -- [GetSpellInfo(195181) or "Bone Shield"] = true,
       [GetSpellInfo(48792) or "Icebound Fortitude"] = true,
       [GetSpellInfo(196770) or "Remorseless Winter"] = true,
       [GetSpellInfo(207256) or "Obliteration"] = true,

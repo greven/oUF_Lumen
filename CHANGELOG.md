@@ -1,3 +1,11 @@
+### Version 8.0.4:
+
+* Cleanup.
+
+### Version 8.0.3:
+
+* Move some dependencies to the packager.
+
 ### Version 8.0.2:
 
 * Add options to hide player and target auras.
