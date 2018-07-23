@@ -574,24 +574,28 @@ local createStyle = function(self)
   CreateHealPrediction(self)
 
   -- Debuffs
-  local debuffs = auras:CreateAura(self, 12, 12, cfg.frames.main.height + 4, 4)
-  debuffs:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2)
-  debuffs.initialAnchor = "BOTTOMRIGHT"
-  debuffs["growth-y"] = "UP"
-  debuffs.showDebuffType = true
-  debuffs.CustomFilter = DebuffsCustomFilter
-  debuffs.PostCreateIcon = PostCreateIcon
-  debuffs.PostUpdateIcon = PostUpdateIcon
-  self.Debuffs = debuffs
+  if self.cfg.auras.debuffs.show then
+    local debuffs = auras:CreateAura(self, 12, 12, cfg.frames.main.height + 4, 4)
+    debuffs:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2)
+    debuffs.initialAnchor = "BOTTOMRIGHT"
+    debuffs["growth-y"] = "UP"
+    debuffs.showDebuffType = true
+    debuffs.CustomFilter = DebuffsCustomFilter
+    debuffs.PostCreateIcon = PostCreateIcon
+    debuffs.PostUpdateIcon = PostUpdateIcon
+    self.Debuffs = debuffs
+  end
 
   -- BarTimers Auras
-  local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
-  barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
-  barTimers.initialAnchor = "BOTTOMLEFT"
-  barTimers["growth-y"] = "UP"
-  barTimers.CustomFilter = PlayerCustomFilter
-  barTimers.PostUpdateIcon = PostUpdateBarTimer
-  self.Buffs = barTimers
+  if self.cfg.auras.barTimers.show then
+    local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
+    barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
+    barTimers.initialAnchor = "BOTTOMLEFT"
+    barTimers["growth-y"] = "UP"
+    barTimers.CustomFilter = PlayerCustomFilter
+    barTimers.PostUpdateIcon = PostUpdateBarTimer
+    self.Buffs = barTimers
+  end
 end
 
 -- -----------------------------------

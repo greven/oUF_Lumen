@@ -67,7 +67,6 @@ cfg.frames = {
 -- -----------------------------------
 
 cfg.units = {
-
   player = {
     show = true,
     width = cfg.frames.main.width,
@@ -103,6 +102,14 @@ cfg.units = {
         color = {1, 0, 0, 0.5},
       }
     },
+    auras = {
+      debuffs = {
+        show = true
+      },
+      barTimers = {
+        show = true
+      }
+    },
     fader = {
       enable = false,
       alpha = 0.3
@@ -136,6 +143,14 @@ cfg.units = {
       color = {235/255, 25/255, 25/255},
       width = cfg.frames.main.width * 1.75,
       height = cfg.frames.main.height + 4,
+    },
+    auras = {
+      buffs = {
+        show = true
+      },
+      barTimers = {
+        show = true
+      }
     }
   },
 
