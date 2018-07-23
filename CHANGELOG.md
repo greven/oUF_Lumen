@@ -1,6 +1,6 @@
-### Version 8.0.4:
+### Version 8.0.5:
 
-* Cleanup.
+* Bug fixes.
 
 ### Version 8.0.3:
 
