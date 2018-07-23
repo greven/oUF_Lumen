@@ -129,7 +129,7 @@ cfg.units = {
       smooth = true,
     },
     name = {
-      show = false
+      show = true
     },
     castbar = {
       enable = true,
