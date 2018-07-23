@@ -16,6 +16,9 @@ externals:
   embeds/oUF_Reputation:
     url: git://github.com/p3lim-wow/oUF_Reputation
     tag: latest
+  embeds/oUF_ArtifactPower:
+    url: git://github.com/Rainrider/oUF_ArtifactPower
+    tag: latest
 
 manual-changelog:
   filename: CHANGELOG.md
