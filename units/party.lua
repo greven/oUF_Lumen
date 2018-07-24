@@ -85,7 +85,7 @@ end
 
 -- Post Update Aura Icon
 local PostUpdateIcon = function(element, unit, button, index)
-	local name, _, _, count, type, duration, expirationTime, owner = UnitAura(unit, index, button.filter)
+  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
 	if duration and duration > 0 then
 		button.timeLeft = expirationTime - GetTime()

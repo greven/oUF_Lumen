@@ -1,3 +1,7 @@
+### Version 8.0.6:
+
+* [bug] Fix PostUpdateIcon.
+
 ### Version 8.0.5:
 
 * Bug fixes.
