@@ -12,7 +12,7 @@ branches:
   only:
   - /^\d+\.\d+(\.\d+)?(-\S*)?$/
 
-  notifications:
-    email:
-      on_success: never
-      on_failure: always
+notifications:
+  email:
+    on_success: never
+    on_failure: always
