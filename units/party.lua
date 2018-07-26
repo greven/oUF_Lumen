@@ -1,4 +1,4 @@
-local _, ns = ...
+local A, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
@@ -189,8 +189,8 @@ end
 -- > SPAWN UNIT
 -- -----------------------------------
 if cfg.units[frame].show then
-  oUF:RegisterStyle('oUF_Lumen:'..frame:gsub("^%l", string.upper), createStyle)
-  oUF:SetActiveStyle('oUF_Lumen:'..frame:gsub("^%l", string.upper))
+  oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle(A..frame:gsub("^%l", string.upper))
 
   local party = oUF:SpawnHeader(
     -- 'oUF_LumenParty', nil, 'solo', 'showSolo', true,  -- debug

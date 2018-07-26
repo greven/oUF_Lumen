@@ -1,7 +1,7 @@
 ## Interface: 80000
 ## Author: greven
 ## Version: @project-version@
-## Title: oUF_|cFF0d87d5l|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
+## Title: oUF_|cFF0d87d5L|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
 ## Notes: oUF layout by greven (Kreoss @ Quel'Thalas EU)
 ## SavedVariables: oUF_LumenDB
 ## X-SavedVariables: oUF_LumenDB
@@ -16,6 +16,6 @@ media\media.lua
 config\_config.xml
 core\_core.xml
 elements\_elements.xml
-oUF_lumen.lua
+oUF_Lumen.lua
 units\_units.xml
 

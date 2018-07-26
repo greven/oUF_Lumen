@@ -1,4 +1,4 @@
-local _, ns = ...
+local A, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 
@@ -61,11 +61,11 @@ end
 -- > SPAWN UNIT
 -- -----------------------------------
 -- if cfg.units[frame].show then
---   oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
---   oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
+--   oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), createStyle)
+--   oUF:SetActiveStyle(A..frame:gsub("^%l", string.upper))
 --
 --   for index = 1, MAX_BOSS_FRAMES or 5 do
---     local arena = oUF:Spawn("arena" .. index, 'oUF_LumenArena' .. index)
+--     local arena = oUF:Spawn(A..frame .. index, 'oUF_LumenArena' .. index)
 --
 --   	if(index == 1) then
 --   		arena:SetPoint(cfg.units.arena.pos.a1, cfg.units.arena.pos.af, cfg.units.arena.pos.a2, cfg.units.arena.pos.x, cfg.units.arena.pos.y)

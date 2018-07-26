@@ -1,4 +1,4 @@
-local _, ns = ...
+local A, ns = ...
 
 local lum, core, auras, oUF = ns.lum, ns.core, ns.auras, ns.oUF
 local cfg, m, filters = ns.cfg, ns.m, ns.filters
@@ -87,7 +87,7 @@ end
 -- > SPAWN UNIT
 -- -----------------------------------
 if cfg.units[frame].show then
-  oUF:RegisterStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper), createStyle)
-  oUF:SetActiveStyle("oUF_Lumen:"..frame:gsub("^%l", string.upper))
-  oUF:Spawn(frame, "oUF_Lumen"..frame:gsub("^%l", string.upper))
+  oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle(A..frame:gsub("^%l", string.upper))
+  oUF:Spawn(frame, A..frame:gsub("^%l", string.upper))
 end
