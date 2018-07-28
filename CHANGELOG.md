@@ -1,6 +1,6 @@
 ### Version 8.0.7:
 
-* [bug] Add player frame visibility options.
+* [feature] Add player frame visibility options.
 
 ### Version 8.0.6:
 

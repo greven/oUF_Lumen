@@ -86,7 +86,7 @@ cfg.units = {
       frequentUpdates =Ttrue,
       smooth = true,
     },
-    visibility = "[combat][mod][@target,exists,nodead][vehicleui][group] show; hide",
+    visibility = "[combat][mod][@target,exists][vehicleui][group] show; hide",
     name = {
       show = true
     },
