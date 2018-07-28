@@ -1,3 +1,7 @@
+### Version 8.0.7:
+
+* [bug] Add player frame visibility options.
+
 ### Version 8.0.6:
 
 * [bug] Fix PostUpdateIcon.
