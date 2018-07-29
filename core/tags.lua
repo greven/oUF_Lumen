@@ -38,24 +38,24 @@ events['lumen:levelplus'] = 'UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHAN
 
 -- Unit classification
 tags['lumen:classification'] = function(unit)
-		local c = UnitClassification(unit)
-		if(c == 'rare') then
-			return '|cff008ff7RARE|r'
-		elseif(c == 'rareelite') then
-			return '|cff008ff7RARE|r |cffffe453ELITE|r'
-		elseif(c == 'elite') then
-			return '|cffffe453ELITE|r'
-		elseif(c == 'worldboss') then
-			return '|cfff03a4cBOSS|r'
-		elseif(c == 'minus') then
-			return ''
-		end
+	local c = UnitClassification(unit)
+	if(c == 'rare') then
+		return '|cff008ff7RARE|r'
+	elseif(c == 'rareelite') then
+		return '|cff008ff7RARE|r |cffffe453ELITE|r'
+	elseif(c == 'elite') then
+		return '|cffffe453ELITE|r'
+	elseif(c == 'worldboss') then
+		return '|cfff03a4cBOSS|r'
+	elseif(c == 'minus') then
+		return ''
+	end
 end
 events['lumen:classification'] = 'UNIT_CLASSIFICATION_CHANGED'
 
 -- Health Value
 tags['lumen:hpvalue'] = function(unit)
-	local min, max = UnitHealth(unit), UnitHealthMax(unit)
+	local min = UnitHealth(unit)
 	if min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
 		return ''
 	end
@@ -65,15 +65,15 @@ events['lumen:hpvalue'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_
 
 -- Health Percent
 tags['lumen:hpperc'] = function(unit)
-    local min, max = UnitHealth(unit), UnitHealthMax(unit)
-    local percent = floor((min / max) * 100+0.5)
+	local min, max = UnitHealth(unit), UnitHealthMax(unit)
+	local percent = floor((min / max) * 100+0.5)
 
-    if percent < 100 and percent > 0 then
-    	return percent .. '%'
-    else
-    	return ''
-    end
-  end
+	if percent < 100 and percent > 0 then
+		return percent .. '%'
+	else
+		return ''
+	end
+end
 events['lumen:hpperc'] = 'UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE'
 
 -- Power value
