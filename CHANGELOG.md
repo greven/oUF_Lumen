@@ -1,3 +1,7 @@
+### Version 8.0.8:
+
+* [config] Enable player frame always visible by default.
+
 ### Version 8.0.7:
 
 * [feature] Add player frame visibility options.
