@@ -30,7 +30,7 @@ tags['lumen:levelplus'] = function(unit)
 	local c = UnitClassification(unit)
 	local l = UnitLevel(unit)
 	local d = GetQuestDifficultyColor(l)
-  
+
 	if l <= 0 then l = "??" end
   return string.format("|cff%02x%02x%02x%s|r",d.r*255, d.g*255, d.b*255, l)
 end
@@ -100,11 +100,60 @@ end
 events['lumen:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
 
 -- Alternate Power Percent (oUF Alternate Power)
-oUF.Tags.Methods["lumen:altpower"] = function(unit)
+tags['lumen:altpower'] = function(unit)
   local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 
   if (UnitPowerType(unit) ~= 0) and min ~= max then -- If Power Type is not Mana(it's Energy or Rage) and Mana is not at Maximum
     return floor(min / max * 100)..'%'
   end
 end
-oUF.Tags.Events["lumen:altpower"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
+events['lumen:altpower'] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
+
+-- Class Power (Combo Points, Insanity, )
+tags['lumen:classpower'] = function(unit)
+  local PlayerClass = core.playerClass
+  local num, max, color
+
+  if(PlayerClass == 'MONK') then
+    if(GetSpecialization() == SPEC_MONK_WINDWALKER) then
+			num = UnitPower('player', Enum.PowerType.Chi)
+      max = UnitPowerMax('player', Enum.PowerType.Chi)
+      color = '00CC99'
+      if(num == max) then color = '008FF7' end
+		end
+    -- num = _TAGS['chi']()
+  elseif(PlayerClass == 'WARLOCK') then
+    num = UnitPower('player', Enum.PowerType.SoulShards)
+    max = UnitPowerMax('player', Enum.PowerType.SoulShards)
+    color = 'A15CFF'
+    if(num == max) then color = 'FF1A30' end
+  elseif(PlayerClass == 'PALADIN') then
+    if(GetSpecialization() == SPEC_PALADIN_RETRIBUTION) then
+			num = UnitPower('player', Enum.PowerType.HolyPower)
+      max = UnitPowerMax('player', Enum.PowerType.HolyPower)
+      color = 'FFFF7D'
+      if(num == max) then color = 'FF1A30' end
+		end
+  elseif(PlayerClass == 'MAGE') then
+    if(GetSpecialization() == SPEC_MAGE_ARCANE) then
+			num = UnitPower('player', Enum.PowerType.ArcaneCharges)
+      max = UnitPowerMax('player', Enum.PowerType.ArcaneCharges)
+      color = 'A950CA'
+      if(num == max) then color = 'EE3053' end
+    end
+  else -- Combo Points
+		if(UnitHasVehicleUI('player')) then
+			num = GetComboPoints('vehicle', 'target')
+		else
+			num = GetComboPoints('player', 'target')
+      max = UnitPowerMax('player', Enum.PowerType.ComboPoints)
+      color = 'FFFF66'
+      if(num == max) then color = 'FF1A30' end
+		end
+  end
+
+  if(num > 0) then
+    return string.format('|cff%s%d|r', color, num)
+  end
+end
+events['lumen:classpower'] = "UNIT_POWER_UPDATE SPELLS_CHANGED UNIT_POWER_FREQUENT PLAYER_TARGET_CHANGED"

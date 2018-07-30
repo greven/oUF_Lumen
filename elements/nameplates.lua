@@ -158,12 +158,22 @@ local createStyle = function(self, unit)
   self:Tag(self.Name, '[lumen:name]')
 
   -- Health Percentage
-  health.percent = core:createFontstring(self.Health, font_big, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
-  health.percent:SetPoint("LEFT", self.Health, 23, 0)
-  health.percent:SetJustifyH("RIGHT")
-  health.percent:SetWidth(self.cfg.width)
-  health.percent:SetTextColor(0.8, 0.8, 0.8, 0.8)
-  self:Tag(health.percent, '[lumen:hpperc]')
+  -- health.percent = core:createFontstring(self.Health, font_big, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
+  -- health.percent:SetPoint("LEFT", self.Health, 23, 0)
+  -- health.percent:SetJustifyH("RIGHT")
+  -- health.percent:SetWidth(self.cfg.width)
+  -- health.percent:SetTextColor(0.8, 0.8, 0.8, 0.8)
+  -- self:Tag(health.percent, '[lumen:hpperc]')
+
+  -- Class Power (Combo Points, Insanity, etc...)
+  if cfg.units.nameplate.classpower then
+    self.classPower = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
+    self.classPower:SetPoint("LEFT", self.Health, 20, 0)
+    self.classPower:SetJustifyH("RIGHT")
+    self.classPower:SetWidth(self.cfg.width)
+    -- self.classPower:SetTextColor(13/255, 202/255, 242/255, 1.0)
+    self:Tag(self.classPower, '[lumen:classpower]', 'player')
+  end
 
   -- Level
   self.level = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
