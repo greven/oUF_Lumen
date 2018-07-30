@@ -473,7 +473,7 @@ local createStyle = function(self)
   -- Death Knight Runes
   if core.playerClass == 'DEATHKNIGHT' then CreateRuneBar(self) end
 
-  -- Alternate Power Bar
+  -- Alternate Power Bar (Mana Bar)
   if core.playerClass == 'PRIEST' or core.playerClass == 'MONK' or core.playerClass == 'SHAMAN' then
     CreateAdditionalPower(self)
   end
