@@ -1,3 +1,9 @@
+### Version 8.0.9:
+
+* Add Class Power counter (Combo Points, etc.) to nameplates.
+* Remove HP % from nameplates.
+* Small fixes.
+
 ### Version 8.0.8:
 
 * [config] Enable player frame always visible by default.
@@ -89,7 +95,7 @@
 ### Version 7.01-beta:
 
 * First release for Legion.
-* Complete re-write of all the code. 
+* Complete re-write of all the code.
 * oUF is now embedded with the latest Push Requests.
 * All supported oUF addons are now embedded.
 * Major frames almost future complete.
@@ -221,7 +227,7 @@
 
 ### Version 1.71:
 
-* Changed Focus Power color to something more yellowish greenish. Fits hunters better. 
+* Changed Focus Power color to something more yellowish greenish. Fits hunters better.
 * Minor code clean up.
 
 ### Version 1.70:
@@ -230,7 +236,7 @@
 * Changed Focus Power Type color slightly.
 * Changed Focus Debuff tracking true by default and changed the location of the debuff icon.
 * Added a PvP Tag to the InfoBar. It will only Display if Player toggles PvP manually or attacks a PvP Target. People in PvP servers shouldn't see the tag (unless they toggle PvP manually too). It will also display a timer for the remaining time until flagged non-PvP.
-* Added option to invert the filling of of the party/raid frames. By default is set to inverted. 
+* Added option to invert the filling of of the party/raid frames. By default is set to inverted.
 * Fixed the position options to move the Eclipse Bar,
 * Changed group sorting inside a Party by Class.
 * Cleaned some code in the Combo Points Tag.
@@ -323,7 +329,7 @@
 
 ### Version 1.54:
 
-* Added a Deadly Poison Tracker next to the ComboPoints number for Assassination Rogues. Can be turned off in the config file (cfg.lua). 
+* Added a Deadly Poison Tracker next to the ComboPoints number for Assassination Rogues. Can be turned off in the config file (cfg.lua).
 
 ### Version 1.53:
 
@@ -361,7 +367,7 @@
 ### Version 1.35:
 
 * Fixed a bug where Pets wouldn't fade with oUF_BarFader.
-* Added Optional (turned off by default) Debuffs to the Focus frame. Go the config file to activate it (set cfg.show_focus_debuffs from false to true). 
+* Added Optional (turned off by default) Debuffs to the Focus frame. Go the config file to activate it (set cfg.show_focus_debuffs from false to true).
 
 ### Version 1.34:
 
