@@ -328,7 +328,7 @@ cfg.elements = {
     pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -12 },
   },
 
-  arcanepowerbar = {
+  artifactpowerbar = {
     show = true,
     height = 3,
     width = Minimap:GetWidth() + 4,

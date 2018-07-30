@@ -550,15 +550,15 @@ local createStyle = function(self)
     self.Reputation = Reputation
   end
 
-  -- oUF_ArcanePower
-  if cfg.elements.arcanepowerbar.show then
+  -- oUF_ArtifactPower
+  if cfg.elements.artifactpowerbar.show then
     local ArtifactPower = CreateFrame('StatusBar', nil, self)
     ArtifactPower:SetStatusBarTexture(m.textures.status_texture)
     ArtifactPower:SetStatusBarColor(217/255, 205/255, 145/255)
-    ArtifactPower:SetPoint(cfg.elements.arcanepowerbar.pos.a1, cfg.elements.arcanepowerbar.pos.af,
-			cfg.elements.arcanepowerbar.pos.a2, cfg.elements.arcanepowerbar.pos.x, cfg.elements.arcanepowerbar.pos.y)
-    ArtifactPower:SetHeight(cfg.elements.arcanepowerbar.height)
-    ArtifactPower:SetWidth(cfg.elements.arcanepowerbar.width)
+    ArtifactPower:SetPoint(cfg.elements.artifactpowerbar.pos.a1, cfg.elements.artifactpowerbar.pos.af,
+			cfg.elements.artifactpowerbar.pos.a2, cfg.elements.artifactpowerbar.pos.x, cfg.elements.artifactpowerbar.pos.y)
+    ArtifactPower:SetHeight(cfg.elements.artifactpowerbar.height)
+    ArtifactPower:SetWidth(cfg.elements.artifactpowerbar.width)
     core:setBackdrop(ArtifactPower, 2, 2, 2, 2)
     ArtifactPower:EnableMouse(true)
     self.ArtifactPower = ArtifactPower
