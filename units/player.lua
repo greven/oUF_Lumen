@@ -448,9 +448,8 @@ local createStyle = function(self)
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   core:createPowerString(self, font, cfg.fontsize -4, "THINOUTLINE", 0, 0, "CENTER")
 
-  -- Health & Power Updates
+  -- Health Updates
   self.Health.PostUpdate = PostUpdateHealth
-
 
   -- Out of Combat Frame Fading
   if self.cfg.fader.enable then

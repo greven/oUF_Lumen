@@ -58,7 +58,7 @@ filters.list = {
 
   MAGE = {
     buffs = {
-
+      [GetSpellInfo(44544) or "Fingers of Frost"] = true,
     },
 
     debuffs = {
@@ -167,8 +167,9 @@ filters.list = {
 
   WARRIOR = {
     buffs = {
-      [GetSpellInfo(184362) or "Enraged"] = true,	
+      [GetSpellInfo(184362) or "Enraged"] = true,
       [GetSpellInfo(184364) or "Enraged Regeneration"] = true,
+      [GetSpellInfo(260708) or "Sweeping Strikes"] = true,
     },
 
     debuffs = {

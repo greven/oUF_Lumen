@@ -91,7 +91,9 @@ tags['lumen:powervalue'] = function(unit)
   local _, ptype = UnitPowerType(unit)
   if ptype == 'MANA' then
 		 return floor(min / max * 100)..'%'
-	elseif ptype == 'INSANITY' then
+  elseif ptype == 'RAGE' or ptype == 'RUNIC_POWER' then
+    return floor(min / 10 + 0.5)
+  elseif ptype == 'INSANITY' then
 			return min / 100
   else
     return min
@@ -152,7 +154,7 @@ tags['lumen:classpower'] = function(unit)
 		end
   end
 
-  if(num > 0) then
+  if(num and num > 0) then
     return string.format('|cff%s%d|r', color, num)
   end
 end
