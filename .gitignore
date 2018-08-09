@@ -12,6 +12,7 @@ Desktop.ini
 .DS_Store
 
 # Project Files
+libs/
 embeds/oUF
 embeds/oUF_MovableFrames
 embeds/oUF_Experience
