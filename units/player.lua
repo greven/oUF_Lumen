@@ -413,7 +413,8 @@ end
 
 -- Filter Buffs
 local PlayerCustomFilter = function(icons, unit, icon, name)
-  if(filters.list[core.playerClass].buffs[name]) then
+  local f = filters.list
+  if f['DEFAULT'].buffs[name] or f[core.playerClass].buffs[name] then
     return true
   end
 end

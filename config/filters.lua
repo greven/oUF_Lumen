@@ -4,10 +4,18 @@ local filters = {}
 ns.filters = filters
 
 -- ------------------------------------------------------------------------
--- > BARTIMERS AURAS FILTER LIST
+-- > BARTIMERS AURAS FILTER LIST (Whitelist)
 -- ------------------------------------------------------------------------
 
 filters.list = {
+  DEFAULT = {
+    buffs = {
+      [GetSpellInfo(2825) or "Bloodlust"] = true,
+      [GetSpellInfo(32182) or "Heroism"] = true,
+      [GetSpellInfo(80353) or "Time Warp"] = true,
+    }
+  },
+
   DEMONHUNTER = {
     buffs = {
 
@@ -30,7 +38,6 @@ filters.list = {
       [GetSpellInfo(55078) or "Blood Plague"] = true,
       [GetSpellInfo(194310) or "Festering Wound"] = true,
       [GetSpellInfo(191587) or "Virulent Plague"] = true,
-      [GetSpellInfo(191748) or "Scourge of Worlds"] = true, -- Artifact Weapon
     }
   },
 
@@ -48,17 +55,28 @@ filters.list = {
 
   HUNTER = {
     buffs = {
-
+      [GetSpellInfo(186258) or "Aspect of the Chetah"] = true,
+      [GetSpellInfo(186289) or "Aspect of the Eagle"] = true,
+      [GetSpellInfo(186265) or "Aspect of the Turtle"] = true,
+      [GetSpellInfo(19574) or "Bestial Wrath"] = true,
+      [GetSpellInfo(199483) or "Camouflage"] = true,
+      [GetSpellInfo(266779) or "Coordinated Assault"] = true,
+      [GetSpellInfo(5384) or "Feign Death"] = true,
+      [GetSpellInfo(193526) or "Trueshot"] = true,
     },
 
     debuffs = {
-
+      [GetSpellInfo(217200) or "Barbed Shot"] = true,
+      [GetSpellInfo(5116) or "Concussive Shot"] = true,
+      [GetSpellInfo(3355) or "Freezing Trap"] = true,
+      [GetSpellInfo(259491) or "Serpent Sting"] = true,
     }
   },
 
   MAGE = {
     buffs = {
       [GetSpellInfo(44544) or "Fingers of Frost"] = true,
+      [GetSpellInfo(12472) or "Icy Veins"] = true,
     },
 
     debuffs = {
@@ -78,11 +96,14 @@ filters.list = {
 
   PALADIN = {
     buffs = {
-
+      [GetSpellInfo(31884) or "Avenging Wrath"] = true,
+      [GetSpellInfo(184662) or "Shield of Vengeance"] = true,
+      [GetSpellInfo(642) or "Divine Shield"] = true,
     },
 
     debuffs = {
-
+      [GetSpellInfo(853) or "Hammer of Justice"] = true,
+      [GetSpellInfo(197277) or "Judgment"] = true,
     }
   },
 
@@ -101,6 +122,7 @@ filters.list = {
   ROGUE = {
     buffs = {
       [GetSpellInfo(13750) or "Adrenaline Rush"] = true,
+      [GetSpellInfo(13877) or "Blade Flurry"] = true,
       [GetSpellInfo(193356) or "Broadside"] = true, -- Roll the Bones
       [GetSpellInfo(199600) or "Buried Treasure"] = true, -- Roll the Bones
       [GetSpellInfo(5277) or "Evasion"] = true,
@@ -132,7 +154,6 @@ filters.list = {
       [GetSpellInfo(201897) or "Boulderfist"] = true,
       [GetSpellInfo(193796) or "Flametongue"] = true,
       [GetSpellInfo(196834) or "Frostbrand"] = true,
-      -- [GetSpellInfo(197992) or "Landslide"] = true,
       [GetSpellInfo(73685) or "Unleash Life"] = true,
     },
 
@@ -155,7 +176,6 @@ filters.list = {
       [GetSpellInfo(172) or "Corruption"] = true,
       [GetSpellInfo(603) or "Doom"] = true,
       [GetSpellInfo(1098) or "Enslave Demon"] = true,
-      -- [GetSpellInfo(196412) or "Eradication"] = true,
       [GetSpellInfo(5785) or "Fear"] = true,
       [GetSpellInfo(80240) or "Havoc"] = true,
       [GetSpellInfo(348) or "Immolate"] = true,
@@ -187,6 +207,9 @@ filters.list = {
   PARTY = {
     -- Debuffs
     [GetSpellInfo(57723) or "Exhaustion"] = true,
+    [GetSpellInfo(264689) or "Fatigued"] = true,
+    [GetSpellInfo(95809) or "Insanity"] = true,
+    [GetSpellInfo(57724) or "Sated"] = true,
     [GetSpellInfo(80354) or "Temporal Displacement"] = true,
   }
 }
