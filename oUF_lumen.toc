@@ -3,11 +3,10 @@
 ## Version: @project-version@
 ## Title: oUF_|cFF0d87d5L|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r
 ## Notes: oUF layout by greven (Kreoss @ Quel'Thalas EU)
-## SavedVariables: oUF_LumenDB
-## X-SavedVariables: oUF_LumenDB
-## X-SlashCmdList: /lmf
+## SavedVariables: LumenDB
+## X-SavedVariables: LumenDB
 ## X-Category: UnitFrame
-## OptionalDeps: oUF_MovableFrames, oUF_CombatFeedback, oUF_BarFader, oUF_AuraWatch, oUF_DebuffHighlight
+## OptionalDeps: oUF_CombatFeedback, oUF_AuraWatch, oUF_DebuffHighlight
 
 ## X-WoWI-ID: 16885
 
@@ -18,4 +17,3 @@ core\_core.xml
 elements\_elements.xml
 oUF_Lumen.lua
 units\_units.xml
-
