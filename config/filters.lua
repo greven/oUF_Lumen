@@ -44,12 +44,15 @@ filters.list = {
   DRUID = {
     buffs = {
       [GetSpellInfo(77764) or "Stampeding Roar"] = true,
+      [GetSpellInfo(191034) or "Starfall"] = true,
     },
 
     debuffs = {
       [GetSpellInfo(203123) or "Maim"] = true,
+      [GetSpellInfo(164812) or "Moonfire"] = true,
       [GetSpellInfo(155722) or "Rake"] = true,
       [GetSpellInfo(1079) or "Rip"] = true,
+      [GetSpellInfo(164815) or "Sunfire"] = true,
     }
   },
 
@@ -125,23 +128,30 @@ filters.list = {
       [GetSpellInfo(13877) or "Blade Flurry"] = true,
       [GetSpellInfo(193356) or "Broadside"] = true, -- Roll the Bones
       [GetSpellInfo(199600) or "Buried Treasure"] = true, -- Roll the Bones
+      [GetSpellInfo(31224) or "Cloak of Shadows"] = true,
       [GetSpellInfo(5277) or "Evasion"] = true,
       [GetSpellInfo(193358) or "Grand Melee"] = true, -- Roll the Bones
+      [GetSpellInfo(199754) or "Riposte"] = true,
       [GetSpellInfo(193357) or "Ruthless Precision"] = true, -- Roll the Bones
+      [GetSpellInfo(121471) or "Shadow Blades"] = true,
       [GetSpellInfo(51713) or "Shadow Dance"] = true,
+      [GetSpellInfo(114018) or "Shroud of Concealment"] = true,
       [GetSpellInfo(199603) or "Skull and Crossbones"] = true, -- Roll the Bones
       [GetSpellInfo(5171) or "Slice and Dice"] = true,
       [GetSpellInfo(48594) or "Sprint"] = true,
       [GetSpellInfo(193359) or "True Bearing"] = true, -- Roll the Bones
+      [GetSpellInfo(11327) or "Vanish"] = true,
     },
 
     debuffs = {
       [GetSpellInfo(2094) or "Blind"] = true,
+      [GetSpellInfo(199804) or "Between the Eyes"] = true,
       [GetSpellInfo(1833) or "Cheap Shot"] = true,
       [GetSpellInfo(703) or "Garrote"] = true,
       [GetSpellInfo(128904) or "Garrote - Silence"] = true,
       [GetSpellInfo(1776) or "Gouge"] = true,
       [GetSpellInfo(408) or "Kidney Shot"] = true,
+      [GetSpellInfo(195452) or "Knight Blade"] = true,
       [GetSpellInfo(1943) or "Rupture"] = true,
       [GetSpellInfo(6770) or "Sap"] = true,
       [GetSpellInfo(79140) or "Vendetta"] = true,
