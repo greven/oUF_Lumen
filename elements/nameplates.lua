@@ -115,9 +115,19 @@ local OnTargetChanged = function(self)
   if UnitIsUnit(self.unit, 'target') then
     self.arrow:SetAlpha(1)
     self.glow:SetAlpha(1)
+
+    -- Show Class Icons
+    if self.classPower then
+      self.classPower:Show()
+    end
   else
     self.arrow:SetAlpha(0)
     self.glow:SetAlpha(0)
+
+    -- Hide Class Icons
+    if self.classPower then
+      self.classPower:Hide()
+    end
   end
 end
 
@@ -173,6 +183,7 @@ local createStyle = function(self, unit)
     self.classPower:SetWidth(self.cfg.width)
     -- self.classPower:SetTextColor(13/255, 202/255, 242/255, 1.0)
     self:Tag(self.classPower, '[lumen:classpower]', 'player')
+    self.classPower:Hide()
   end
 
   -- Level
