@@ -95,6 +95,7 @@ cfg.units = {
     },
     castbar = {
       enable = true,
+      pos = { a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height, y = -42 },
       color = {5/255, 107/255, 246/255},
       width = cfg.frames.main.width * 2,
       height = cfg.frames.main.height,
@@ -231,7 +232,7 @@ cfg.units = {
     show = true,
     width = 200,
     height = 28,
-    pos = { a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 675, y = 50 },
+    pos = { a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 825, y = 50 },
     health = {
       gradientColored = false,
       reactionColored = true,
