@@ -36,40 +36,17 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
 
 		for index = 1, max do
       local Bar = element[index]
+      Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
 
-			if(max == 3) then
-        Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
-			elseif(max == 4) then
-        Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
-			elseif(max == 5 or max == 10) then
-        Bar:SetWidth(((maxWidth / 5) - ((4 * gap) / 5)))
-			elseif(max == 6) then
-        Bar:SetWidth(((maxWidth / max) - (((max-1) * gap) / max)))
-			end
-
-			if(max == 10) then -- Rogue anticipation talent
-        -- draw bars on top of the first 5
-        if(index == 6) then
-					Bar:ClearAllPoints()
-					Bar:SetPoint('LEFT', element[index - 5])
-        end
-        -- Color rogue anticipation points >5
-        if(index > 5) then
-					Bar.bg:SetColorTexture(25/255, 255/255, 255/255)
-        elseif(index == 5) then
-          Bar.bg:SetColorTexture(255/255, 26/255, 48/255)
-				end
-			else
-				if(index > 1) then
-					Bar:ClearAllPoints()
-					Bar:SetPoint('LEFT', element[index - 1], 'RIGHT', gap, 0)
-        end
-			end
+      if(index > 1) then
+        Bar:ClearAllPoints()
+        Bar:SetPoint('LEFT', element[index - 1], 'RIGHT', gap, 0)
+      end
 		end
   end
 
   -- Colorize the last bar
-  local lastBarColor = {
+  local LastBarColor = {
     DRUID = {255/255, 26/255, 48/255},
     MAGE = {238/255, 48/255, 83/255},
     MONK = {0/255, 143/255, 247/255},
@@ -79,18 +56,23 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
   }
 
   if max then
-    local lastBar = element[max]
-    lastBar:SetStatusBarColor(unpack(lastBarColor[core.playerClass]))
+    local LastBar = element[max]
+    LastBar:SetStatusBarColor(unpack(LastBarColor[core.playerClass]))
   end
 end
 
 -- Post Update ClassPower Texture
 local function UpdateClassPowerColor(element)
-  local r, g, b = 255/255, 255/255, 102/255
+   -- Default color
+  local r, g, b = 102/255, 221/255, 255/255
 
 	if(not UnitHasVehicleUI('player')) then
-		if(core.playerClass == 'MONK') then
-			r, g, b = 0, 4/5, 3/5
+    if(core.playerClass == 'ROGUE') then
+      r, g, b = 175/255, 124/255, 255/255
+    elseif(core.playerClass == 'DRUID') then
+			r, g, b = 255/255, 255/255, 102/255
+		elseif(core.playerClass == 'MONK') then
+			r, g, b = 0, 204/255, 153/255
 		elseif(core.playerClass == 'WARLOCK') then
       r, g, b = 161/255, 92/255, 255/255
 		elseif(core.playerClass == 'PALADIN') then
@@ -102,10 +84,6 @@ local function UpdateClassPowerColor(element)
 
 	for index = 1, #element do
 		local Bar = element[index]
-		if(core.playerClass == 'ROGUE' and UnitPowerMax('player', SPELL_POWER_COMBO_POINTS) == 10 and index > 5) then
-			r, g, b = 1, 0, 0
-    end
-
 		Bar:SetStatusBarColor(r, g, b)
 		Bar.bg:SetColorTexture(r * 1/3, g * 1/3, b * 1/3)
 	end
@@ -179,13 +157,13 @@ local AdditionalPowerPostUpdate = function(self, unit, cur, max)
   end
 end
 
--- Create additional power (oUF Druid Mana)
+-- Create additional power (Mana...)
 local CreateAdditionalPower = function(self)
   local height = -10
 
   -- Classes which also have Class Power
   if core.playerClass == "DRUID" or core.playerClass == "MONK" then
-    height = -16
+    height = -18
   end
 
   local AdditionalPower = CreateFrame("StatusBar", nil, self)
@@ -194,6 +172,8 @@ local CreateAdditionalPower = function(self)
   AdditionalPower:SetSize(self.cfg.width, self.cfg.altpower.height)
   AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
   AdditionalPower.colorPower = true
+  -- AdditionalPower.smoothGradient = {1, 0, 0, 1, 1, 0, 0, 0.5, 1}
+  -- AdditionalPower.colorSmooth = true
 
   -- Add a background
   local Background = AdditionalPower:CreateTexture(nil, 'BACKGROUND')
@@ -474,8 +454,9 @@ local createStyle = function(self)
   if core.playerClass == 'DEATHKNIGHT' then CreateRuneBar(self) end
 
   -- Alternate Power Bar (Mana Bar)
-  if core.playerClass == 'PRIEST' or core.playerClass == 'MONK' or core.playerClass == 'SHAMAN' then
-    CreateAdditionalPower(self)
+  if core.playerClass == 'DRUID' or core.playerClass == 'PRIEST' or core.playerClass == 'MONK'
+    or core.playerClass == 'SHAMAN' then
+      CreateAdditionalPower(self)
   end
 
 	-- AltPower (quest or boss special power)
