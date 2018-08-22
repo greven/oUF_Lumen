@@ -113,9 +113,9 @@ local createStyle = function(self)
   self.Buffs = buffs
 
   -- Castbar
-    if self.cfg.castbar.enable then
-      core:CreateCastbar(self)
-    end
+  if self.cfg.castbar.enable then
+    core:CreateCastbar(self)
+  end
 
   -- Quest Icon
   local QuestIcon = core:createFontstring(self, font, 26, "THINOUTLINE")
