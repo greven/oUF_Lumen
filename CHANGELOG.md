@@ -1,3 +1,9 @@
+### Version 8.0.10:
+
+* Small bug fixes and code cleanup.
+* Update some filters (Bar Timers).
+* Add player castbar position to config file.
+
 ### Version 8.0.9:
 
 * Add Class Power counter (Combo Points, etc.) to nameplates.
