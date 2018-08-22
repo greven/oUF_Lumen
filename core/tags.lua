@@ -91,17 +91,17 @@ tags['lumen:powervalue'] = function(unit)
   local _, ptype = UnitPowerType(unit)
   if ptype == 'MANA' then
 		 return floor(min / max * 100)..'%'
-  elseif ptype == 'RAGE' or ptype == 'RUNIC_POWER' then
+  elseif ptype == 'RAGE' or ptype == 'RUNIC_POWER' or ptype == 'LUNAR_POWER' then
     return floor(min / 10 + 0.5)
   elseif ptype == 'INSANITY' then
-			return min / 100
+		return min / 100
   else
     return min
   end
 end
 events['lumen:powervalue'] = 'UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE'
 
--- Alternate Power Percent (oUF Alternate Power)
+-- Alternate Power Percent
 tags['lumen:altpower'] = function(unit)
   local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 
