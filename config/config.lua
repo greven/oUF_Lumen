@@ -83,7 +83,7 @@ cfg.units = {
     power = {
       height = cfg.frames.main.power.height,
       classColored = false,
-      frequentUpdates =Ttrue,
+      frequentUpdates = true,
       smooth = true,
     },
     -- visibility = "[combat][mod][@target,exists][vehicleui][group] show; hide",
