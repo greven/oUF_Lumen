@@ -5,8 +5,9 @@
 ## Notes: oUF layout by greven (Kreoss @ Quel'Thalas EU)
 ## SavedVariables: LumenDB
 ## X-SavedVariables: LumenDB
+## X-SlashCmdList: /lmf
 ## X-Category: UnitFrame
-## OptionalDeps: oUF_CombatFeedback, oUF_AuraWatch, oUF_DebuffHighlight
+## OptionalDeps: oUF_MovableFrames, oUF_CombatFeedback, oUF_AuraWatch, oUF_DebuffHighlight
 
 ## X-WoWI-ID: 16885
 
