@@ -306,8 +306,9 @@ cfg.units = {
     width = 120,
     height = 10,
     pos = { a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0 },
-    classpower = true,
-    debuffs = true,
+    classpower = false,
+    targetarrow = false,
+    debuffs = false,
     castbar = {
       enable = true,
       color = {5/255, 107/255, 246/255},
