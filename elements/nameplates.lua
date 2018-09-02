@@ -113,15 +113,19 @@ local OnTargetChanged = function(self)
   self.Castbar.iconborder:Hide()
   -- new target
   if UnitIsUnit(self.unit, 'target') then
-    self.arrow:SetAlpha(1)
-    self.glow:SetAlpha(1)
+    if cfg.units.nameplate.targetarrow then
+      self.arrow:SetAlpha(1)
+    end
+    self.glow:SetAlpha(0)
 
     -- Show Class Icons
     if self.classPower then
       self.classPower:Show()
     end
   else
-    self.arrow:SetAlpha(0)
+    if cfg.units.nameplate.targetarrow then
+      self.arrow:SetAlpha(0)
+    end
     self.glow:SetAlpha(0)
 
     -- Hide Class Icons
@@ -200,12 +204,15 @@ local createStyle = function(self, unit)
   RaidIcon:SetSize(24, 24)
   self.RaidTargetIndicator = RaidIcon
 
-  -- Targeted Arrow
   local selectedColor = {50/255, 240/255, 210/255, 0.7}
-  self.arrow = core:createFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
-  self.arrow:SetPoint("CENTER", self, "CENTER", 0, 62)
-  self.arrow:SetText("")
-  self.arrow:SetTextColor(unpack(selectedColor))
+
+  -- Targeted Arrow
+  if cfg.units.nameplate.targetarrow then
+    self.arrow = core:createFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
+    self.arrow:SetPoint("CENTER", self, "CENTER", 0, 62)
+    self.arrow:SetText("")
+    self.arrow:SetTextColor(unpack(selectedColor))
+  end
 
   -- Targeted Glow
   self.glow = CreateFrame("Frame", nil, self)
