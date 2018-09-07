@@ -68,7 +68,7 @@ local function UpdateClassPowerColor(element)
 
 	if(not UnitHasVehicleUI('player')) then
     if(core.playerClass == 'ROGUE') then
-      r, g, b = 175/255, 124/255, 255/255
+      r, g, b = 75/255, 175/255, 255/255
     elseif(core.playerClass == 'DRUID') then
 			r, g, b = 255/255, 255/255, 102/255
 		elseif(core.playerClass == 'MONK') then
