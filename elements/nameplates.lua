@@ -109,7 +109,8 @@ local myPostChannelStop = function(self, unit, name, castID, spellID)
 end
 
 -- Target selected
-local OnTargetChanged = function(self)
+local OnTargetChanged = function(self, event, unit)
+  if (not self) then return end
   self.Castbar.iconborder:Hide()
   -- new target
   if UnitIsUnit(self.unit, 'target') then
@@ -143,7 +144,7 @@ local createStyle = function(self, unit)
     return
   end
 
-  self:RegisterEvent('PLAYER_TARGET_CHANGED', OnTargetChanged)
+  -- self:RegisterEvent('PLAYER_TARGET_CHANGED', OnTargetChanged)
 
   -- Health bar
   local health = CreateFrame("StatusBar", nil, self)
