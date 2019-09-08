@@ -73,11 +73,11 @@ local CheckForSpellInterrupt = function (self, unit)
 
   if unit == "vehicle" then unit = "player" end
   if(self.notInterruptible and UnitCanAttack("player", unit)) then
-    self.Icon:SetDesaturated(true)
     self:SetStatusBarColor(0.3, 0.3, 0.3)
+    -- self.Icon:SetDesaturated(true)
   else
-    self.Icon:SetDesaturated(false)
     self:SetStatusBarColor(unpack(color))
+    -- self.Icon:SetDesaturated(false)
   end
 end
 

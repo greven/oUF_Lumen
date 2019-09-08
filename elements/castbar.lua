@@ -25,12 +25,12 @@ local CheckForSpellInterrupt = function (self, unit)
   if(self.notInterruptible and UnitCanAttack("player", unit)) then
     self.Glowborder:SetBackdropBorderColor(255/255, 25/255, 25/255, 1)
     self.Glowborder:Show()
-    self.Icon:SetDesaturated(true)
     self:SetStatusBarColor(0.3, 0.3, 0.3)
+    -- self.Icon:SetDesaturated(true)
   else
     self.Glowborder:Hide()
-    self.Icon:SetDesaturated(false)
     self:SetStatusBarColor(unpack(color))
+    -- self.Icon:SetDesaturated(false)
   end
 end
 
