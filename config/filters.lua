@@ -112,11 +112,14 @@ filters.list = {
 
   PRIEST = {
     buffs = {
+      [GetSpellInfo(194384) or "Atonement"] = true,
       [GetSpellInfo(15286) or "Vampiric Embrace"] = true,
       [GetSpellInfo(194249) or "Voidform"] = true,
     },
 
     debuffs = {
+      [GetSpellInfo(204213) or "Purge the Wicked"] = true,
+      [GetSpellInfo(214621) or "Schism"] = true,
       [GetSpellInfo(589) or "Shadow Word: Pain"] = true,
       [GetSpellInfo(34914) or "Vampiric Touch"] = true,
     }
@@ -164,6 +167,9 @@ filters.list = {
       [GetSpellInfo(201897) or "Boulderfist"] = true,
       [GetSpellInfo(193796) or "Flametongue"] = true,
       [GetSpellInfo(196834) or "Frostbrand"] = true,
+      [GetSpellInfo(77762) or "Lave Surge"] = true,
+      [GetSpellInfo(260734) or "Master of the Elements"] = true,
+      [GetSpellInfo(191634) or "Stormkeeper"] = true,
       [GetSpellInfo(73685) or "Unleash Life"] = true,
     },
 

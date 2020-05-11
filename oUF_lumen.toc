@@ -1,4 +1,4 @@
-## Interface: 80200
+## Interface: 80300
 ## Author: greven
 ## Version: @project-version@
 ## Title: oUF_|cFF0d87d5L|r|cFF3f6abdu|r|cFF85419cm|r|cFFc81a7de|r|cFFf20269n|r

@@ -88,7 +88,7 @@ local createStyle = function(self)
 
   -- Texts
   if self.cfg.name.show then
-    core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 60)
+    core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
     self:Tag(self.Name, '[lumen:level]  [lumen:name]')
   end
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
