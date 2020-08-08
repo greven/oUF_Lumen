@@ -1,3 +1,8 @@
+### Version 8.0.12:
+
+- Add paragon to experience tooltip.
+- Update buff/debuff filters.
+
 ### Version 8.0.11:
 
 - First attempt at fixing bugs for 8.2.
