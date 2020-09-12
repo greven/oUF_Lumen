@@ -61,9 +61,9 @@ function core:CreateCastbar(self)
 
   castbar.bg = castbar:CreateTexture(nil, 'BORDER')
   castbar.bg:SetAllPoints()
-  castbar.bg:SetAlpha(0.3)
+  castbar.bg:SetAlpha(0.2)
   castbar.bg:SetTexture(m.textures.bg_texture)
-  castbar.bg:SetColorTexture(1/3, 1/3, 1/3)
+  castbar.bg:SetColorTexture(0.2, 0.2, 0.2)
 
   castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
   castbar.Text:SetTextColor(1, 1, 1)
