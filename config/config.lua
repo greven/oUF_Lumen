@@ -13,7 +13,8 @@ ns.cfg = cfg
 
 cfg.colors = {
   backdrop = {r = 0, g = 0, b = 0, a = 1}, -- Backdrop Color (Some frames might not be affected)
-  health = {0.1, 0.1, 0.1, 0.85} -- Fallback color
+  health = {0.3, 0.3, 0.3, 1}, -- Fallback color
+  inverted = {0.1, 0.1, 0.1, 1} -- Inverted Color
 }
 
 -- -----------------------------------
@@ -29,24 +30,24 @@ cfg.scale = 1 -- The elements Scale
 
 cfg.frames = {
   main = {
-    width = 209, -- Width of the Player and Target Frames
+    width = 208, -- Width of the Player and Target Frames
     height = 26, -- Height of the Player and Target Frames
     health = {
       margin = 2 -- Spacing between HP and Power Bars
     },
     power = {
-      height = 2, -- Height of the Power Bar
+      height = 1, -- Height of the Power Bar
       text = {
         hideMax = true
       }
     }
   },
   secondary = {
-    width = 101, -- Width of the ToT, Focus, Pet...
-    height = 20, -- Height of the ToT, Focus, Pet...
+    width = 102, -- Width of the ToT, Focus, Pet...
+    height = 19, -- Height of the ToT, Focus, Pet...
     margin = 8, -- Margin to other frames
     health = {
-      margin = 2 -- Spacing between HP and Power Bars
+      margin = 1.5 -- Spacing between HP and Power Bars
     },
     power = {
       height = 1 -- Height of the Power Bar
@@ -270,24 +271,25 @@ cfg.units = {
   },
   party = {
     show = true,
-    width = 134,
-    height = 22,
+    width = 180,
+    height = 45,
     pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -525, y = -100},
     health = {
-      classColored = false,
+      classColored = true,
       gradientColored = false,
       reactionColored = false,
       invertedColors = true,
-      classColoredText = true,
+      classColoredText = false,
       frequentUpdates = true,
       smooth = true
     },
     power = {
       height = cfg.frames.secondary.power.height,
-      classColored = false,
+      classColored = true,
       frequentUpdates = false,
       smooth = true
-    }
+    },
+    showPortraits = true
   },
   raid = {
     show = true
@@ -303,7 +305,11 @@ cfg.units = {
       enable = true,
       color = {5 / 255, 107 / 255, 246 / 255},
       height = 3
-    }
+    },
+    selectedColor = {255 / 255, 25 / 255, 25 / 255, 0.8},
+    glowColor = {50 / 255, 240 / 255, 210 / 255, 0.7},
+    showTargetArrow = false,
+    showGlow = false
   }
 }
 

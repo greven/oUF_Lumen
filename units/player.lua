@@ -68,7 +68,7 @@ local function UpdateClassPowerColor(element)
 
   if (not UnitHasVehicleUI("player")) then
     if (core.playerClass == "ROGUE") then
-      r, g, b = 75 / 255, 175 / 255, 255 / 255
+      r, g, b = 120 / 255, 210 / 255, 130 / 255
     elseif (core.playerClass == "DRUID") then
       r, g, b = 255 / 255, 255 / 255, 102 / 255
     elseif (core.playerClass == "MONK") then
@@ -97,7 +97,7 @@ local function CreateClassPower(self)
 
   for index = 1, 11 do
     local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self)
-    Bar:SetHeight(cfg.frames.main.power.height)
+    Bar:SetHeight(1.5)
     Bar:SetStatusBarTexture(m.textures.status_texture)
     core:setBackdrop(Bar, 2, 2, 2, 2)
 
@@ -180,7 +180,7 @@ local CreateAdditionalPower = function(self)
   -- Add a background
   local Background = AdditionalPower:CreateTexture(nil, "BACKGROUND")
   Background:SetAllPoints(AdditionalPower)
-  Background:SetAlpha(0.20)
+  Background:SetAlpha(0.15)
   Background:SetTexture(m.textures.bg_texture)
 
   -- Value
