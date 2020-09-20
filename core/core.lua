@@ -7,6 +7,16 @@ ns.core = core
 -- > CORE FUNCTIONS
 -- ------------------------------------------------------------------------
 
+-- Check if table has the argument value
+function core:has_value(tab, val)
+  for index, value in ipairs(tab) do
+    if value == val then
+      return true
+    end
+  end
+  return false
+end
+
 -- -----------------------------------
 -- > PLAYER SPECIFIC
 -- -----------------------------------
@@ -26,7 +36,7 @@ function core:isPlayerMaxLevel()
 end
 
 -- Get Unit Experience
-function core:getXp(unit)
+function core:getXP(unit)
   if (unit == "pet") then
     return GetPetExperience()
   else
@@ -48,12 +58,30 @@ function core:hasUnitDebuff(unit, name, myspell)
   end
 end
 
+-- Is the player a healer? (healing spec)
+function core:isPlayerHealer()
+  local currentSpec = core:GetCurrentSpec()
+  local isHealer = core:has_value(cfg.healingSpecs, currentSpec)
+  return isHealer
+end
+
+-- Get current specialization name
+function core:GetCurrentSpec()
+  local specID = GetSpecialization()
+
+  if (specID) then
+    local _, currentSpecName = GetSpecializationInfo(specID)
+    return currentSpecName
+  end
+
+  return nil
+end
+
 -- Class colors
 function core:raidColor(unit)
   local _, x = UnitClass(unit)
   local color = RAID_CLASS_COLORS[x]
   return color and {color.r, color.g, color.b} or {.5, .5, .5}
-  -- return oUF.colors.class[x]
 end
 
 -- Raid Frames Target Highlight Border

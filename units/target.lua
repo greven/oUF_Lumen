@@ -17,8 +17,8 @@ local PostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
 
   if cfg.units[frame].health.gradientColored then
-    local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
-    health:SetStatusBarColor(r, g, b)
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:raidColor(unit))))
+    health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Class colored text
@@ -29,18 +29,20 @@ end
 
 -- Post Update Aura Icon
 local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
-	local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
-	if duration and duration > 0 then
-		icon.timeLeft = expirationTime - GetTime()
+  if duration and duration > 0 then
+    icon.timeLeft = expirationTime - GetTime()
+  else
+    icon.timeLeft = math.huge
+  end
 
-	else
-		icon.timeLeft = math.huge
-	end
-
-	icon:SetScript('OnUpdate', function(self, elapsed)
-		auras:AuraTimer_OnUpdate(self, elapsed)
-	end)
+  icon:SetScript(
+    "OnUpdate",
+    function(self, elapsed)
+      auras:AuraTimer_OnUpdate(self, elapsed)
+    end
+  )
 end
 
 -- Post Update BarTimer Aura
@@ -64,14 +66,17 @@ local PostUpdateBarTimer = function(element, unit, button, index)
 
   button.spell:SetText(name) -- set spell name
 
-  button:SetScript('OnUpdate', function(self, elapsed)
-    auras:BarTimer_OnUpdate(self, elapsed)
-  end)
+  button:SetScript(
+    "OnUpdate",
+    function(self, elapsed)
+      auras:BarTimer_OnUpdate(self, elapsed)
+    end
+  )
 end
 
 -- Filter Buffs
 local TargetCustomFilter = function(icons, unit, icon, name)
-  if(filters.list[core.playerClass].debuffs[name] and icon.isPlayer) then
+  if (filters.list[core.playerClass].debuffs[name] and icon.isPlayer) then
     return true
   end
 end
@@ -89,16 +94,16 @@ local createStyle = function(self)
   -- Texts
   if self.cfg.name.show then
     core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
-    self:Tag(self.Name, '[lumen:level]  [lumen:name]')
+    self:Tag(self.Name, "[lumen:level]  [lumen:name]")
   end
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  self:Tag(self.Health.value, '[lumen:hpvalue]')
+  self:Tag(self.Health.value, "[lumen:hpvalue]")
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
-  core:createPowerString(self, font, cfg.fontsize -4, "THINOUTLINE", 0, 0, "CENTER")
+  core:createPowerString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
   local clf = core:createFontstring(self, font, 11, "THINOUTLINE") -- classification
   clf:SetPoint("LEFT", self, "TOPLEFT", 0, 12)
   clf:SetTextColor(1, 1, 1, 1)
-  self:Tag(clf, '[lumen:classification]')
+  self:Tag(clf, "[lumen:classification]")
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
@@ -121,12 +126,12 @@ local createStyle = function(self)
   local QuestIcon = core:createFontstring(self, font, 26, "THINOUTLINE")
   QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 5, -2)
   QuestIcon:SetText("!")
-  QuestIcon:SetTextColor(238/255, 217/255, 43/255)
+  QuestIcon:SetTextColor(238 / 255, 217 / 255, 43 / 255)
   self.QuestIndicator = QuestIcon
 
   -- Raid Icons
-  local RaidIcon = self:CreateTexture(nil, 'OVERLAY')
-  RaidIcon:SetPoint('LEFT', self, 'RIGHT', 8, 0)
+  local RaidIcon = self:CreateTexture(nil, "OVERLAY")
+  RaidIcon:SetPoint("LEFT", self, "RIGHT", 8, 0)
   RaidIcon:SetSize(20, 20)
   self.RaidTargetIndicator = RaidIcon
 
@@ -147,7 +152,7 @@ end
 -- > SPAWN UNIT
 -- -----------------------------------
 if cfg.units[frame].show then
-  oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), createStyle)
-  oUF:SetActiveStyle(A..frame:gsub("^%l", string.upper))
-  oUF:Spawn(frame, A..frame:gsub("^%l", string.upper))
+  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
+  oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
 end

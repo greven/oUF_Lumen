@@ -19,15 +19,16 @@ local PostUpdateHealth = function(health, unit, min, max)
   local perc = math.floor(min / max * 100 + 0.5)
 
   -- Inverted Colors
-  if cfg.units[frame].health.invertedColors then
+  if cfg.units[frame].health.invertedColors or cfg.units[frame].showPortraits then
     health:SetStatusBarColor(unpack(cfg.colors.inverted))
     health.bg:SetVertexColor(unpack(core:raidColor(unit)))
     health.bg:SetAlpha(1)
   end
 
+  -- Use gradient colored health
   if cfg.units[frame].health.gradientColored then
-    local r, g, b = oUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, .5, .9, 0)
-    health:SetStatusBarColor(r, g, b)
+    local color = CreateColor(oUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, .5, .9, 0))
+    health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Show health value as the missing value
@@ -111,6 +112,15 @@ local PartyDebuffsFilter = function(icons, unit, icon, name)
   end
 end
 
+local PostUpdatePortrait = function(element, unit)
+  element:SetModelAlpha(0.2)
+  element:SetDesaturation(1)
+end
+
+-- local PartyUpdate = function(self)
+--   print(core:isPlayerHealer())
+-- end
+
 -- -----------------------------------
 -- > TARGET STYLE
 -- -----------------------------------
@@ -122,14 +132,14 @@ local createStyle = function(self)
   lum:globalStyle(self, "secondary")
 
   -- Texts
-  core:createPartyNameString(self, font_big, cfg.fontsize + 2)
+  core:createPartyNameString(self, font_big, cfg.fontsize)
   if self.cfg.health.classColoredText then
     self:Tag(self.Name, "[raidcolor][lumen:name]")
   else
     self:Tag(self.Name, "[lumen:name]")
   end
 
-  self.classText = core:createFontstring(self.Health, font_big, cfg.fontsize + 2, "THINOUTLINE")
+  self.classText = core:createFontstring(self.Health, font_big, cfg.fontsize, "THINOUTLINE")
   self.classText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -4, 5)
   self.classText:SetJustifyH("RIGHT")
   self:Tag(self.classText, "[lumen:level] [raidcolor][class]")
@@ -147,13 +157,10 @@ local createStyle = function(self)
   -- Portrait
   if self.cfg.showPortraits then
     local Portrait = CreateFrame("PlayerModel", nil, self.Health)
-    Portrait:SetFrameStrata(self:GetFrameStrata("LOW"))
+    Portrait:SetFrameLevel(self.Health:GetFrameLevel())
     Portrait:SetAllPoints(self.Health)
-  -- Portrait:SetBackdropColor(0, 0, 0)
-  -- core:setBackdrop(Portrait, 1, 1, 1, 1)
-
-  -- self.Health:SetFrameStrata("HIGH")
-  -- self.Portrait = Portrait
+    Portrait.PostUpdate = PostUpdatePortrait
+    self.Portrait = Portrait
   end
 
   -- Defuffs
@@ -222,6 +229,13 @@ local createStyle = function(self)
   core:CreateThreatBorder(self)
 
   self.Range = cfg.frames.range
+
+  -- self:RegisterEvent("PLAYER_TALENT_UPDATE", PartyUpdate, true)
+  -- self:RegisterEvent("CHARACTER_POINTS_CHANGED", PartyUpdate, true)
+  -- self:RegisterEvent("PLAYER_ROLES_ASSIGNED", PartyUpdate, true)
+  -- self:RegisterEvent("GROUP_ROSTER_UPDATE", PartyUpdate, true)
+  -- self:RegisterEvent("GROUP_FORMED", PartyUpdate, true)
+  -- self:RegisterEvent("GROUP_JOINED", PartyUpdate, true)
 end
 
 -- -----------------------------------
@@ -233,7 +247,10 @@ if cfg.units[frame].show then
 
   local party =
     oUF:SpawnHeader(
-    -- 'oUF_LumenParty', nil, 'solo', 'showSolo', true,  -- debug
+    -- "oUF_LumenParty",
+    -- nil,
+    -- "solo",
+    -- "showSolo", -- debug
     "oUF_LumenParty",
     nil,
     "party",

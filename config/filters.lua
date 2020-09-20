@@ -14,7 +14,8 @@ filters.list = {
       [GetSpellInfo(32182) or "Heroism"] = true,
       [GetSpellInfo(80353) or "Time Warp"] = true,
       -- Racials
-      [GetSpellInfo(256948) or "Spatial Rift"] = true
+      [GetSpellInfo(256948) or "Spatial Rift"] = true,
+      [GetSpellInfo(20594) or "Stone Form"] = true
     }
   },
   DEMONHUNTER = {

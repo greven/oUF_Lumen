@@ -121,7 +121,7 @@ function lum:globalStyle(self, type)
 
 	self.Health.bg = self.Health:CreateTexture(nil, "BACKGROUND")
 	self.Health.bg:SetAllPoints(self.Health)
-	self.Health.bg:SetAlpha(0.15)
+	self.Health.bg:SetAlpha(0.125)
 	self.Health.bg:SetTexture(m.textures.bg_texture)
 
 	-- Power Bar

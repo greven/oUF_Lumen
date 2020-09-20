@@ -19,8 +19,8 @@ local PostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
 
   if cfg.units[frame].health.gradientColored then
-    local r, g, b = oUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:raidColor(unit)))
-    health:SetStatusBarColor(r, g, b)
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:raidColor(unit))))
+    health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Class colored text

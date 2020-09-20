@@ -7,6 +7,14 @@ ns.cfg = cfg
 -- > CONFIGURATION
 -- ------------------------------------------------------------------------
 
+-- Healing specs
+cfg.healingSpecs = {
+  "Restoration",
+  "Mistweaver",
+  "Holy",
+  "Discipline"
+}
+
 -- -----------------------------------
 -- > COLORS
 -- -----------------------------------
@@ -45,7 +53,7 @@ cfg.frames = {
   secondary = {
     width = 102, -- Width of the ToT, Focus, Pet...
     height = 19, -- Height of the ToT, Focus, Pet...
-    margin = 8, -- Margin to other frames
+    margin = 10, -- Margin to other frames
     health = {
       margin = 1.5 -- Spacing between HP and Power Bars
     },
@@ -96,10 +104,10 @@ cfg.units = {
     },
     castbar = {
       enable = true,
-      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height, y = -42},
+      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height, y = -102},
       color = {5 / 255, 107 / 255, 246 / 255},
-      width = cfg.frames.main.width * 2,
-      height = cfg.frames.main.height,
+      width = cfg.frames.main.width * 2 + 6,
+      height = 25,
       latency = {
         show = false,
         color = {1, 0, 0, 0.5}
@@ -271,8 +279,8 @@ cfg.units = {
   },
   party = {
     show = true,
-    width = 180,
-    height = 45,
+    width = 160,
+    height = 40,
     pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -525, y = -100},
     health = {
       classColored = true,

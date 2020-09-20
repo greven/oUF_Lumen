@@ -35,12 +35,12 @@ local CheckForSpellInterrupt = function (self, unit)
 end
 
 -- Castbar PostCast Update
-local myPostCastStart = function(self, unit, name, _, castid)
+local myPostCastStart = function(self, unit, name)
   CheckForSpellInterrupt(self, unit)
 end
 
 -- Castbar PostCastChannel Update
-local myPostChannelStart = function(self, unit, name, _, castid)
+local myPostChannelStart = function(self, unit, name)
   CheckForSpellInterrupt(self, unit)
 end
 

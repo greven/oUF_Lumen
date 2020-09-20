@@ -14,10 +14,10 @@ local frame = "targettarget"
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
-  
+
   if cfg.units[frame].health.gradientColored then
-    local r, g, b = oUF.ColorGradient(min, max, 1,0,0, 1,1,0, unpack(core:raidColor(unit)))
-    health:SetStatusBarColor(r, g, b)
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:raidColor(unit))))
+    health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Class colored text
@@ -38,7 +38,7 @@ local createStyle = function(self)
 
   -- Texts
   core:createNameString(self, font_big, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 4)
-  self:Tag(self.Name, '[lumen:name]')
+  self:Tag(self.Name, "[lumen:name]")
   -- core:createHPString(self, font, cfg.fontsize - 4, "THINOUTLINE", -4, 0, "RIGHT")
   -- self:Tag(self.Health.value, '[lumen:hpperc]')
 
@@ -47,14 +47,13 @@ local createStyle = function(self)
 
   -- Heal Prediction
   CreateHealPrediction(self)
-
 end
 
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
 if cfg.units[frame].show then
-  oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), createStyle)
-  oUF:SetActiveStyle(A..frame:gsub("^%l", string.upper))
-  oUF:Spawn(frame, A..frame:gsub("^%l", string.upper))
+  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
+  oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
 end
