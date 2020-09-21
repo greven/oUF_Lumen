@@ -1,7 +1,7 @@
 local A, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local auras, debuffs = ns.auras, ns.debuffs
 
 local font = m.fonts.font
 local font_big = m.fonts.font_big
@@ -9,7 +9,7 @@ local font_big = m.fonts.font_big
 local frame = "party"
 
 -- ------------------------------------------------------------------------
--- > BOSS UNIT SPECIFIC FUNCTiONS
+-- > PARTY UNIT SPECIFIC FUNCTiONS
 -- ------------------------------------------------------------------------
 
 -- Post Health Update
@@ -18,7 +18,7 @@ local PostUpdateHealth = function(health, unit, min, max)
   local dead, disconnnected, ghost = UnitIsDead(unit), not UnitIsConnected(unit), UnitIsGhost(unit)
   local perc = math.floor(min / max * 100 + 0.5)
 
-  -- Inverted Colors
+  -- Inverted colors
   if cfg.units[frame].health.invertedColors or cfg.units[frame].showPortraits then
     health:SetStatusBarColor(unpack(cfg.colors.inverted))
     health.bg:SetVertexColor(unpack(core:raidColor(unit)))
@@ -35,20 +35,11 @@ local PostUpdateHealth = function(health, unit, min, max)
   health.value:SetText("-" .. core:shortNumber(max - min))
 
   if disconnnected or dead or ghost then
-    health.value:Hide()
     self.HPborder:Hide()
     health.bg:SetVertexColor(.25, .25, .25)
-    if disconnnected then
-      self.status:SetText("DC")
-    elseif dead then
-      self.status:SetText("DEAD")
-    elseif ghost then
-      self.status:SetText("GHOST")
-    end
+    health.value:Hide()
   else -- Player alive and kicking!
     health.value:Show()
-    self.status:SetText("")
-
     if (min == max) then -- It has max health
       health.value:Hide()
       self.HPborder:Hide()
@@ -85,19 +76,16 @@ local PostUpdatePower = function(power, unit, min, max)
 end
 
 -- Post Update Aura Icon
-local PostUpdateIcon = function(element, unit, button, index)
-  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+local PostUpdateIcon = function(element, unit, icon, index)
+  local name, _, count, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
   if duration and duration > 0 then
-    button.timeLeft = expirationTime - GetTime()
+    icon.timeLeft = expirationTime - GetTime()
   else
-    button.timeLeft = math.huge
+    icon.timeLeft = math.huge
   end
 
-  local color = DebuffTypeColor[type or "none"]
-  button.overlay:SetVertexColor(color.r, color.g, color.b)
-
-  button:SetScript(
+  icon:SetScript(
     "OnUpdate",
     function(self, elapsed)
       auras:AuraTimer_OnUpdate(self, elapsed)
@@ -107,13 +95,16 @@ end
 
 -- Filter Debuffs
 local PartyDebuffsFilter = function(icons, unit, icon, name)
-  if (filters.list.PARTY[name]) then -- Ignore debuffs in the party list
-    return false
+  if name then
+    if debuffs.list[frame][name] or duration == 0 then -- Ignore debuffs in the party list
+      return false
+    end
   end
+  return true
 end
 
 local PostUpdatePortrait = function(element, unit)
-  element:SetModelAlpha(0.2)
+  element:SetModelAlpha(0.1)
   element:SetDesaturation(1)
 end
 
@@ -132,11 +123,13 @@ local createStyle = function(self)
   lum:globalStyle(self, "secondary")
 
   -- Texts
+  core:createHPString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 0, "LEFT")
+
   core:createPartyNameString(self, font_big, cfg.fontsize)
   if self.cfg.health.classColoredText then
-    self:Tag(self.Name, "[raidcolor][lumen:name]")
+    self:Tag(self.Name, "[lumen:role] [raidcolor][lumen:name]")
   else
-    self:Tag(self.Name, "[lumen:name]")
+    self:Tag(self.Name, "[lumen:partystatus] [lumen:name]")
   end
 
   self.classText = core:createFontstring(self.Health, font_big, cfg.fontsize, "THINOUTLINE")
@@ -144,11 +137,11 @@ local createStyle = function(self)
   self.classText:SetJustifyH("RIGHT")
   self:Tag(self.classText, "[lumen:level] [raidcolor][class]")
 
-  core:createHPString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 0, "LEFT")
-
-  self.status = core:createFontstring(self.Health, font, cfg.fontsize - 4, "THINOUTLINE")
-  self.status:SetPoint("CENTER", self.Health, "TOP", 0, 0)
-  self.status:SetTextColor(255 / 255, 255 / 255, 255 / 255, 0.70)
+  -- Role and Leader text
+  self.roleText = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
+  self.roleText:SetPoint("BOTTOM", self, "TOP", 0, -4)
+  self.roleText:SetJustifyH("CENTER")
+  self:Tag(self.roleText, "|cff666666" .. "[leaderlong]" .. "|r [lumen:role]")
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
@@ -164,10 +157,12 @@ local createStyle = function(self)
   end
 
   -- Defuffs
-  local debuffs = auras:CreateAura(self, 6, 1, self.cfg.height + 4, 2)
-  debuffs:SetPoint("TOPLEFT", self, "TOPRIGHT", 5, 11)
-  debuffs.initialAnchor = "BOTTOMLEFT"
-  debuffs["growth-x"] = "RIGHT"
+  local debuffs = auras:CreateAura(self, 12, 2, self.cfg.height / 2 + 2, 3)
+  debuffs:SetPoint("TOPRIGHT", self, "TOPLEFT", -6, 2)
+  debuffs.initialAnchor = "TOPRIGHT"
+  debuffs["growth-x"] = "LEFT"
+  debuffs["growth-y"] = "DOWN"
+  debuffs.showDebuffType = true
   debuffs.CustomFilter = PartyDebuffsFilter
   debuffs.PostUpdateIcon = PostUpdateIcon
   self.Debuffs = debuffs
@@ -175,49 +170,10 @@ local createStyle = function(self)
   -- Ready Check Icon
   local ReadyCheck = self:CreateTexture()
   ReadyCheck:SetPoint("LEFT", self, "RIGHT", 8, 0)
-  ReadyCheck:SetSize(16, 16)
+  ReadyCheck:SetSize(20, 20)
   ReadyCheck.finishedTimer = 10
   ReadyCheck.fadeTimer = 2
   self.ReadyCheckIndicator = ReadyCheck
-
-  -- Role Icon
-  local RoleIcon = self:CreateTexture(nil, "OVERLAY")
-  RoleIcon:SetPoint("RIGHT", self, "LEFT", -8, 1)
-  RoleIcon:SetSize(16, 16)
-  RoleIcon:SetAlpha(0)
-  self.GroupRoleIndicator = RoleIcon
-
-  self:HookScript(
-    "OnEnter",
-    function()
-      RoleIcon:SetAlpha(1)
-    end
-  )
-  self:HookScript(
-    "OnLeave",
-    function()
-      RoleIcon:SetAlpha(0)
-    end
-  )
-
-  -- Leader Icon
-  local LeaderIcon = self:CreateTexture(nil, "OVERLAY")
-  LeaderIcon:SetPoint("RIGHT", self, "LEFT", -8, 1)
-  LeaderIcon:SetSize(16, 16)
-  self.LeaderIndicator = LeaderIcon
-
-  self:HookScript(
-    "OnEnter",
-    function()
-      LeaderIcon:SetAlpha(0)
-    end
-  )
-  self:HookScript(
-    "OnLeave",
-    function()
-      LeaderIcon:SetAlpha(1)
-    end
-  )
 
   -- Heal Prediction
   CreateHealPrediction(self)

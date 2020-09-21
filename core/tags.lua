@@ -180,3 +180,44 @@ tags["lumen:classpower"] = function(unit)
   end
 end
 events["lumen:classpower"] = "UNIT_POWER_UPDATE SPELLS_CHANGED UNIT_POWER_FREQUENT PLAYER_TARGET_CHANGED"
+
+tags["lumen:role"] = function(unit)
+  local Role = UnitGroupRolesAssigned(unit)
+  local String = ""
+
+  if Role == "TANK" then
+    String = "|cff0099CC" .. TANK .. "|r"
+  elseif Role == "HEALER" then
+    String = "|cff64CC00" .. HEALER .. "|r"
+  end
+
+  return String
+end
+events["lumen:role"] = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
+
+tags["lumen:afkdnd"] = function(unit)
+  if UnitIsAFK(unit) then
+    return "|cffCFCFCF " .. AFK .. "|r"
+  elseif UnitIsDND(unit) then
+    return "|cffCFCFCF " .. DND .. "|r"
+  else
+    return ""
+  end
+end
+events["lumen:afkdnd"] = "PLAYER_FLAGS_CHANGED PLAYER_LOGIN PLAYER_ENTERING_WORLD"
+
+-- AFK and DND status or Party Leader
+tags["lumen:partystatus"] = function(unit)
+  if UnitIsAFK(unit) then
+    return "|cff666666<" .. AFK .. ">|r"
+  elseif (UnitIsDead(unit)) then
+    return "|cffEA3E3E" .. "<Dead" .. ">|r"
+  elseif (UnitIsGhost(unit)) then
+    return "|cff3EC1EA" .. "<Ghost" .. ">|r"
+  elseif (not UnitIsConnected(unit)) then
+    return "|cff828282" .. "<Offline" .. ">|r"
+  else
+    return ""
+  end
+end
+events["lumen:partystatus"] = "UNIT_HEALTH PLAYER_UPDATE_RESTING UNIT_CONNECTION PLAYER_FLAGS_CHANGED"

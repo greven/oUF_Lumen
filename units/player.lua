@@ -531,10 +531,10 @@ local createStyle = function(self)
 
   -- Resting
   if not core:isPlayerMaxLevel() then
-    local Resting = core:createFontstring(self.Health, font, cfg.fontsize - 4, "THINOUTLINE")
-    Resting:SetPoint("CENTER", self.Health, "TOP", 0, 0)
+    local Resting = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
+    Resting:SetPoint("CENTER", self.Health, "TOP", 0, 1)
     Resting:SetText("zZz")
-    Resting:SetTextColor(255 / 255, 255 / 255, 255 / 255, 0.70)
+    Resting:SetTextColor(255 / 255, 255 / 255, 255 / 255, 0.80)
     self.RestingIndicator = Resting
   end
 

@@ -30,6 +30,25 @@ core.playerColor = RAID_CLASS_COLORS[core.playerClass]
 -- > API
 -- -----------------------------------
 
+-- Party / Raid Frames Threat Highlight
+local function UpdateThreat(self, event, unit)
+  if (self.unit ~= unit) then
+    return
+  end
+
+  local status = UnitThreatSituation(unit)
+  unit = unit or self.unit
+
+  if status and status > 1 then
+    local r, g, b = GetThreatStatusColor(status)
+    self.ThreatBorder:Show()
+    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 1)
+  else
+    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 0)
+    self.ThreatBorder:Hide()
+  end
+end
+
 -- Is Player max level?
 function core:isPlayerMaxLevel()
   return core.playerLevel == GetMaxPlayerLevel() and true or false
@@ -110,7 +129,7 @@ end
 -- Generates the Party Name String
 function core:createPartyNameString(self, font, size)
   self.Name = core:createFontstring(self.Health, font, size, "THINOUTLINE")
-  self.Name:SetPoint("TOPRIGHT", self, "TOPRIGHT", -4, -4)
+  self.Name:SetPoint("TOPRIGHT", self, "TOPRIGHT", -4, -5)
   self.Name:SetJustifyH("RIGHT")
 end
 
@@ -189,33 +208,14 @@ end
 -- Create Party / Raid health warning status border
 function core:CreateHPBorder(self) -- FIX: No events registered...
   self.HPborder = CreateFrame("Frame", nil, self)
-  core:createBorder(self, self.HPborder, 1, 5, "Interface\\ChatFrame\\ChatFrameBackground")
+  core:createBorder(self, self.HPborder, 1, 4, "Interface\\ChatFrame\\ChatFrameBackground")
   self.HPborder:SetBackdropBorderColor(180 / 255, 255 / 255, 0 / 255, 1)
-end
-
--- Party / Raid Frames Threat Highlight
-local function UpdateThreat(self, event, unit)
-  if (self.unit ~= unit) then
-    return
-  end
-
-  local status = UnitThreatSituation(unit)
-  unit = unit or self.unit
-
-  if status and status > 1 then
-    local r, g, b = GetThreatStatusColor(status)
-    self.ThreatBorder:Show()
-    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 1)
-  else
-    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 0)
-    self.ThreatBorder:Hide()
-  end
 end
 
 -- Create Party / Raid Threat Status Border
 function core:CreateThreatBorder(self)
   self.ThreatBorder = CreateFrame("Frame", nil, self)
-  core:createBorder(self, self.ThreatBorder, 1, 4, "Interface\\ChatFrame\\ChatFrameBackground")
+  core:createBorder(self, self.ThreatBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
   self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
   self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 end

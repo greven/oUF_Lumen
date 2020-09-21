@@ -8,7 +8,7 @@ local font_big = m.fonts.font_big
 local frame = "arena"
 
 -- ------------------------------------------------------------------------
--- > BOSS UNIT SPECIFIC FUNCTiONS
+-- > ARENA UNIT SPECIFIC FUNCTiONS
 -- ------------------------------------------------------------------------
 
 -- Post Health Update

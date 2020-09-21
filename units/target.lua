@@ -28,7 +28,7 @@ local PostUpdateHealth = function(health, unit, min, max)
 end
 
 -- Post Update Aura Icon
-local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
+local PostUpdateIcon = function(self, unit, icon, index)
   local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
   if duration and duration > 0 then

@@ -52,10 +52,10 @@ cfg.frames = {
   },
   secondary = {
     width = 102, -- Width of the ToT, Focus, Pet...
-    height = 19, -- Height of the ToT, Focus, Pet...
+    height = 20, -- Height of the ToT, Focus, Pet...
     margin = 10, -- Margin to other frames
     health = {
-      margin = 1.5 -- Spacing between HP and Power Bars
+      margin = 1 -- Spacing between HP and Power Bars
     },
     power = {
       height = 1 -- Height of the Power Bar
