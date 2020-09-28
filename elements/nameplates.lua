@@ -31,6 +31,12 @@ local cvars = {
   nameplateMaxDistance = 60
 }
 
+-- Post Health Update
+local PostUpdateHealth = function(health, unit, min, max)
+  local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, 1, 1, 1))
+  health.percent:SetTextColor(color:GetRGB())
+end
+
 -- Post Update Aura Icon
 local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
   local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
@@ -222,6 +228,7 @@ local createStyle = function(self, unit)
   health.colorTapping = true
   health.colorDisconnected = true
   health.frequentUpdates = true
+  health.PostUpdate = PostUpdateHealth
 
   health.bg = health:CreateTexture(nil, "BACKGROUND")
   health.bg:SetAllPoints(health)
