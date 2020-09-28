@@ -230,35 +230,34 @@ local createStyle = function(self, unit)
   self.Health = health
 
   -- Name strings
-  core:createNameString(self, font_big, cfg.fontsize - 3, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
+  core:createNameString(self, font_big, cfg.fontsize - 4, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
   self:Tag(self.Name, "[lumen:name]")
 
   -- Health Percentage
-  -- health.percent = core:createFontstring(self.Health, font_big, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
-  -- health.percent:SetPoint("LEFT", self.Health, 23, 0)
-  -- health.percent:SetJustifyH("RIGHT")
-  -- health.percent:SetWidth(self.cfg.width)
-  -- health.percent:SetTextColor(0.8, 0.8, 0.8, 0.8)
-  -- self:Tag(health.percent, '[lumen:hpperc]')
+  health.percent = core:createFontstring(self.Health, font_big, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
+  health.percent:SetPoint("LEFT", self.Health, "RIGHT", 4, 0)
+  health.percent:SetJustifyH("LEFT")
+  health.percent:SetWidth(self.cfg.width)
+  health.percent:SetTextColor(0.8, 0.8, 0.8, 1)
+  self:Tag(health.percent, "[lumen:hpperc]")
 
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then
     self.classPower = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
-    self.classPower:SetPoint("LEFT", self.Health, 20, 0)
+    self.classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
     self.classPower:SetJustifyH("RIGHT")
     self.classPower:SetWidth(self.cfg.width)
-    -- self.classPower:SetTextColor(13/255, 202/255, 242/255, 1.0)
     self:Tag(self.classPower, "[lumen:classpower]", "player")
     self.classPower:Hide()
   end
 
   -- Level
-  self.level = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
-  self.level:SetPoint("TOPRIGHT", self.Health, -18, 0)
-  self.level:SetJustifyH("LEFT")
-  self.level:SetWidth(self.cfg.width)
-  self.level:SetHeight(self.cfg.height)
-  self:Tag(self.level, "[lumen:levelplus]")
+  -- self.level = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
+  -- self.level:SetPoint("TOPRIGHT", self.Health, -18, 0)
+  -- self.level:SetJustifyH("LEFT")
+  -- self.level:SetWidth(self.cfg.width)
+  -- self.level:SetHeight(self.cfg.height)
+  -- self:Tag(self.level, "[lumen:levelplus]")
 
   -- Raid Icons
   local RaidIcon = self:CreateTexture(nil, "OVERLAY")
