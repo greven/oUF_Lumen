@@ -4,7 +4,6 @@ local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 local auras, filters = ns.auras, ns.filters
 
 local font = m.fonts.font
-local font_big = m.fonts.font_big
 
 local frame = "boss"
 
@@ -51,7 +50,7 @@ local createStyle = function(self)
   self:SetSize(self.cfg.width, self.cfg.height)
 
   -- Texts
-  core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
+  core:createNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
   self:Tag(self.Name, "[lumen:level]  [lumen:name]")
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
   self:Tag(self.Health.value, "[lumen:hpvalue]")

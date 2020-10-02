@@ -68,7 +68,7 @@ local PostCreateBar = function(Auras, button)
 
 	button.spell = button.bar:CreateFontString(nil, "OVERLAY")
 	button.spell:SetPoint("LEFT", button.bar, "LEFT", 4, 0)
-	button.spell:SetFont(m.fonts.font_big, 16, "THINOUTLINE")
+	button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
 	button.spell:SetWidth(button.bar:GetWidth() - 25)
 	button.spell:SetTextColor(1, 1, 1)
 	button.spell:SetShadowOffset(1, -1)

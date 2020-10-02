@@ -6,7 +6,6 @@ local auras, filters = ns.auras, ns.filters
 local _G = _G
 
 local font = m.fonts.font
-local font_big = m.fonts.font_big
 
 local frame = "nameplate"
 
@@ -237,11 +236,11 @@ local createStyle = function(self, unit)
   self.Health = health
 
   -- Name strings
-  core:createNameString(self, font_big, cfg.fontsize - 4, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
+  core:createNameString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
   self:Tag(self.Name, "[lumen:name]")
 
   -- Health Percentage
-  health.percent = core:createFontstring(self.Health, font_big, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
+  health.percent = core:createFontstring(self.Health, font, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
   health.percent:SetPoint("LEFT", self.Health, "RIGHT", 4, 0)
   health.percent:SetJustifyH("LEFT")
   health.percent:SetWidth(self.cfg.width)
@@ -250,7 +249,7 @@ local createStyle = function(self, unit)
 
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then
-    self.classPower = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
+    self.classPower = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
     self.classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
     self.classPower:SetJustifyH("RIGHT")
     self.classPower:SetWidth(self.cfg.width)
@@ -259,7 +258,7 @@ local createStyle = function(self, unit)
   end
 
   -- Level
-  -- self.level = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
+  -- self.level = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
   -- self.level:SetPoint("TOPRIGHT", self.Health, -18, 0)
   -- self.level:SetJustifyH("LEFT")
   -- self.level:SetWidth(self.cfg.width)
@@ -299,7 +298,7 @@ local createStyle = function(self, unit)
     castbar.Text:SetShadowOffset(1, -1)
     castbar.Text:SetJustifyH("CENTER")
     castbar.Text:SetHeight(12)
-    castbar.Text:SetFont(font_big, cfg.fontsize - 4, "THINOUTLINE")
+    castbar.Text:SetFont(font, cfg.fontsize - 4, "THINOUTLINE")
     castbar.Text:SetWidth(cfg.units.nameplate.width - 4)
     castbar.Text:SetPoint("CENTER", castbar, 0, -10)
 

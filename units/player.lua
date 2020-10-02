@@ -6,7 +6,6 @@ local auras, filters, debuffs = ns.auras, ns.filters, ns.debuffs
 local _G = _G
 
 local font = m.fonts.font
-local font_big = m.fonts.font_big
 
 local frame = "player"
 
@@ -51,7 +50,7 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
     MAGE = {238 / 255, 48 / 255, 83 / 255},
     MONK = {0 / 255, 143 / 255, 247 / 255},
     PALADIN = {255 / 255, 26 / 255, 48 / 255},
-    ROGUE = {255 / 255, 26 / 255, 48 / 255},
+    ROGUE = {161 / 255, 92 / 255, 255 / 255},
     WARLOCK = {255 / 255, 26 / 255, 48 / 255}
   }
 
@@ -68,7 +67,7 @@ local function UpdateClassPowerColor(element)
 
   if (not UnitHasVehicleUI("player")) then
     if (core.playerClass == "ROGUE") then
-      r, g, b = 120 / 255, 210 / 255, 130 / 255
+      r, g, b = 255 / 255, 26 / 255, 48 / 255
     elseif (core.playerClass == "DRUID") then
       r, g, b = 255 / 255, 255 / 255, 102 / 255
     elseif (core.playerClass == "MONK") then
@@ -366,7 +365,7 @@ local PostCreateIcon = function(Auras, button)
 
   button.spell = button:CreateFontString(nil, "OVERLAY")
   button.spell:SetPoint("RIGHT", button, "LEFT", -4, 0)
-  button.spell:SetFont(m.fonts.font_big, 16, "THINOUTLINE")
+  button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
   button.spell:SetTextColor(1, 1, 1)
   button.spell:SetShadowOffset(1, -1)
   button.spell:SetShadowColor(0, 0, 0, 1)
@@ -461,7 +460,7 @@ local createStyle = function(self)
 
   -- Text strings
   if self.cfg.name.show then
-    core:createNameString(self, font_big, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
+    core:createNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
     self:Tag(self.Name, "[lumen:level]  [lumen:name]")
   end
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")

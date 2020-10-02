@@ -3,7 +3,6 @@ local _, ns = ...
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 
 local font = m.fonts.font
-local font_big = m.fonts.font_big
 
 -- ------------------------------------------------------------------------
 -- > CASTBARS
@@ -87,7 +86,7 @@ function core:CreateCastbar(self)
     castbar:SetPoint(cfg.units.player.castbar.pos.a1, cfg.units.player.castbar.pos.af,
       cfg.units.player.castbar.pos.a2, cfg.units.player.castbar.pos.x, cfg.units.player.castbar.pos.y)
 
-    castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
+    castbar.Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
     castbar.Text:SetWidth(cfg.units.player.castbar.width - 60)
     castbar.Text:SetPoint("LEFT", castbar, 4, 0)
 
@@ -120,7 +119,7 @@ function core:CreateCastbar(self)
     castbar:SetHeight(cfg.units.target.castbar.height)
     castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 350)
 
-    castbar.Text:SetFont(font_big, cfg.fontsize + 2, "THINOUTLINE")
+    castbar.Text:SetFont(font, cfg.fontsize + 2, "THINOUTLINE")
     castbar.Text:SetWidth(cfg.units.target.castbar.width - 60)
     castbar.Text:SetPoint("LEFT", castbar, 6, 0)
 
@@ -143,7 +142,7 @@ function core:CreateCastbar(self)
     castbar:SetHeight(cfg.units.focus.castbar.height)
     castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 300)
 
-    castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
+    castbar.Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
     castbar.Text:SetWidth(cfg.units.focus.castbar.width - 60)
     castbar.Text:SetPoint("LEFT", castbar, 4, 0)
 
@@ -166,7 +165,7 @@ function core:CreateCastbar(self)
     castbar:SetPoint("LEFT", self, cfg.units.boss.height + 2, 0)
     castbar:SetPoint("TOPRIGHT", self, 0, 0)
 
-    castbar.Text:SetFont(font_big, cfg.fontsize + 1, "THINOUTLINE")
+    castbar.Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
     castbar.Text:SetWidth(cfg.units.boss.width - 50)
     castbar.Text:SetPoint("LEFT", castbar, 4, 0)
 

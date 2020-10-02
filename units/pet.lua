@@ -4,7 +4,6 @@ local lum, core, auras, oUF = ns.lum, ns.core, ns.auras, ns.oUF
 local cfg, m, filters = ns.cfg, ns.m, ns.filters
 
 local font = m.fonts.font
-local font_big = m.fonts.font_big
 
 local frame = "pet"
 
@@ -63,7 +62,7 @@ local createStyle = function(self)
   lum:globalStyle(self, "secondary")
 
   -- Texts
-  core:createNameString(self, font_big, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
+  core:createNameString(self, font, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
   self:Tag(self.Name, "[lumen:name]")
   -- core:createHPString(self, font, cfg.fontsize - 4, "THINOUTLINE", -4, 0, "RIGHT")
   -- self:Tag(self.Health.value, '[lumen:hpperc]')

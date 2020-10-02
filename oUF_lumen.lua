@@ -11,7 +11,6 @@ local core, cfg, m, oUF = ns.core, ns.cfg, ns.m, ns.oUF or oUF
 ns.lum, ns.oUF = lum, oUF
 
 local font = m.fonts.font
-local font_big = m.fonts.font_big
 
 -- -----------------------------------
 -- > HEAL PREDICTION

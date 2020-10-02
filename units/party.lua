@@ -4,7 +4,6 @@ local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 local auras, debuffs = ns.auras, ns.debuffs
 
 local font = m.fonts.font
-local font_big = m.fonts.font_big
 
 local frame = "party"
 
@@ -125,20 +124,20 @@ local createStyle = function(self)
   -- Texts
   core:createHPString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 0, "LEFT")
 
-  core:createPartyNameString(self, font_big, cfg.fontsize)
+  core:createPartyNameString(self, font, cfg.fontsize)
   if self.cfg.health.classColoredText then
     self:Tag(self.Name, "[lumen:role] [raidcolor][lumen:name]")
   else
     self:Tag(self.Name, "[lumen:partystatus] [lumen:name]")
   end
 
-  self.classText = core:createFontstring(self.Health, font_big, cfg.fontsize, "THINOUTLINE")
+  self.classText = core:createFontstring(self.Health, font, cfg.fontsize, "THINOUTLINE")
   self.classText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -4, 5)
   self.classText:SetJustifyH("RIGHT")
   self:Tag(self.classText, "[lumen:level] [raidcolor][class]")
 
   -- Role and Leader text
-  self.roleText = core:createFontstring(self.Health, font_big, cfg.fontsize - 2, "THINOUTLINE")
+  self.roleText = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
   self.roleText:SetPoint("BOTTOM", self, "TOP", 0, -4)
   self.roleText:SetJustifyH("CENTER")
   self:Tag(self.roleText, "|cff666666" .. "[leaderlong]" .. "|r [lumen:role]")
