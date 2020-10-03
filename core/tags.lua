@@ -168,9 +168,9 @@ tags["lumen:classpower"] = function(unit)
     else
       num = GetComboPoints("player", "target")
       max = UnitPowerMax("player", Enum.PowerType.ComboPoints)
-      color = "FFFF66"
+      color = "FF1A30"
       if (num == max) then
-        color = "FF1A30"
+        color = "A15CFF"
       end
     end
   end

@@ -206,7 +206,7 @@ for _, bar in pairs({'MirrorTimer1', 'MirrorTimer2', 'MirrorTimer3'}) do
     _G[bar..'Background']:SetAllPoints(_G[bar])
     _G[bar..'Background']:SetVertexColor(0, 0, 0, 0.5)
 
-    _G[bar..'Text']:SetFont(font, cfg.fontsize-2, "THINOUTLINE")
+    _G[bar..'Text']:SetFont(font, cfg.fontsize-1, "THINOUTLINE")
     _G[bar..'Text']:ClearAllPoints()
     _G[bar..'Text']:SetPoint('CENTER', MirrorTimer1StatusBar, 0, 0)
 
