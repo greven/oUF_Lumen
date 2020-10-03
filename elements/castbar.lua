@@ -96,7 +96,7 @@ function core:CreateCastbar(self)
     castbar.Max = castbar:CreateFontString(nil, "OVERLAY")
     castbar.Max:SetTextColor(200/255, 200/255, 200/255)
     castbar.Max:SetJustifyH("RIGHT")
-    castbar.Max:SetFont(font, cfg.fontsize-2, "THINOUTLINE")
+    castbar.Max:SetFont(font, cfg.fontsize-1, "THINOUTLINE")
     castbar.Max:SetPoint("RIGHT", castbar.Time, "LEFT", 0, 0)
     castbar.CustomTimeText = CustomCastTimeText
 
