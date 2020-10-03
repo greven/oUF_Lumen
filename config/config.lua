@@ -106,11 +106,11 @@ cfg.units = {
       enable = true,
       pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height, y = -102},
       color = {5 / 255, 107 / 255, 246 / 255},
-      width = cfg.frames.main.width * 2 + 6,
+      width = cfg.frames.main.width * 2 + 2,
       height = 25,
       latency = {
-        show = false,
-        color = {1, 0, 0, 0.5}
+        show = true,
+        color = {1, 0, 0, 0.4}
       }
     },
     auras = {
@@ -325,7 +325,8 @@ cfg.elements = {
   castbar = {
     backdrop = {
       color = {r = 0, g = 0, b = 0, a = 0.85}
-    }
+    },
+    timeToHold = 2
   },
   experiencebar = {
     show = true,

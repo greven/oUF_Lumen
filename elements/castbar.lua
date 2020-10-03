@@ -34,20 +34,130 @@ local CheckForSpellInterrupt = function (self, unit)
 end
 
 -- Castbar PostCast Update
-local myPostCastStart = function(self, unit, name)
-  CheckForSpellInterrupt(self, unit)
+local onPostCastStart = function(self, unit, name)
+  if(unit == 'player') then
+    self:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
+  end
+
+  if(unit == 'target' or unit == 'focus') then
+    CheckForSpellInterrupt(self, unit)
+  end
 end
 
 -- Castbar PostCastChannel Update
-local myPostChannelStart = function(self, unit, name)
-  CheckForSpellInterrupt(self, unit)
+local onPostChannelStart = function(self, unit, name)
+  if(unit == 'target' or unit == 'focus') then
+    CheckForSpellInterrupt(self, unit)
+  end
 end
 
-local setInterruptIcon = function(f)
-  core:setglowBorder(f)
-  f.Glowborder:SetPoint("TOPLEFT", f, "TOPLEFT", - (f:GetHeight() + 2) - 6, 6) -- Resize to include icon
-  f.PostCastStart = myPostCastStart
-  f.PostChannelStart = myPostChannelStart
+local setInterruptIcon = function(self)
+  core:setglowBorder(self)
+  self.Glowborder:SetPoint("TOPLEFT", self, "TOPLEFT", - (self:GetHeight() + 2) - 6, 6) -- Resize to include icon
+end
+
+local OnPostCastInterrupted = function(self, unit)
+  if(unit == 'player') then
+    self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255)
+  end
+end
+
+local OnUpdate = function(self, elapsed)
+  if(self.casting) then
+    self:SetAlpha(1)
+		local duration = self.duration + elapsed
+		if(duration >= self.max) then
+			self.casting = nil
+			self:Hide()
+
+			if(self.PostCastStop) then self:PostCastStop(self.__owner.unit) end
+			return
+		end
+
+		if(self.Time) then
+			if(self.delay ~= 0) then
+				if(self.CustomDelayText) then
+					self:CustomDelayText(duration)
+				else
+					self.Time:SetFormattedText('%.1f|cffff0000-%.1f|r', duration, self.delay)
+				end
+			else
+				if(self.CustomTimeText) then
+					self:CustomTimeText(duration)
+				else
+					self.Time:SetFormattedText('%.1f', duration)
+				end
+			end
+		end
+
+		self.duration = duration
+		self:SetValue(duration)
+
+		if(self.Spark) then
+			local horiz = self.horizontal
+			local size = self[horiz and 'GetWidth' or 'GetHeight'](self)
+
+			local offset = (duration / self.max) * size
+			if(self:GetReverseFill()) then
+				offset = size - offset
+			end
+
+			self.Spark:SetPoint('CENTER', self, horiz and 'LEFT' or 'BOTTOM', horiz and offset or 0, horiz and 0 or offset)
+		end
+  elseif(self.channeling) then
+    self:SetAlpha(1)
+		local duration = self.duration - elapsed
+
+		if(duration <= 0) then
+			self.channeling = nil
+			self:Hide()
+
+			if(self.PostChannelStop) then self:PostChannelStop(self.__owner.unit) end
+			return
+		end
+
+		if(self.Time) then
+			if(self.delay ~= 0) then
+				if(self.CustomDelayText) then
+					self:CustomDelayText(duration)
+				else
+					self.Time:SetFormattedText('%.1f|cffff0000-%.1f|r', duration, self.delay)
+				end
+			else
+				if(self.CustomTimeText) then
+					self:CustomTimeText(duration)
+				else
+					self.Time:SetFormattedText('%.1f', duration)
+				end
+			end
+		end
+
+		self.duration = duration
+		self:SetValue(duration)
+		if(self.Spark) then
+			local horiz = self.horizontal
+			local size = self[horiz and 'GetWidth' or 'GetHeight'](self)
+
+			local offset = (duration / self.max) * size
+			if(self:GetReverseFill()) then
+				offset = size - offset
+			end
+
+			self.Spark:SetPoint('CENTER', self, horiz and 'LEFT' or 'BOTTOM', horiz and offset or 0, horiz and 0 or offset)
+		end
+	elseif(self.holdTime > 0) then
+    self.holdTime = self.holdTime - elapsed
+    local alpha = self:GetAlpha() - 0.025
+    if alpha > 0 then
+      self:SetAlpha(alpha)
+    end
+	else
+		self.casting = nil
+		self.castID = nil
+		self.channeling = nil
+
+		self:Hide()
+	end
 end
 
 -- Castbar generator
@@ -77,6 +187,13 @@ function core:CreateCastbar(self)
   castbar.Icon = castbar:CreateTexture(nil, 'ARTWORK')
   castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
 
+  castbar.timeToHold = cfg.elements.castbar.timeToHold
+
+  castbar.PostCastStart = onPostCastStart
+  castbar.PostChannelStart = onPostChannelStart
+  castbar.PostCastInterrupted = OnPostCastInterrupted
+  castbar.OnUpdate = OnUpdate
+
   if(self.mystyle == "player") then
     core:setBackdrop(castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
     castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
@@ -94,7 +211,7 @@ function core:CreateCastbar(self)
     castbar.Time:SetPoint("RIGHT", castbar, -6, 0)
 
     castbar.Max = castbar:CreateFontString(nil, "OVERLAY")
-    castbar.Max:SetTextColor(200/255, 200/255, 200/255)
+    castbar.Max:SetTextColor(150/255, 150/255, 150/255)
     castbar.Max:SetJustifyH("RIGHT")
     castbar.Max:SetFont(font, cfg.fontsize-1, "THINOUTLINE")
     castbar.Max:SetPoint("RIGHT", castbar.Time, "LEFT", 0, 0)
@@ -106,7 +223,7 @@ function core:CreateCastbar(self)
 
     -- Add safezone
     if(cfg.units.player.castbar.latency.show) then
-      castbar.SafeZone = castbar:CreateTexture(nil, "BACKGROUND")
+      castbar.SafeZone = castbar:CreateTexture(nil, "OVERLAY")
       castbar.SafeZone:SetTexture(m.textures.status_texture)
       castbar.SafeZone:SetVertexColor(unpack(cfg.units.player.castbar.latency.color))
     end
