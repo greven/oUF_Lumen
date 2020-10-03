@@ -46,7 +46,7 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
 
   -- Colorize the last bar
   local LastBarColor = {
-    DRUID = {255 / 255, 26 / 255, 48 / 255},
+    DRUID = {161 / 255, 92 / 255, 255 / 255},
     MAGE = {238 / 255, 48 / 255, 83 / 255},
     MONK = {0 / 255, 143 / 255, 247 / 255},
     PALADIN = {255 / 255, 26 / 255, 48 / 255},
@@ -56,7 +56,9 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
 
   if max then
     local LastBar = element[max]
-    LastBar:SetStatusBarColor(unpack(LastBarColor[core.playerClass]))
+    local r, g, b = unpack(LastBarColor[core.playerClass])
+    LastBar:SetStatusBarColor(r, g, b)
+    LastBar.bg:SetColorTexture(r * 0.2, g * 0.2, b * 0.2)
   end
 end
 
@@ -69,7 +71,7 @@ local function UpdateClassPowerColor(element)
     if (core.playerClass == "ROGUE") then
       r, g, b = 255 / 255, 26 / 255, 48 / 255
     elseif (core.playerClass == "DRUID") then
-      r, g, b = 255 / 255, 255 / 255, 102 / 255
+      r, g, b = 255 / 255, 26 / 255, 48 / 255
     elseif (core.playerClass == "MONK") then
       r, g, b = 0, 204 / 255, 153 / 255
     elseif (core.playerClass == "WARLOCK") then
@@ -84,7 +86,7 @@ local function UpdateClassPowerColor(element)
   for index = 1, #element do
     local Bar = element[index]
     Bar:SetStatusBarColor(r, g, b)
-    Bar.bg:SetColorTexture(r * 1 / 3, g * 1 / 3, b * 1 / 3)
+    Bar.bg:SetColorTexture(r * 0.2, g * 0.2, b * 0.2)
   end
 end
 
