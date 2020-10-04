@@ -189,10 +189,10 @@ local CreateAdditionalPower = function(self)
   -- AdditionalPower.colorSmooth = true
 
   -- Add a background
-  local Background = AdditionalPower:CreateTexture(nil, "BACKGROUND")
-  Background:SetAllPoints(AdditionalPower)
-  Background:SetAlpha(0.15)
-  Background:SetTexture(m.textures.bg_texture)
+  local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")
+  bg:SetAllPoints(AdditionalPower)
+  bg:SetTexture(m.textures.bg_texture)
+  bg.multiplier = 0.4
 
   -- Value
   local PowerValue = core:createFontstring(AdditionalPower, font, cfg.fontsize - 4, "THINOUTLINE")
@@ -201,12 +201,11 @@ local CreateAdditionalPower = function(self)
   self:Tag(PowerValue, "[lumen:altpower]")
 
   -- Backdrop
-  core:setBackdrop(AdditionalPower, 2, 2, 2, 2)
+  core:setBackdrop(AdditionalPower, 1, 1, 1, 1)
 
-  -- Register it with oUF
+  AdditionalPower.bg = bg
+  AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
   self.AdditionalPower = AdditionalPower
-  self.AdditionalPower.bg = Background
-  self.AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
 end
 
 -- oUF_Experience Tooltip

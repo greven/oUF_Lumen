@@ -100,7 +100,7 @@ cfg.units = {
       show = true
     },
     altpower = {
-      height = 3
+      height = 1.5
     },
     castbar = {
       enable = true,
@@ -312,7 +312,7 @@ cfg.units = {
     castbar = {
       enable = true,
       color = {5 / 255, 107 / 255, 246 / 255},
-      height = 0.5
+      height = 1.5
     },
     selectedColor = {255 / 255, 25 / 255, 25 / 255, 0.8},
     glowColor = {50 / 255, 240 / 255, 210 / 255, 0.7},
