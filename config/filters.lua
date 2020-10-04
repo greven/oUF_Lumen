@@ -91,6 +91,7 @@ filters.list = {
   PRIEST = {
     buffs = {
       [GetSpellInfo(194384) or "Atonement"] = true,
+      [GetSpellInfo(17) or "Power Word: Shield"] = true,
       [GetSpellInfo(15286) or "Vampiric Embrace"] = true,
       [GetSpellInfo(194249) or "Voidform"] = true
     },
