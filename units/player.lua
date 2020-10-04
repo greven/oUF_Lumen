@@ -96,7 +96,7 @@ local function CreateClassPower(self)
   ClassPower.UpdateColor = UpdateClassPowerColor
   ClassPower.PostUpdate = PostUpdateClassPower
 
-  for index = 1, 11 do
+  for index = 1, 10 do
     local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self)
     Bar:SetHeight(1.5)
     Bar:SetStatusBarTexture(m.textures.status_texture)
@@ -114,24 +114,28 @@ local function CreateClassPower(self)
 
     local Background = Bar:CreateTexture(nil, "BORDER")
     Background:SetAllPoints()
+    Background:SetTexture(m.textures.bg_texture)
     Bar.bg = Background
 
     ClassPower[index] = Bar
   end
+
   self.ClassPower = ClassPower
 end
 
 -- Death Knight Runebar
 local CreateRuneBar = function(self)
   local Runes = {}
+  Runes.sortOrder = "asc"
+  Runes.colorSpec = true -- color runes by spec
+
   for index = 1, 6 do
     local Rune = CreateFrame("StatusBar", nil, self)
     local numRunes, maxWidth, gap = 6, cfg.frames.main.width, 6
     local width = ((maxWidth / numRunes) - (((numRunes - 1) * gap) / numRunes))
 
-    Rune:SetSize(width, 3)
+    Rune:SetSize(width, 1.5)
     Rune:SetStatusBarTexture(m.textures.status_texture)
-    -- Rune:SetStatusBarColor(unpack(oUF.colors.power["RUNES"]))
     core:setBackdrop(Rune, 2, 2, 2, 2) -- Backdrop
 
     if (index == 1) then
@@ -140,9 +144,15 @@ local CreateRuneBar = function(self)
       Rune:SetPoint("LEFT", Runes[index - 1], "RIGHT", gap, 0)
     end
 
+    local RuneBG = Rune:CreateTexture(nil, "BORDER")
+    RuneBG:SetAllPoints()
+    RuneBG:SetTexture(m.textures.bg_texture)
+    RuneBG.multiplier = 0.2
+    Rune.bg = RuneBG
+
     Runes[index] = Rune
   end
-  Runes.colorSpec = true -- color runes by spec
+
   self.Runes = Runes
 end
 

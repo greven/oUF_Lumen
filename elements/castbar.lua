@@ -46,6 +46,10 @@ end
 
 -- Castbar PostCastChannel Update
 local onPostChannelStart = function(self, unit, name)
+  if(unit == 'player') then
+    self:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
+  end
+
   if(unit == 'target' or unit == 'focus') then
     CheckForSpellInterrupt(self, unit)
   end
@@ -103,7 +107,7 @@ local OnUpdate = function(self, elapsed)
 			end
 
 			self.Spark:SetPoint('CENTER', self, horiz and 'LEFT' or 'BOTTOM', horiz and offset or 0, horiz and 0 or offset)
-		end
+    end
   elseif(self.channeling) then
     self:SetAlpha(1)
 		local duration = self.duration - elapsed
@@ -147,11 +151,15 @@ local OnUpdate = function(self, elapsed)
 		end
 	elseif(self.holdTime > 0) then
     self.holdTime = self.holdTime - elapsed
+
+    -- Fade castbar
     local alpha = self:GetAlpha() - 0.025
     if alpha > 0 then
       self:SetAlpha(alpha)
+    else
+      self:SetAlpha(0)
     end
-	else
+  else
 		self.casting = nil
 		self.castID = nil
 		self.channeling = nil
