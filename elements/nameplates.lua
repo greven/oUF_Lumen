@@ -247,23 +247,22 @@ local createStyle = function(self, unit)
   health.percent:SetTextColor(0.8, 0.8, 0.8, 1)
   self:Tag(health.percent, "[lumen:hpperc]")
 
+  -- Classification
+  local classification = core:createFontstring(self.Health, font, cfg.fontsize - 5, "THINOUTLINE", "OVERLAY")
+  classification:SetPoint("CENTER", self.Health, "BOTTOM", 0, -1)
+  self:Tag(classification, "[lumen:classification]")
+  self.classification = classification
+
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then
-    self.classPower = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
-    self.classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
-    self.classPower:SetJustifyH("RIGHT")
-    self.classPower:SetWidth(self.cfg.width)
-    self:Tag(self.classPower, "[lumen:classpower]", "player")
-    self.classPower:Hide()
+    classPower = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
+    classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
+    classPower:SetJustifyH("RIGHT")
+    classPower:SetWidth(self.cfg.width)
+    self:Tag(classPower, "[lumen:classpower]", "player")
+    classPower:Hide()
+    self.classPower = classPower
   end
-
-  -- Level
-  -- self.level = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
-  -- self.level:SetPoint("TOPRIGHT", self.Health, -18, 0)
-  -- self.level:SetJustifyH("LEFT")
-  -- self.level:SetWidth(self.cfg.width)
-  -- self.level:SetHeight(self.cfg.height)
-  -- self:Tag(self.level, "[lumen:levelplus]")
 
   -- Raid Icons
   local RaidIcon = self:CreateTexture(nil, "OVERLAY")
@@ -305,11 +304,11 @@ local createStyle = function(self, unit)
     -- Spell Icon
     castbar.Icon = castbar:CreateTexture(nil, "ARTWORK")
     castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-    castbar.Icon:SetHeight(self.cfg.height + cfg.units.nameplate.castbar.height + 2)
-    castbar.Icon:SetWidth(self.cfg.height + cfg.units.nameplate.castbar.height + 2)
+    castbar.Icon:SetHeight(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
+    castbar.Icon:SetWidth(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
     castbar.Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
     castbar.iconborder = CreateFrame("Frame", nil, self)
-    core:createBorder(castbar.Icon, castbar.iconborder, 4, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+    core:createBorder(castbar.Icon, castbar.iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
     castbar.iconborder:SetBackdropColor(0, 0, 0, 1)
     castbar.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
 

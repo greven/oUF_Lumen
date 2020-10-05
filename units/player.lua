@@ -185,8 +185,6 @@ local CreateAdditionalPower = function(self)
   AdditionalPower:SetSize(self.cfg.width, self.cfg.altpower.height)
   AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
   AdditionalPower.colorPower = true
-  -- AdditionalPower.smoothGradient = {1, 0, 0, 1, 1, 0, 0, 0.5, 1}
-  -- AdditionalPower.colorSmooth = true
 
   -- Add a background
   local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")

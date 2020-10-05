@@ -136,7 +136,7 @@ function lum:globalStyle(self, type)
 	self.Power.bg = self.Power:CreateTexture(nil, "BACKGROUND")
 	self.Power.bg:SetAllPoints(self.Power)
 	self.Power.bg:SetTexture(m.textures.bg_texture)
-	self.Power.bg:SetAlpha(0.20)
+	self.Power.bg:SetAlpha(0.3)
 
 	-- Colors
 	if self.cfg.health.classColored then

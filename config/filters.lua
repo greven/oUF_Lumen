@@ -98,6 +98,7 @@ filters.list = {
     debuffs = {
       [GetSpellInfo(204213) or "Purge the Wicked"] = true,
       [GetSpellInfo(214621) or "Schism"] = true,
+      [GetSpellInfo(64044) or "Psychic Horror"] = true,
       [GetSpellInfo(589) or "Shadow Word: Pain"] = true,
       [GetSpellInfo(34914) or "Vampiric Touch"] = true
     }

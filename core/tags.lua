@@ -105,7 +105,7 @@ tags["lumen:powervalue"] = function(unit)
   elseif ptype == "RAGE" or ptype == "RUNIC_POWER" or ptype == "LUNAR_POWER" then
     return floor(min / 10 + 0.5)
   elseif ptype == "INSANITY" then
-    return min / 100
+    return floor(min / 100 + 0.5)
   else
     return min
   end
