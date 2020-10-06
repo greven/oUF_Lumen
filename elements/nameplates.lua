@@ -237,7 +237,7 @@ local createStyle = function(self, unit)
 
   -- Name strings
   core:createNameString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
-  self:Tag(self.Name, "[lumen:name]")
+  self:Tag(self.Name, "[lumen:name] [lumen:classificationshort]")
 
   -- Health Percentage
   health.percent = core:createFontstring(self.Health, font, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
@@ -246,12 +246,6 @@ local createStyle = function(self, unit)
   health.percent:SetWidth(self.cfg.width)
   health.percent:SetTextColor(0.8, 0.8, 0.8, 1)
   self:Tag(health.percent, "[lumen:hpperc]")
-
-  -- Classification
-  local classification = core:createFontstring(self.Health, font, cfg.fontsize - 5, "THINOUTLINE", "OVERLAY")
-  classification:SetPoint("CENTER", self.Health, "BOTTOM", 0, -1)
-  self:Tag(classification, "[lumen:classification]")
-  self.classification = classification
 
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then

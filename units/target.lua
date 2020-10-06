@@ -95,11 +95,13 @@ local createStyle = function(self)
     core:createNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
     self:Tag(self.Name, "[lumen:level]  [lumen:name]")
   end
+
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
   self:Tag(self.Health.value, "[lumen:hpvalue]")
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   core:createPowerString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
-  local clf = core:createFontstring(self, font, 11, "THINOUTLINE") -- classification
+
+  local clf = core:createFontstring(self, font, cfg.fontsize - 1, "THINOUTLINE") -- Classification
   clf:SetPoint("LEFT", self, "TOPLEFT", 0, 12)
   clf:SetTextColor(1, 1, 1, 1)
   self:Tag(clf, "[lumen:classification]")

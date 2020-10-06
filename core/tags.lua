@@ -57,6 +57,23 @@ tags["lumen:classification"] = function(unit)
 end
 events["lumen:classification"] = "UNIT_CLASSIFICATION_CHANGED"
 
+-- Short Unit classification
+tags["lumen:classificationshort"] = function(unit)
+  local c = UnitClassification(unit)
+  if (c == "rare") then
+    return "|cff008ff7{R}|r"
+  elseif (c == "rareelite") then
+    return "|cff008ff7{R+}|r"
+  elseif (c == "elite") then
+    return "|cffffe453{E}|r"
+  elseif (c == "worldboss") then
+    return "|cfff03a4c{B}|r"
+  elseif (c == "minus") then
+    return ""
+  end
+end
+events["lumen:classificationshort"] = "UNIT_CLASSIFICATION_CHANGED"
+
 -- Current Spec
 tags["lumen:spec"] = function()
   return core:GetCurrentSpec()
