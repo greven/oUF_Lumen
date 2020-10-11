@@ -122,7 +122,7 @@ local createStyle = function(self)
   lum:globalStyle(self, "secondary")
 
   -- Texts
-  core:createHPString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 0, "LEFT")
+  core:createHPString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 8, "LEFT")
 
   core:createPartyNameString(self, font, cfg.fontsize)
   if self.cfg.health.classColoredText then
@@ -137,10 +137,10 @@ local createStyle = function(self)
   self:Tag(self.classText, "[lumen:level] [raidcolor][class]")
 
   -- Role and Leader text
-  self.roleText = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
-  self.roleText:SetPoint("BOTTOM", self, "TOP", 0, -4)
-  self.roleText:SetJustifyH("CENTER")
-  self:Tag(self.roleText, "|cff666666" .. "[leaderlong]" .. "|r [lumen:role]")
+  self.leaderText = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
+  self.leaderText:SetPoint("BOTTOM", self, "TOP", 0, -5)
+  self.leaderText:SetJustifyH("CENTER")
+  self:Tag(self.leaderText, "|cff666666[leaderlong]|r")
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
@@ -165,6 +165,12 @@ local createStyle = function(self)
   debuffs.CustomFilter = PartyDebuffsFilter
   debuffs.PostUpdateIcon = PostUpdateIcon
   self.Debuffs = debuffs
+
+  -- Group Role Icon
+  local GroupRoleIndicator = core:CreateGroupRoleIndicator(self)
+  GroupRoleIndicator:SetPoint("LEFT", self, 6, -8)
+  GroupRoleIndicator:SetSize(11, 11)
+  self.GroupRoleIndicator = GroupRoleIndicator
 
   -- Ready Check Icon
   local ReadyCheck = self:CreateTexture()
@@ -202,10 +208,6 @@ if cfg.units[frame].show then
 
   local party =
     oUF:SpawnHeader(
-    -- "oUF_LumenParty",
-    -- nil,
-    -- "solo",
-    -- "showSolo", -- debug
     "oUF_LumenParty",
     nil,
     "party",
@@ -223,9 +225,9 @@ if cfg.units[frame].show then
     "TANK,HEALER,DAMAGER",
     "oUF-initialConfigFunction",
     ([[
-			self:SetHeight(%d)
-			self:SetWidth(%d)
-		]]):format(cfg.units[frame].height, cfg.units[frame].width)
+  		self:SetHeight(%d)
+  		self:SetWidth(%d)
+  	]]):format(cfg.units[frame].height, cfg.units[frame].width)
   ):SetPoint(
     cfg.units[frame].pos.a1,
     cfg.units[frame].pos.af,

@@ -3,6 +3,18 @@ local _, ns = ...
 local core, cfg, m, oUF = CreateFrame("Frame"), ns.cfg, ns.m, ns.oUF
 ns.core = core
 
+local roleIconTextures = {
+  TANK = m.textures.tank_texture,
+  HEALER = m.textures.healer_texture,
+  DAMAGER = m.textures.damager_texture
+}
+
+local roleIconColor = {
+  TANK = {0 / 255, 175 / 255, 255 / 255},
+  HEALER = {0 / 255, 255 / 255, 100 / 255},
+  DAMAGER = {255 / 255, 0 / 255, 25 / 255}
+}
+
 -- ------------------------------------------------------------------------
 -- > CORE FUNCTIONS
 -- ------------------------------------------------------------------------
@@ -206,7 +218,7 @@ function core:CreateTargetBorder(self)
 end
 
 -- Create Party / Raid health warning status border
-function core:CreateHPBorder(self) -- FIX: No events registered...
+function core:CreateHPBorder(self)
   self.HPborder = CreateFrame("Frame", nil, self)
   core:createBorder(self, self.HPborder, 1, 4, "Interface\\ChatFrame\\ChatFrameBackground")
   self.HPborder:SetBackdropBorderColor(180 / 255, 255 / 255, 0 / 255, 1)
@@ -218,4 +230,32 @@ function core:CreateThreatBorder(self)
   core:createBorder(self, self.ThreatBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
   self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
   self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+end
+
+function core:CreateGroupRoleIndicator(self)
+  local roleIcon = self.Health:CreateTexture(nil, "OVERLAY")
+  roleIcon:SetPoint("LEFT", self, 8, 0)
+  roleIcon:SetSize(16, 16)
+  roleIcon.Override = core.UpdateRoleIcon
+
+  self:RegisterEvent("UNIT_CONNECTION", core.UpdateRoleIcon)
+  return roleIcon
+end
+
+function core:UpdateRoleIcon(event)
+  local lfdrole = self.GroupRoleIndicator
+
+  local role = UnitGroupRolesAssigned(self.unit)
+  -- Show roles when testing
+  if role == "NONE" and cfg.units.party.forceRole then
+    local rnd = random(1, 3)
+    role = rnd == 1 and "TANK" or (rnd == 2 and "HEALER" or (rnd == 3 and "DAMAGER"))
+  end
+
+  if UnitIsConnected(self.unit) and role ~= "NONE" then
+    lfdrole:SetTexture(roleIconTextures[role])
+    lfdrole:SetVertexColor(unpack(roleIconColor[role]))
+  else
+    lfdrole:Hide()
+  end
 end

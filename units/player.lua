@@ -47,7 +47,7 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
   -- Colorize the last bar
   local LastBarColor = {
     DRUID = {161 / 255, 92 / 255, 255 / 255},
-    MAGE = {238 / 255, 48 / 255, 83 / 255},
+    MAGE = {5 / 255, 96 / 255, 250 / 255},
     MONK = {0 / 255, 143 / 255, 247 / 255},
     PALADIN = {255 / 255, 26 / 255, 48 / 255},
     ROGUE = {161 / 255, 92 / 255, 255 / 255},
@@ -79,7 +79,7 @@ local function UpdateClassPowerColor(element)
     elseif (core.playerClass == "PALADIN") then
       r, g, b = 255 / 255, 255 / 255, 125 / 255
     elseif (core.playerClass == "MAGE") then
-      r, g, b = 169 / 255, 80 / 255, 202 / 255
+      r, g, b = 25 / 255, 182 / 255, 255 / 255
     end
   end
 
@@ -480,6 +480,9 @@ local createStyle = function(self)
   -- Health Updates
   self.Health.PostUpdate = PostUpdateHealth
 
+  -- Power
+  self.Power.frequentUpdates = self.cfg.power.frequentUpdates
+
   -- Out of Combat Frame Fading
   if self.cfg.fader.enable then
     self:SetAlpha(self.cfg.fader.alpha)
@@ -531,10 +534,10 @@ local createStyle = function(self)
   end
 
   -- Combat indicator
-  local Combat = core:createFontstring(self, m.fonts.symbols, 20, "THINOUTLINE")
-  Combat:SetPoint("RIGHT", self, "LEFT", -8, 2)
+  local Combat = core:createFontstring(self, m.fonts.symbols, 18, "THINOUTLINE")
+  Combat:SetPoint("RIGHT", self, "LEFT", -10, 0)
   Combat:SetText("")
-  Combat:SetTextColor(255 / 255, 26 / 255, 48 / 255)
+  Combat:SetTextColor(255 / 255, 26 / 255, 48 / 255, 0.9)
   self.CombatIndicator = Combat
 
   -- Resting

@@ -19,5 +19,8 @@ m.textures = {
   bg_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture_bg",
   border = "Interface\\AddOns\\oUF_lumen\\media\\border",
   white_square = "Interface\\AddOns\\oUF_lumen\\media\\white",
-  glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow"
+  glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow",
+  damager_texture = "Interface\\AddOns\\oUF_lumen\\media\\damager",
+  healer_texture = "Interface\\AddOns\\oUF_lumen\\media\\healer",
+  tank_texture = "Interface\\AddOns\\oUF_lumen\\media\\tank"
 }

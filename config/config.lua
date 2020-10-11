@@ -297,7 +297,8 @@ cfg.units = {
       frequentUpdates = false,
       smooth = true
     },
-    showPortraits = true
+    showPortraits = true,
+    forceRole = true
   },
   raid = {
     show = true
@@ -317,7 +318,8 @@ cfg.units = {
     selectedColor = {255 / 255, 25 / 255, 25 / 255, 0.8},
     glowColor = {50 / 255, 240 / 255, 210 / 255, 0.7},
     showTargetArrow = false,
-    showGlow = false
+    showGlow = false,
+    showHighlight = true
   }
 }
 

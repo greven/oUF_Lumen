@@ -139,6 +139,11 @@ local OnTargetChanged = function(self, event, unit)
       self.arrow:Show()
     end
 
+    -- Highlight
+    if cfg.units.nameplate.showHighlight then
+      self.Highlight:Show()
+    end
+
     -- Glow
     if cfg.units.nameplate.showGlow then
       self.glow:Show()
@@ -152,6 +157,10 @@ local OnTargetChanged = function(self, event, unit)
     self.targetBorder:Hide()
     if cfg.units.nameplate.showTargetArrow then
       self.arrow:Hide()
+    end
+
+    if cfg.units.nameplate.showHighlight then
+      self.Highlight:Hide()
     end
 
     if cfg.units.nameplate.showGlow then
@@ -201,6 +210,16 @@ local AddTargetIndicators = function(self)
     self.glow:SetBackdropColor(0, 0, 0, 0)
   end
 
+  -- Highlight
+  if self.cfg.showHighlight then
+    self.Highlight = self.Health:CreateTexture(nil, "OVERLAY")
+    self.Highlight:SetAllPoints(self)
+    self.Highlight:SetTexture(m.textures.white_square)
+    self.Highlight:SetVertexColor(1, 1, 1, 0.1)
+    self.Highlight:SetBlendMode("ADD")
+    self.Highlight:Hide()
+  end
+
   self:RegisterEvent("PLAYER_TARGET_CHANGED", OnTargetChanged, true)
 end
 
@@ -222,11 +241,13 @@ local createStyle = function(self, unit)
   health:SetStatusBarTexture(m.textures.status_texture)
   health:GetStatusBarTexture():SetHorizTile(false)
   health.colorHealth = true
-  health.colorClass = true
   health.colorReaction = true
+  health.colorClass = false
   health.colorTapping = true
   health.colorDisconnected = true
   health.frequentUpdates = true
+  -- health.colorSmooth = true
+  -- health.smoothGradient = oUF.colors.smooth
   health.PostUpdate = PostUpdateHealth
 
   health.bg = health:CreateTexture(nil, "BACKGROUND")

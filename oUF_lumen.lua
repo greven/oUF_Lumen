@@ -71,7 +71,6 @@ function CreateBarTimers(self, num, width, height, spacing)
 	bars.height = height
 	bars.spacing = spacing or 9
 	bars:SetSize(width + 4, num * (height + spacing + 4))
-	-- bars.PostCreateBar = PostCreateBar
 	return bars
 end
 
@@ -81,7 +80,6 @@ end
 
 local OnEnter = function(self)
 	self:SetAlpha(1) -- Player frame fading
-
 	self.Highlight:Show() -- Mouseover highlight Show
 	UnitFrame_OnEnter(self)
 end
@@ -130,8 +128,6 @@ function lum:globalStyle(self, type)
 	self.Power:SetStatusBarTexture(m.textures.status_texture)
 	self.Power:GetStatusBarTexture():SetHorizTile(false)
 	self.Power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
-	-- self.Power.frequentUpdates = self.cfg.power.frequentUpdates
-	self.Power.frequentUpdates = false
 
 	self.Power.bg = self.Power:CreateTexture(nil, "BACKGROUND")
 	self.Power.bg:SetAllPoints(self.Power)

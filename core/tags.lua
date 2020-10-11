@@ -174,9 +174,9 @@ tags["lumen:classpower"] = function(unit)
     if (GetSpecialization() == SPEC_MAGE_ARCANE) then
       num = UnitPower("player", Enum.PowerType.ArcaneCharges)
       max = UnitPowerMax("player", Enum.PowerType.ArcaneCharges)
-      color = "A950CA"
+      color = "19B6FF"
       if (num == max) then
-        color = "EE3053"
+        color = "0560FA"
       end
     end
   else -- Combo Points
@@ -185,9 +185,9 @@ tags["lumen:classpower"] = function(unit)
     else
       num = GetComboPoints("player", "target")
       max = UnitPowerMax("player", Enum.PowerType.ComboPoints)
-      color = "FF1A30"
+      color = "FFF569"
       if (num == max) then
-        color = "A15CFF"
+        color = "FF1A30"
       end
     end
   end
