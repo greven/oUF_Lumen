@@ -55,7 +55,7 @@ cfg.frames = {
     height = 20, -- Height of the ToT, Focus, Pet...
     margin = 10, -- Margin to other frames
     health = {
-      margin = 1 -- Spacing between HP and Power Bars
+      margin = 2 -- Spacing between HP and Power Bars
     },
     power = {
       height = 1 -- Height of the Power Bar
@@ -205,7 +205,7 @@ cfg.units = {
     castbar = {
       enable = true,
       color = {123 / 255, 66 / 255, 200 / 255},
-      width = cfg.frames.main.width,
+      width = 282,
       height = cfg.frames.main.height
     }
   },
@@ -279,9 +279,9 @@ cfg.units = {
   },
   party = {
     show = true,
-    width = 160,
+    width = 164,
     height = 40,
-    pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -525, y = -100},
+    pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -550, y = -102},
     health = {
       classColored = true,
       gradientColored = false,
@@ -292,7 +292,7 @@ cfg.units = {
       smooth = true
     },
     power = {
-      height = cfg.frames.secondary.power.height,
+      height = 1.5,
       classColored = true,
       frequentUpdates = false,
       smooth = true

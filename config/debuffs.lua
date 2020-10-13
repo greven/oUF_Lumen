@@ -9,6 +9,7 @@ ns.debuffs = debuffs
 
 debuffs.list = {
   player = {
+    [GetSpellInfo(45181) or "Cheated Death"] = true,
     [GetSpellInfo(57723) or "Exhaustion"] = true,
     [GetSpellInfo(264689) or "Fatigued"] = true,
     [GetSpellInfo(95809) or "Insanity"] = true,

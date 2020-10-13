@@ -123,11 +123,11 @@ function lum:globalStyle(self, type)
 
 	-- Power Bar
 	self.Power = CreateFrame("StatusBar", nil, self)
-	self.Power:SetHeight(cfg.frames[type].power.height)
+	self.Power:SetHeight(self.cfg.power.height)
 	self.Power:SetWidth(self.cfg.width)
 	self.Power:SetStatusBarTexture(m.textures.status_texture)
 	self.Power:GetStatusBarTexture():SetHorizTile(false)
-	self.Power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
+	self.Power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames[type].health.margin)
 
 	self.Power.bg = self.Power:CreateTexture(nil, "BACKGROUND")
 	self.Power.bg:SetAllPoints(self.Power)
@@ -150,7 +150,7 @@ function lum:globalStyle(self, type)
 		self.Power.colorPower = true
 	end
 	self.Power.colorTapping = true
-	self.Power.colorDisconnected = true
+	self.Power.colorDisconnected = false
 	self.Power.colorHappiness = false
 
 	-- Mouseover Highlight

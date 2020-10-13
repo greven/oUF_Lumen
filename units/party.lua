@@ -60,11 +60,11 @@ local PostUpdatePower = function(power, unit, min, max)
   if disconnnected or dead or ghost then
     power:SetValue(max)
     if (dead) then
-      power:SetStatusBarColor(1, 0, 0, .7)
+      power:SetStatusBarColor(1, 0, .2, .5)
     elseif (disconnnected) then
-      power:SetStatusBarColor(.85, 1, 0, .7)
+      power:SetStatusBarColor(0, .4, .8, .5)
     elseif (ghost) then
-      power:SetStatusBarColor(1, 1, 1, .7)
+      power:SetStatusBarColor(1, 1, 1, .5)
     end
   else
     power:SetValue(min)
@@ -103,7 +103,7 @@ local PartyDebuffsFilter = function(icons, unit, icon, name)
 end
 
 local PostUpdatePortrait = function(element, unit)
-  element:SetModelAlpha(0.1)
+  element:SetModelAlpha(0.15)
   element:SetDesaturation(1)
 end
 
@@ -112,7 +112,7 @@ end
 -- end
 
 -- -----------------------------------
--- > TARGET STYLE
+-- > PARTY STYLE
 -- -----------------------------------
 
 local createStyle = function(self)
@@ -121,30 +121,24 @@ local createStyle = function(self)
 
   lum:globalStyle(self, "secondary")
 
+  -- Health & Power
+  self.Health.PostUpdate = PostUpdateHealth
+  self.Power.PostUpdate = PostUpdatePower
+
   -- Texts
   core:createHPString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 8, "LEFT")
 
   core:createPartyNameString(self, font, cfg.fontsize)
   if self.cfg.health.classColoredText then
-    self:Tag(self.Name, "[lumen:role] [raidcolor][lumen:name]")
+    self:Tag(self.Name, "[lumen:playerstatus] [lumen:leader] [raidcolor][lumen:name]")
   else
-    self:Tag(self.Name, "[lumen:partystatus] [lumen:name]")
+    self:Tag(self.Name, "[lumen:playerstatus] [lumen:leader] [lumen:name]")
   end
 
   self.classText = core:createFontstring(self.Health, font, cfg.fontsize, "THINOUTLINE")
   self.classText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -4, 5)
   self.classText:SetJustifyH("RIGHT")
   self:Tag(self.classText, "[lumen:level] [raidcolor][class]")
-
-  -- Role and Leader text
-  self.leaderText = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
-  self.leaderText:SetPoint("BOTTOM", self, "TOP", 0, -5)
-  self.leaderText:SetJustifyH("CENTER")
-  self:Tag(self.leaderText, "|cff666666[leaderlong]|r")
-
-  -- Health & Power Updates
-  self.Health.PostUpdate = PostUpdateHealth
-  self.Power.PostUpdate = PostUpdatePower
 
   -- Portrait
   if self.cfg.showPortraits then
@@ -170,6 +164,7 @@ local createStyle = function(self)
   local GroupRoleIndicator = core:CreateGroupRoleIndicator(self)
   GroupRoleIndicator:SetPoint("LEFT", self, 6, -8)
   GroupRoleIndicator:SetSize(11, 11)
+  GroupRoleIndicator:SetAlpha(0.9)
   self.GroupRoleIndicator = GroupRoleIndicator
 
   -- Ready Check Icon
@@ -218,7 +213,7 @@ if cfg.units[frame].show then
     "showPlayer",
     true,
     "yOffset",
-    -24,
+    -20,
     "groupBy",
     "ASSIGNEDROLE",
     "groupingOrder",

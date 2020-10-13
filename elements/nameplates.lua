@@ -258,7 +258,7 @@ local createStyle = function(self, unit)
 
   -- Name strings
   core:createNameString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
-  self:Tag(self.Name, "[lumen:name] [lumen:classificationshort]")
+  self:Tag(self.Name, "[lumen:classificationshort] [lumen:name]")
 
   -- Health Percentage
   health.percent = core:createFontstring(self.Health, font, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")

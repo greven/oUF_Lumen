@@ -61,13 +61,13 @@ events["lumen:classification"] = "UNIT_CLASSIFICATION_CHANGED"
 tags["lumen:classificationshort"] = function(unit)
   local c = UnitClassification(unit)
   if (c == "rare") then
-    return "|cff008ff7{R}|r"
+    return "|cff008ff7R|r"
   elseif (c == "rareelite") then
-    return "|cff008ff7{R+}|r"
+    return "|cff008ff7R+|r"
   elseif (c == "elite") then
-    return "|cffffe453{E}|r"
+    return "|cffffe453E|r"
   elseif (c == "worldboss") then
-    return "|cfff03a4c{B}|r"
+    return "|cfff03a4cB|r"
   elseif (c == "minus") then
     return ""
   end
@@ -212,6 +212,11 @@ tags["lumen:role"] = function(unit)
 end
 events["lumen:role"] = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
 
+tags["lumen:leader"] = function(unit)
+  return UnitIsGroupLeader(unit) and "|cffffff00!|r"
+end
+events["lumen:leader"] = "PARTY_LEADER_CHANGED"
+
 tags["lumen:afkdnd"] = function(unit)
   if UnitIsAFK(unit) then
     return "|cffCFCFCF " .. AFK .. "|r"
@@ -223,8 +228,8 @@ tags["lumen:afkdnd"] = function(unit)
 end
 events["lumen:afkdnd"] = "PLAYER_FLAGS_CHANGED PLAYER_LOGIN PLAYER_ENTERING_WORLD"
 
--- AFK and DND status or Party Leader
-tags["lumen:partystatus"] = function(unit)
+-- AFK and DND status
+tags["lumen:playerstatus"] = function(unit)
   if UnitIsAFK(unit) then
     return "|cff666666<" .. AFK .. ">|r"
   elseif (UnitIsDead(unit)) then
@@ -237,4 +242,5 @@ tags["lumen:partystatus"] = function(unit)
     return ""
   end
 end
-events["lumen:partystatus"] = "UNIT_HEALTH PLAYER_UPDATE_RESTING UNIT_CONNECTION PLAYER_FLAGS_CHANGED"
+events["lumen:playerstatus"] =
+  "UNIT_HEALTH PLAYER_UPDATE_RESTING UNIT_CONNECTION PLAYER_FLAGS_CHANGED PLAYER_LOGIN PLAYER_ENTERING_WORLD"
