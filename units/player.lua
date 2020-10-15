@@ -157,11 +157,13 @@ local CreateRuneBar = function(self)
 end
 
 -- AdditionalPower post update callback
-local AdditionalPowerPostUpdate = function(self, cur, max)
-  local powertype = UnitPowerType(unit)
+local onAdditionalPowerPostUpdate = function(self, cur, max)
+  local powertype = UnitPowerType("player")
+
   if powertype == 0 then
     return
   end
+
   -- Hide bar if full
   if cur == max or powertype == 0 then
     self:Hide()
@@ -172,25 +174,22 @@ end
 
 -- Create additional power (power bar for specs like Feral Druid or Enhancement Shaman)
 local CreateAdditionalPower = function(self)
-  local height = -10
+  local height = -18
+  local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
 
-  -- Classes which also have Class Power
-  if core.playerClass == "DRUID" or core.playerClass == "MONK" then
-    height = -18
-  end
-
-  local AdditionalPower = CreateFrame("StatusBar", nil, self)
+  local AdditionalPower = CreateFrame("StatusBar", nil, self, "BackdropTemplate")
   AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
   AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
   AdditionalPower:SetSize(self.cfg.width, self.cfg.altpower.height)
   AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
-  AdditionalPower.colorPower = true
+  AdditionalPower:SetStatusBarColor(r, g, b)
+  AdditionalPower.frequentUpdates = true
 
   -- Add a background
   local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")
   bg:SetAllPoints(AdditionalPower)
   bg:SetTexture(m.textures.bg_texture)
-  bg.multiplier = 0.4
+  bg:SetVertexColor(r * 0.3, g * 0.3, b * 0.3)
 
   -- Value
   local PowerValue = core:createFontstring(AdditionalPower, font, cfg.fontsize - 4, "THINOUTLINE")
@@ -202,7 +201,7 @@ local CreateAdditionalPower = function(self)
   core:setBackdrop(AdditionalPower, 1, 1, 1, 1)
 
   AdditionalPower.bg = bg
-  AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
+  AdditionalPower.PostUpdate = onAdditionalPowerPostUpdate
   self.AdditionalPower = AdditionalPower
 end
 
