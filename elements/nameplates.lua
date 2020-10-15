@@ -360,8 +360,8 @@ end
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
-if cfg.units[frame].show then
-  oUF:RegisterStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper), createStyle)
-  oUF:SetActiveStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper))
-  oUF:SpawnNamePlates("oUF_Lumen" .. frame:gsub("^%l", string.upper), OnTargetChanged, cvars)
-end
+-- if cfg.units[frame].show then
+--   oUF:RegisterStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper), createStyle)
+--   oUF:SetActiveStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper))
+--   oUF:SpawnNamePlates("oUF_Lumen" .. frame:gsub("^%l", string.upper), OnTargetChanged, cvars)
+-- end

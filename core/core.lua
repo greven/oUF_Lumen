@@ -181,11 +181,11 @@ end
 
 -- Create Glow Border
 function core:setglowBorder(self)
-  self.Glowborder = CreateFrame("Frame", nil, self)
-  self.Glowborder:SetFrameLevel(0)
-  self.Glowborder:SetPoint("TOPLEFT", self, "TOPLEFT", -6, 6)
-  self.Glowborder:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 6, -6)
-  self.Glowborder:SetBackdrop(
+  local glow = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  glow:SetFrameLevel(0)
+  glow:SetPoint("TOPLEFT", self, "TOPLEFT", -6, 6)
+  glow:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 6, -6)
+  glow:SetBackdrop(
     {
       bgFile = m.textures.white_square,
       edgeFile = m.textures.glow_texture,
@@ -195,23 +195,15 @@ function core:setglowBorder(self)
       insets = {left = -4, right = -4, top = -4, bottom = -4}
     }
   )
-  self.Glowborder:SetBackdropColor(0, 0, 0, 0)
-  self.Glowborder:SetBackdropBorderColor(0, 0, 0, 1)
-end
+  glow:SetBackdropColor(0, 0, 0, 0)
+  glow:SetBackdropBorderColor(0, 0, 0, 1)
 
--- Create Border
-function core:createBorder(self, frame, e_size, f_level, texture)
-  local glowBorder = {edgeFile = texture, edgeSize = e_size}
-  frame:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
-  frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
-  frame:SetBackdrop(glowBorder)
-  frame:SetFrameLevel(f_level)
-  frame:Hide()
+  self.Glowborder = glow
 end
 
 -- Create Target Border
 function core:CreateTargetBorder(self)
-  self.TargetBorder = CreateFrame("Frame", nil, self)
+  self.TargetBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
   core:createBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
   self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
   self:RegisterEvent("RAID_ROSTER_UPDATE", ChangedTarget)
@@ -219,14 +211,14 @@ end
 
 -- Create Party / Raid health warning status border
 function core:CreateHPBorder(self)
-  self.HPborder = CreateFrame("Frame", nil, self)
+  self.HPborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
   core:createBorder(self, self.HPborder, 1, 4, "Interface\\ChatFrame\\ChatFrameBackground")
   self.HPborder:SetBackdropBorderColor(180 / 255, 255 / 255, 0 / 255, 1)
 end
 
 -- Create Party / Raid Threat Status Border
 function core:CreateThreatBorder(self)
-  self.ThreatBorder = CreateFrame("Frame", nil, self)
+  self.ThreatBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
   core:createBorder(self, self.ThreatBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
   self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
   self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)

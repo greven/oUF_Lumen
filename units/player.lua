@@ -97,7 +97,7 @@ local function CreateClassPower(self)
   ClassPower.PostUpdate = PostUpdateClassPower
 
   for index = 1, 10 do
-    local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self)
+    local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self, "BackdropTemplate")
     Bar:SetHeight(1.5)
     Bar:SetStatusBarTexture(m.textures.status_texture)
     core:setBackdrop(Bar, 2, 2, 2, 2)
@@ -157,9 +157,9 @@ local CreateRuneBar = function(self)
 end
 
 -- AdditionalPower post update callback
-local AdditionalPowerPostUpdate = function(self, unit, cur, max)
+local AdditionalPowerPostUpdate = function(self, cur, max)
   local powertype = UnitPowerType(unit)
-  if unit ~= "player" or powertype == 0 then
+  if powertype == 0 then
     return
   end
   -- Hide bar if full
@@ -170,7 +170,7 @@ local AdditionalPowerPostUpdate = function(self, unit, cur, max)
   end
 end
 
--- Create additional power (Mana...)
+-- Create additional power (power bar for specs like Feral Druid or Enhancement Shaman)
 local CreateAdditionalPower = function(self)
   local height = -10
 

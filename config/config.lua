@@ -51,7 +51,7 @@ cfg.frames = {
     }
   },
   secondary = {
-    width = 102, -- Width of the ToT, Focus, Pet...
+    width = 98, -- Width of the ToT, Focus, Pet...
     height = 20, -- Height of the ToT, Focus, Pet...
     margin = 10, -- Margin to other frames
     health = {
@@ -86,7 +86,6 @@ cfg.units = {
       gradientColored = true,
       classColoredText = false,
       reactionColored = false,
-      frequentUpdates = true,
       smooth = true
     },
     power = {
@@ -136,7 +135,6 @@ cfg.units = {
       gradientColored = false,
       classColoredText = false,
       reactionColored = true,
-      frequentUpdates = true,
       smooth = true
     },
     power = {
@@ -173,7 +171,6 @@ cfg.units = {
       gradientColored = false,
       classColoredText = false,
       reactionColored = true,
-      frequentUpdates = false,
       smooth = true
     },
     power = {
@@ -193,7 +190,6 @@ cfg.units = {
       gradientColored = false,
       classColoredText = false,
       reactionColored = true,
-      frequentUpdates = false,
       smooth = true
     },
     power = {
@@ -219,7 +215,6 @@ cfg.units = {
       gradientColored = true,
       classColoredText = false,
       reactionColored = false,
-      frequentUpdates = true,
       smooth = true
     },
     power = {
@@ -240,7 +235,6 @@ cfg.units = {
     health = {
       gradientColored = false,
       reactionColored = true,
-      frequentUpdates = false,
       smooth = true
     },
     power = {
@@ -254,7 +248,9 @@ cfg.units = {
     },
     castbar = {
       enable = true,
-      color = {5 / 255, 107 / 255, 246 / 255}
+      color = {5 / 255, 107 / 255, 246 / 255},
+      width = 282,
+      height = cfg.frames.main.height
     }
   },
   arena = {
@@ -267,7 +263,6 @@ cfg.units = {
       gradientColored = false,
       classColoredText = false,
       reactionColored = true,
-      frequentUpdates = false,
       smooth = true
     },
     power = {
@@ -288,7 +283,6 @@ cfg.units = {
       reactionColored = false,
       invertedColors = true,
       classColoredText = false,
-      frequentUpdates = true,
       smooth = true
     },
     power = {
@@ -344,5 +338,9 @@ cfg.elements = {
   },
   altpowerbar = {
     show = true
+  },
+  mirrorTimers = {
+    width = 220,
+    height = cfg.frames.main.height + 2
   }
 }

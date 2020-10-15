@@ -3,5 +3,8 @@ party:
     ☐ Add debuffs
     ☐ Add buffs?
   ☐ Add seperate layouts for healing specs and rest (even to detect spec on joining party)
+  ☐ Add PhaseIndicator
 raid:
   ☐ Create the raid frames?
+  ☐ Add corner indicators (example healers: DoTs, etc, debuffs, etc, make it configurable)
+  ☐ Add PhaseIndicator

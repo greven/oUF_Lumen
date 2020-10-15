@@ -55,8 +55,7 @@ function CreateHealPrediction(self)
 		otherBar = otherBar,
 		absorbBar = absorbBar,
 		healAbsorbBar = healAbsorbBar,
-		maxOverflow = 1.00,
-		frequentUpdates = true
+		maxOverflow = 1.00
 	}
 end
 
@@ -114,7 +113,6 @@ function lum:globalStyle(self, type)
 	self.Health:SetStatusBarTexture(m.textures.status_texture)
 	self.Health:SetStatusBarColor(unpack(cfg.colors.health))
 	self.Health:GetStatusBarTexture():SetHorizTile(false)
-	self.Health.frequentUpdates = self.cfg.health.frequentUpdates
 
 	self.Health.bg = self.Health:CreateTexture(nil, "BACKGROUND")
 	self.Health.bg:SetAllPoints(self.Health)
