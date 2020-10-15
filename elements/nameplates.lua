@@ -79,17 +79,15 @@ end
 
 -- Castbar Check for Spell Interrupt
 local CheckForSpellInterrupt = function(self, unit)
-  local color = cfg.units.nameplate.castbar.color
+  local initialColor = cfg.units.nameplate.castbar.color
 
   if unit == "vehicle" then
     unit = "player"
   end
   if (self.notInterruptible and UnitCanAttack("player", unit)) then
-    -- self.Icon:SetDesaturated(true)
-    self:SetStatusBarColor(0.3, 0.3, 0.3)
+    self:SetStatusBarColor(0.2, 0.2, 0.2)
   else
-    -- self.Icon:SetDesaturated(false)
-    self:SetStatusBarColor(unpack(color))
+    self:SetStatusBarColor(unpack(initialColor))
   end
 end
 
@@ -126,13 +124,13 @@ local OnTargetChanged = function(self, event, unit)
     return
   end
 
-  self.Castbar.iconborder:Hide()
+  -- self.Castbar.iconborder:Hide()
 
   -- New target
   if UnitIsUnit(self.unit, "target") then
     -- Target Border
-    self.targetBorder:SetBackdropBorderColor(.8, .8, .8, 1)
-    self.targetBorder:Show()
+    self.TargetBorder:SetBackdropBorderColor(.8, .8, .8, 1)
+    self.TargetBorder:Show()
 
     -- Target Arrow
     if cfg.units.nameplate.showTargetArrow then
@@ -154,7 +152,7 @@ local OnTargetChanged = function(self, event, unit)
       self.classPower:Show()
     end
   else
-    self.targetBorder:Hide()
+    self.TargetBorder:Hide()
     if cfg.units.nameplate.showTargetArrow then
       self.arrow:Hide()
     end
@@ -179,8 +177,8 @@ local AddTargetIndicators = function(self)
   local glowColor = self.cfg.glowColor
 
   -- Target Border
-  self.targetBorder = CreateFrame("Frame", nil, self)
-  core:createBorder(self, self.targetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+  self.TargetBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  core:createBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
 
   -- Targeted Arrow
   if self.cfg.showTargetArrow then
@@ -246,8 +244,6 @@ local createStyle = function(self, unit)
   health.colorTapping = true
   health.colorDisconnected = true
   health.frequentUpdates = true
-  -- health.colorSmooth = true
-  -- health.smoothGradient = oUF.colors.smooth
   health.PostUpdate = PostUpdateHealth
 
   health.bg = health:CreateTexture(nil, "BACKGROUND")
@@ -289,51 +285,55 @@ local createStyle = function(self, unit)
 
   -- Castbar
   if self.cfg.castbar.enable then
-    local castbar = CreateFrame("StatusBar", nil, self)
-    castbar:SetStatusBarTexture(m.textures.status_texture)
-    castbar:GetStatusBarTexture():SetHorizTile(false)
+    local Castbar = CreateFrame("StatusBar", nil, self)
+    Castbar:SetStatusBarTexture(m.textures.status_texture)
+    Castbar:GetStatusBarTexture():SetHorizTile(false)
 
-    castbar.bg = castbar:CreateTexture(nil, "BORDER")
-    castbar.bg:SetAllPoints()
-    castbar.bg:SetAlpha(0.3)
-    castbar.bg:SetTexture(m.textures.bg_texture)
-    castbar.bg:SetColorTexture(1 / 3, 1 / 3, 1 / 3)
+    core:setBackdrop(Castbar, 1, 1, 1, 1)
+    Castbar:SetStatusBarColor(unpack(cfg.units.nameplate.castbar.color))
+    Castbar:SetWidth(cfg.units.nameplate.width)
+    Castbar:SetHeight(cfg.units.nameplate.castbar.height)
+    Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -5)
 
-    core:setBackdrop(castbar, 1, 1, 1, 1)
-    castbar:SetBackdropColor(unpack(cfg.elements.castbar.backdrop.color))
-    castbar:SetStatusBarColor(unpack(cfg.units.nameplate.castbar.color))
-    castbar:SetWidth(cfg.units.nameplate.width)
-    castbar:SetHeight(cfg.units.nameplate.castbar.height)
-    castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -5)
+    local Background = Castbar:CreateTexture(nil, "BORDER")
+    Background:SetAllPoints()
+    Background:SetAlpha(0.2)
+    Background:SetTexture(m.textures.bg_texture)
+    Background:SetColorTexture(0.2, 0.2, 0.2)
 
-    -- Spell name
-    castbar.Text = castbar:CreateFontString(nil, "OVERLAY")
-    castbar.Text:SetTextColor(4 / 5, 4 / 5, 4 / 5)
-    castbar.Text:SetShadowOffset(1, -1)
-    castbar.Text:SetJustifyH("CENTER")
-    castbar.Text:SetHeight(12)
-    castbar.Text:SetFont(font, cfg.fontsize - 4, "THINOUTLINE")
-    castbar.Text:SetWidth(cfg.units.nameplate.width - 4)
-    castbar.Text:SetPoint("CENTER", castbar, 0, -10)
+    local Text = Castbar:CreateFontString(nil, "OVERLAY")
+    Text:SetTextColor(4 / 5, 4 / 5, 4 / 5)
+    Text:SetShadowOffset(1, -1)
+    Text:SetJustifyH("CENTER")
+    Text:SetHeight(12)
+    Text:SetFont(font, cfg.fontsize - 4, "THINOUTLINE")
+    Text:SetWidth(cfg.units.nameplate.width - 4)
+    Text:SetPoint("CENTER", castbar, 0, -10)
 
-    -- Spell Icon
-    castbar.Icon = castbar:CreateTexture(nil, "ARTWORK")
-    castbar.Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
-    castbar.Icon:SetHeight(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
-    castbar.Icon:SetWidth(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
-    castbar.Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
-    castbar.iconborder = CreateFrame("Frame", nil, self)
-    core:createBorder(castbar.Icon, castbar.iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
-    castbar.iconborder:SetBackdropColor(0, 0, 0, 1)
-    castbar.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
+    local Icon = Castbar:CreateTexture(nil, "ARTWORK")
+    Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    Icon:SetHeight(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
+    Icon:SetWidth(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
+    Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
 
-    castbar.PostCastStart = myPostCastStart
-    castbar.PostCastStop = myPostCastStop
-    castbar.PostCastFailed = myPostCastFailed
-    castbar.PostChannelStart = myPostChannelStart
-    castbar.PostChannelStop = myPostChannelStop
+    -- castbar.iconborder = CreateFrame("Frame", nil, self)
+    -- core:createBorder(castbar.Icon, castbar.iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+    -- castbar.iconborder:SetBackdropColor(0, 0, 0, 1)
+    -- castbar.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
 
-    self.Castbar = castbar
+    -- castbar.PostCastStart = myPostCastStart
+    -- castbar.PostCastStop = myPostCastStop
+    -- castbar.PostCastFailed = myPostCastFailed
+    -- castbar.PostChannelStart = myPostChannelStart
+    -- castbar.PostChannelStop = myPostChannelStop
+
+    Castbar.timeToHold = cfg.elements.castbar.timeToHold
+
+    Castbar.bg = Background
+    Castbar.Text = Text
+    Castbar.Time = Time
+    Castbar.Icon = Icon
+    self.Castbar = Castbar
   end
 
   -- Debuffs
@@ -360,8 +360,8 @@ end
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
--- if cfg.units[frame].show then
---   oUF:RegisterStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper), createStyle)
---   oUF:SetActiveStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper))
---   oUF:SpawnNamePlates("oUF_Lumen" .. frame:gsub("^%l", string.upper), OnTargetChanged, cvars)
--- end
+if cfg.units[frame].show then
+  oUF:RegisterStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper), createStyle)
+  oUF:SetActiveStyle("oUF_Lumen:" .. frame:gsub("^%l", string.upper))
+  oUF:SpawnNamePlates("oUF_Lumen" .. frame:gsub("^%l", string.upper), OnTargetChanged, cvars)
+end
