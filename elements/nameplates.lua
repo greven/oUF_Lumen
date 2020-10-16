@@ -22,7 +22,6 @@ local cvars = {
   nameplateMinScale = 0.8,
   nameplateSelectedScale = 1,
   nameplateSelfScale = 1,
-  -- nameplateShowAll = 0,
   nameplateMinAlpha = 0.5,
   nameplateMinAlphaDistance = 10,
   nameplateMaxAlpha = 1,
@@ -60,7 +59,7 @@ local PostCreateIcon = function(Auras, button)
   count:SetFont(m.fonts.font, 8, "OUTLINE")
   count:SetPoint("TOPRIGHT", button, 3, 3)
 
-  button.icon:SetTexCoord(.07, .93, .07, .93)
+  button.icon:SetTexCoord(.08, .92, .08, .92)
 
   button.overlay:SetTexture(m.textures.border)
   button.overlay:SetTexCoord(0, 1, 0, 1)
@@ -253,8 +252,8 @@ local createStyle = function(self, unit)
   self.Health = health
 
   -- Name strings
-  core:createNameString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
-  self:Tag(self.Name, "[lumen:classificationshort] [lumen:name]")
+  core:createNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
+  self:Tag(self.Name, "[lumen:levelplus] [lumen:name]")
 
   -- Health Percentage
   health.percent = core:createFontstring(self.Health, font, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
@@ -285,6 +284,39 @@ local createStyle = function(self, unit)
 
   -- Castbar
   if self.cfg.castbar.enable then
+    local CheckForSpellInterrupt = function(self, unit)
+      local initialColor = cfg.units.nameplate.castbar.color
+
+      if unit == "vehicle" then
+        unit = "player"
+      end
+
+      if (self.notInterruptible and UnitCanAttack("player", unit)) then
+        self:SetStatusBarColor(0.3, 0.3, 0.3)
+      else
+        self:SetStatusBarColor(unpack(initialColor))
+      end
+    end
+
+    local onPostCastStart = function(self, unit)
+      -- Set the castbar unit's initial color
+      self:SetStatusBarColor(unpack(cfg.units.nameplate.castbar.color))
+      CheckForSpellInterrupt(self, unit)
+    end
+
+    local OnPostCastFail = function(self, unit)
+      -- Color castbar red when cast fails
+      self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255)
+
+      if self.Max then
+        self.Max:Hide()
+      end
+    end
+
+    local OnPostCastInterruptible = function(self, unit)
+      CheckForSpellInterrupt(self, unit)
+    end
+
     local Castbar = CreateFrame("StatusBar", nil, self)
     Castbar:SetStatusBarTexture(m.textures.status_texture)
     Castbar:GetStatusBarTexture():SetHorizTile(false)
@@ -306,26 +338,25 @@ local createStyle = function(self, unit)
     Text:SetShadowOffset(1, -1)
     Text:SetJustifyH("CENTER")
     Text:SetHeight(12)
-    Text:SetFont(font, cfg.fontsize - 4, "THINOUTLINE")
+    Text:SetFont(font, cfg.fontsize - 5, "THINOUTLINE")
     Text:SetWidth(cfg.units.nameplate.width - 4)
-    Text:SetPoint("CENTER", castbar, 0, -10)
+    Text:SetPoint("CENTER", Castbar, 0, -10)
 
     local Icon = Castbar:CreateTexture(nil, "ARTWORK")
-    Icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
+    Icon:SetTexCoord(.08, .92, .08, .92)
     Icon:SetHeight(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
     Icon:SetWidth(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
     Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
 
-    -- castbar.iconborder = CreateFrame("Frame", nil, self)
-    -- core:createBorder(castbar.Icon, castbar.iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
-    -- castbar.iconborder:SetBackdropColor(0, 0, 0, 1)
-    -- castbar.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
+    Castbar.iconborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+    core:createBorder(Castbar.Icon, Castbar.iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+    Castbar.iconborder:SetBackdropColor(0, 0, 0, 1)
+    Castbar.iconborder:SetBackdropBorderColor(0, 0, 0, 1)
 
-    -- castbar.PostCastStart = myPostCastStart
-    -- castbar.PostCastStop = myPostCastStop
-    -- castbar.PostCastFailed = myPostCastFailed
-    -- castbar.PostChannelStart = myPostChannelStart
-    -- castbar.PostChannelStop = myPostChannelStop
+    Castbar.PostCastStart = onPostCastStart
+    Castbar.PostCastFail = OnPostCastFail
+    Castbar.PostCastInterruptible = OnPostCastInterruptible
+    -- Castbar.OnUpdate = OnUpdate
 
     Castbar.timeToHold = cfg.elements.castbar.timeToHold
 

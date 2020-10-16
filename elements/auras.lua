@@ -32,27 +32,29 @@ end
 local PostCreateIcon = function(Auras, button)
 	local count = button.count
 	count:ClearAllPoints()
-	count:SetFont(m.fonts.font, 12, 'OUTLINE')
-	count:SetPoint('TOPRIGHT', button, 3, 3)
+	count:SetFont(m.fonts.font, 12, "OUTLINE")
+	count:SetPoint("TOPRIGHT", button, 3, 3)
 
-  button.icon:SetTexCoord(.07, .93, .07, .93)
+	button.icon:SetTexCoord(.08, .92, .08, .92)
 
-  button.overlay:SetTexture(m.textures.border)
-  button.overlay:SetTexCoord(0, 1, 0, 1)
-  button.overlay.Hide = function(self) self:SetVertexColor(0.3, 0.3, 0.3) end
+	button.overlay:SetTexture(m.textures.border)
+	button.overlay:SetTexCoord(0, 1, 0, 1)
+	button.overlay.Hide = function(self)
+		self:SetVertexColor(0.1, 0.1, 0.1)
+	end
 
-	button.time = button:CreateFontString(nil, 'OVERLAY')
+	button.time = button:CreateFontString(nil, "OVERLAY")
 	button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
 	button.time:SetPoint("BOTTOMLEFT", button, -2, -2)
 	button.time:SetTextColor(1, 1, 0.65)
 	button.time:SetShadowOffset(1, -1)
 	button.time:SetShadowColor(0, 0, 0, 1)
-	button.time:SetJustifyH('CENTER')
+	button.time:SetJustifyH("CENTER")
 end
 
 function auras:CreateAura(self, num, rows, size, spacing)
 	local auras = CreateFrame("Frame", nil, self)
-	auras:SetSize( (num * (size + 9)) / rows, (size + 9) * rows)
+	auras:SetSize((num * (size + 9)) / rows, (size + 9) * rows)
 	auras.num = num
 	auras.size = size
 	auras.spacing = spacing or 9

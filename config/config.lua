@@ -300,7 +300,7 @@ cfg.units = {
   nameplate = {
     show = true,
     width = 120,
-    height = 10,
+    height = 8,
     pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0},
     classpower = true,
     debuffs = true,
@@ -313,7 +313,7 @@ cfg.units = {
     glowColor = {50 / 255, 240 / 255, 210 / 255, 0.7},
     showTargetArrow = false,
     showGlow = false,
-    showHighlight = true
+    showHighlight = false
   }
 }
 

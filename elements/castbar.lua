@@ -270,7 +270,7 @@ function core:CreateCastbar(self)
   Castbar.Time = Time
   Castbar.Icon = Icon
   Castbar.SafeZone = SafeZone
-  Castbar.Shield = Shield
+  -- Castbar.Shield = Shield
   self.Castbar = Castbar -- register with oUF
 end
 

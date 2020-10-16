@@ -363,7 +363,7 @@ local PostCreateIcon = function(Auras, button)
   count:SetFont(m.fonts.font, 12, "OUTLINE")
   count:SetPoint("TOPRIGHT", button, 3, 3)
 
-  button.icon:SetTexCoord(.07, .93, .07, .93)
+  button.icon:SetTexCoord(.08, .92, .08, .92)
 
   button.overlay:SetTexture(m.textures.border)
   button.overlay:SetTexCoord(0, 1, 0, 1)
