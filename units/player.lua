@@ -98,7 +98,7 @@ local function CreateClassPower(self)
 
   for index = 1, 10 do
     local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self, "BackdropTemplate")
-    Bar:SetHeight(1.5)
+    Bar:SetHeight(2)
     Bar:SetStatusBarTexture(m.textures.status_texture)
     core:setBackdrop(Bar, 2, 2, 2, 2)
 
@@ -124,7 +124,7 @@ local function CreateClassPower(self)
 end
 
 -- Death Knight Runebar
-local CreateRuneBar = function(self)
+local function CreateRuneBar(self)
   local Runes = {}
   Runes.sortOrder = "asc"
   Runes.colorSpec = true -- color runes by spec
@@ -134,7 +134,7 @@ local CreateRuneBar = function(self)
     local numRunes, maxWidth, gap = 6, cfg.frames.main.width, 6
     local width = ((maxWidth / numRunes) - (((numRunes - 1) * gap) / numRunes))
 
-    Rune:SetSize(width, 1.5)
+    Rune:SetSize(width, 2)
     Rune:SetStatusBarTexture(m.textures.status_texture)
     core:setBackdrop(Rune, 2, 2, 2, 2) -- Backdrop
 
@@ -157,7 +157,7 @@ local CreateRuneBar = function(self)
 end
 
 -- AdditionalPower post update callback
-local onAdditionalPowerPostUpdate = function(self, cur, max)
+local function onAdditionalPowerPostUpdate(self, cur, max)
   local powertype = UnitPowerType("player")
 
   if powertype == 0 then
@@ -173,7 +173,7 @@ local onAdditionalPowerPostUpdate = function(self, cur, max)
 end
 
 -- Create additional power (power bar for specs like Feral Druid or Enhancement Shaman)
-local CreateAdditionalPower = function(self)
+local function CreateAdditionalPower(self)
   local height = -18
   local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
 
@@ -195,7 +195,7 @@ local CreateAdditionalPower = function(self)
   local PowerValue = core:createFontstring(AdditionalPower, font, cfg.fontsize - 4, "THINOUTLINE")
   PowerValue:SetPoint("RIGHT", AdditionalPower, -8, 0)
   PowerValue:SetJustifyH("RIGHT")
-  self:Tag(PowerValue, "[lumen:altpower]")
+  self:Tag(PowerValue, "[lum:altpower]")
 
   -- Backdrop
   core:setBackdrop(AdditionalPower, 1, 1, 1, 1)
@@ -332,7 +332,7 @@ local function AlternativePowerOnLeave(self)
 end
 
 -- AltPower (quest or boss special power)
-local CreateAlternativePower = function(self)
+local function CreateAlternativePower(self)
   local AlternativePower = CreateFrame("StatusBar", nil, self)
   AlternativePower:SetStatusBarTexture(m.textures.status_texture)
   core:setBackdrop(AlternativePower, 2, 2, 2, 2)
@@ -355,6 +355,32 @@ local CreateAlternativePower = function(self)
   AlternativePower.PostUpdate = AltPowerPostUpdate
 
   self.AlternativePower = AlternativePower
+end
+
+local function CreatePowerPrediction(self)
+  local mainBar = CreateFrame("StatusBar", nil, self.Power)
+  mainBar:SetStatusBarTexture(m.textures.status_texture)
+  mainBar:SetStatusBarColor(1, 1, 1, 0.5)
+  mainBar:SetReverseFill(true)
+  mainBar:SetPoint("TOP")
+  mainBar:SetPoint("BOTTOM")
+  mainBar:SetPoint("RIGHT", self.Power:GetStatusBarTexture(), "RIGHT")
+  mainBar:SetWidth(self.cfg.width)
+
+  local altBar = CreateFrame("StatusBar", nil, self.AdditionalPower)
+  altBar:SetStatusBarTexture(m.textures.status_texture)
+  altBar:SetStatusBarColor(1, 1, 1, 0.5)
+  altBar:SetReverseFill(true)
+  altBar:SetPoint("TOP")
+  altBar:SetPoint("BOTTOM")
+  altBar:SetPoint("RIGHT", self.AdditionalPower:GetStatusBarTexture(), "RIGHT")
+  altBar:SetWidth(self.cfg.width)
+
+  -- Register with oUF
+  self.PowerPrediction = {
+    mainBar = mainBar,
+    altBar = altBar
+  }
 end
 
 local PostCreateIcon = function(Auras, button)
@@ -469,10 +495,10 @@ local createStyle = function(self)
   -- Text strings
   if self.cfg.name.show then
     core:createNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
-    self:Tag(self.Name, "[lumen:level]  [lumen:name]")
+    self:Tag(self.Name, "[lum:level]  [lum:name]")
   end
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  self:Tag(self.Health.value, "[lumen:hpvalue]")
+  self:Tag(self.Health.value, "[lum:hpvalue]")
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   core:createPowerString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
 
@@ -520,12 +546,10 @@ local createStyle = function(self)
   end
 
   -- Alternate Power Bar (Mana Bar)
-  if
-    core.playerClass == "DRUID" or core.playerClass == "PRIEST" or core.playerClass == "MONK" or
-      core.playerClass == "SHAMAN"
-   then
-    CreateAdditionalPower(self)
-  end
+  CreateAdditionalPower(self)
+
+  -- Power Prediction
+  CreatePowerPrediction(self)
 
   -- AltPower (quest or boss special power)
   if cfg.elements.altpowerbar.show then

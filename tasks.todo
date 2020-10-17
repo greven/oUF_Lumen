@@ -1,3 +1,5 @@
+general:
+  ☐ Add scale back to frames (player, party, target, etc)
 party:
   ☐ Finish the party frames
     ☐ Add debuffs
@@ -8,3 +10,5 @@ raid:
   ☐ Create the raid frames?
   ☐ Add corner indicators (example healers: DoTs, etc, debuffs, etc, make it configurable)
   ☐ Add PhaseIndicator
+personal resource display:
+  ☐ skin the element

@@ -130,15 +130,15 @@ local createStyle = function(self)
 
   core:createPartyNameString(self, font, cfg.fontsize)
   if self.cfg.health.classColoredText then
-    self:Tag(self.Name, "[lumen:playerstatus] [lumen:leader] [raidcolor][lumen:name]")
+    self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [raidcolor][lum:name]")
   else
-    self:Tag(self.Name, "[lumen:playerstatus] [lumen:leader] [lumen:name]")
+    self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [lum:name]")
   end
 
   self.classText = core:createFontstring(self.Health, font, cfg.fontsize, "THINOUTLINE")
   self.classText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -4, 5)
   self.classText:SetJustifyH("RIGHT")
-  self:Tag(self.classText, "[lumen:level] [raidcolor][class]")
+  self:Tag(self.classText, "[lum:level] [raidcolor][class]")
 
   -- Portrait
   if self.cfg.showPortraits then

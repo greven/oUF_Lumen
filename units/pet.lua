@@ -63,9 +63,9 @@ local createStyle = function(self)
 
   -- Texts
   core:createNameString(self, font, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
-  self:Tag(self.Name, "[lumen:name]")
+  self:Tag(self.Name, "[lum:name]")
   -- core:createHPString(self, font, cfg.fontsize - 4, "THINOUTLINE", -4, 0, "RIGHT")
-  -- self:Tag(self.Health.value, '[lumen:hpperc]')
+  -- self:Tag(self.Health.value, '[lum:hpperc]')
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth

@@ -253,7 +253,7 @@ local createStyle = function(self, unit)
 
   -- Name strings
   core:createNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 6, "CENTER", self.cfg.width - 4)
-  self:Tag(self.Name, "[lumen:levelplus] [lumen:name]")
+  self:Tag(self.Name, "[lum:levelplus] [lum:name]")
 
   -- Health Percentage
   health.percent = core:createFontstring(self.Health, font, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
@@ -261,7 +261,7 @@ local createStyle = function(self, unit)
   health.percent:SetJustifyH("LEFT")
   health.percent:SetWidth(self.cfg.width)
   health.percent:SetTextColor(0.8, 0.8, 0.8, 1)
-  self:Tag(health.percent, "[lumen:hpperc]")
+  self:Tag(health.percent, "[lum:hpperc]")
 
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then
@@ -269,7 +269,7 @@ local createStyle = function(self, unit)
     classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
     classPower:SetJustifyH("RIGHT")
     classPower:SetWidth(self.cfg.width)
-    self:Tag(classPower, "[lumen:classpower]", "player")
+    self:Tag(classPower, "[lum:classpower]", "player")
     classPower:Hide()
     self.classPower = classPower
   end

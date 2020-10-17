@@ -39,9 +39,9 @@ local createStyle = function(self)
 
   -- Texts
   core:createNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
-  self:Tag(self.Name, "[lumen:level]  [lumen:name]")
+  self:Tag(self.Name, "[lum:level]  [lum:name]")
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  self:Tag(self.Health.value, "[lumen:hpvalue]")
+  self:Tag(self.Health.value, "[lum:hpvalue]")
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   core:createPowerString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
 

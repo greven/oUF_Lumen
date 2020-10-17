@@ -158,7 +158,7 @@ function core:createHPPercentString(self, font, size, outline, x, y, point, laye
   self.Health.percent:SetJustifyH("RIGHT")
   self.Health.percent:SetTextColor(0.5, 0.5, 0.5, 0.5)
   self.Health.percent:SetShadowColor(0, 0, 0, 0)
-  self:Tag(self.Health.percent, "[lumen:hpperc]")
+  self:Tag(self.Health.percent, "[lum:hpperc]")
 end
 
 -- Generates the Power Percent String
@@ -166,7 +166,7 @@ function core:createPowerString(self, font, size, outline, x, y, point)
   self.Power.value = core:createFontstring(self.Power, font, size, outline)
   self.Power.value:SetPoint(point, self.Power, x, y)
   self.Power.value:SetJustifyH(point)
-  self:Tag(self.Power.value, "[lumen:powervalue]")
+  self:Tag(self.Power.value, "[lum:powervalue]")
 end
 
 -- Create Border
