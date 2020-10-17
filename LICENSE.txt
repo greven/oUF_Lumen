@@ -1,4 +1,4 @@
-Copyright (c) 2011-2018 Nuno Moço <email@nuno.site>
+Copyright (c) 2011-2020 Nuno Moço <email@nuno.site>
 
 All rights reserved.
 
