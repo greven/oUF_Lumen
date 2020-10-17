@@ -12,23 +12,23 @@ local events = oUF.TagEvents or oUF.Tags.Events
 local floor = floor
 
 -- Name
-tags["lumen:name"] = function(unit, rolf)
+tags["lum:name"] = function(unit, rolf)
   return UnitName(rolf or unit)
 end
-events["lumen:name"] = "UNIT_NAME_UPDATE UNIT_CONNECTION UNIT_ENTERING_VEHICLE UNIT_EXITING_VEHICLE"
+events["lum:name"] = "UNIT_NAME_UPDATE UNIT_CONNECTION UNIT_ENTERING_VEHICLE UNIT_EXITING_VEHICLE"
 
 -- Unit smart level
-tags["lumen:level"] = function(unit)
+tags["lum:level"] = function(unit)
   local l = UnitLevel(unit)
   if l <= 0 then
     l = "??"
   end
   return "|cffb9b9b9" .. l .. "|r"
 end
-events["lumen:level"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
+events["lum:level"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
 
 -- Unit smart level with color
-tags["lumen:levelplus"] = function(unit)
+tags["lum:levelplus"] = function(unit)
   local c = UnitClassification(unit)
   local l = UnitLevel(unit)
   local d = GetQuestDifficultyColor(l)
@@ -38,10 +38,10 @@ tags["lumen:levelplus"] = function(unit)
   end
   return string.format("|cff%02x%02x%02x%s|r", d.r * 255, d.g * 255, d.b * 255, l)
 end
-events["lumen:levelplus"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
+events["lum:levelplus"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
 
 -- Unit classification
-tags["lumen:classification"] = function(unit)
+tags["lum:classification"] = function(unit)
   local c = UnitClassification(unit)
   if (c == "rare") then
     return "|cff008ff7RARE|r"
@@ -55,10 +55,10 @@ tags["lumen:classification"] = function(unit)
     return ""
   end
 end
-events["lumen:classification"] = "UNIT_CLASSIFICATION_CHANGED"
+events["lum:classification"] = "UNIT_CLASSIFICATION_CHANGED"
 
 -- Short Unit classification
-tags["lumen:classificationshort"] = function(unit)
+tags["lum:classificationshort"] = function(unit)
   local c = UnitClassification(unit)
   if (c == "rare") then
     return "|cff008ff7R|r"
@@ -72,27 +72,27 @@ tags["lumen:classificationshort"] = function(unit)
     return ""
   end
 end
-events["lumen:classificationshort"] = "UNIT_CLASSIFICATION_CHANGED"
+events["lum:classificationshort"] = "UNIT_CLASSIFICATION_CHANGED"
 
 -- Current Spec
-tags["lumen:spec"] = function()
+tags["lum:spec"] = function()
   return core:GetCurrentSpec()
 end
-events["lumen:spec"] =
+events["lum:spec"] =
   "PLAYER_LOGIN PLAYER_ENTERING_WORLD PLAYER_TALENT_UPDATE CHARACTER_POINTS_CHANGED PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE GROUP_JOINED"
 
 -- Health Value
-tags["lumen:hpvalue"] = function(unit)
+tags["lum:hpvalue"] = function(unit)
   local min = UnitHealth(unit)
   if min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
     return ""
   end
   return core:shortNumber(min)
 end
-events["lumen:hpvalue"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE"
+events["lum:hpvalue"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE"
 
 -- Health Percent
-tags["lumen:hpperc"] = function(unit)
+tags["lum:hpperc"] = function(unit)
   local min, max = UnitHealth(unit), UnitHealthMax(unit)
   local percent = floor((min / max) * 100 + 0.5)
 
@@ -102,10 +102,10 @@ tags["lumen:hpperc"] = function(unit)
     return ""
   end
 end
-events["lumen:hpperc"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE"
+events["lum:hpperc"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE"
 
 -- Power value
-tags["lumen:powervalue"] = function(unit)
+tags["lum:powervalue"] = function(unit)
   -- Hide it if DC, Ghost or Dead!
   local min, max = UnitPower(unit, UnitPowerType(unit)), UnitPowerMax(unit, UnitPowerType(unit))
   if min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
@@ -127,20 +127,20 @@ tags["lumen:powervalue"] = function(unit)
     return min
   end
 end
-events["lumen:powervalue"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE"
+events["lum:powervalue"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE"
 
 -- Alternate Power Percent
-tags["lumen:altpower"] = function(unit)
+tags["lum:altpower"] = function(unit)
   local min, max = UnitPower(unit, 0), UnitPowerMax(unit, 0)
 
   if (UnitPowerType(unit) ~= 0) and min ~= max then -- If Power Type is not Mana(it's Energy or Rage) and Mana is not at Maximum
     return floor(min / max * 100) .. "%"
   end
 end
-events["lumen:altpower"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
+events["lum:altpower"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
 
 -- Class Power (Combo Points, Insanity, )
-tags["lumen:classpower"] = function(unit)
+tags["lum:classpower"] = function(unit)
   local PlayerClass = core.playerClass
   local num, max, color
 
@@ -196,9 +196,9 @@ tags["lumen:classpower"] = function(unit)
     return string.format("|cff%s%d|r", color, num)
   end
 end
-events["lumen:classpower"] = "UNIT_POWER_UPDATE SPELLS_CHANGED UNIT_POWER_FREQUENT PLAYER_TARGET_CHANGED"
+events["lum:classpower"] = "UNIT_POWER_UPDATE SPELLS_CHANGED UNIT_POWER_FREQUENT PLAYER_TARGET_CHANGED"
 
-tags["lumen:role"] = function(unit)
+tags["lum:role"] = function(unit)
   local Role = UnitGroupRolesAssigned(unit)
   local String = ""
 
@@ -210,14 +210,14 @@ tags["lumen:role"] = function(unit)
 
   return String
 end
-events["lumen:role"] = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
+events["lum:role"] = "PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE"
 
-tags["lumen:leader"] = function(unit)
+tags["lum:leader"] = function(unit)
   return UnitIsGroupLeader(unit) and "|cffffff00!|r"
 end
-events["lumen:leader"] = "PARTY_LEADER_CHANGED"
+events["lum:leader"] = "PARTY_LEADER_CHANGED"
 
-tags["lumen:afkdnd"] = function(unit)
+tags["lum:afkdnd"] = function(unit)
   if UnitIsAFK(unit) then
     return "|cffCFCFCF " .. AFK .. "|r"
   elseif UnitIsDND(unit) then
@@ -226,10 +226,10 @@ tags["lumen:afkdnd"] = function(unit)
     return ""
   end
 end
-events["lumen:afkdnd"] = "PLAYER_FLAGS_CHANGED PLAYER_LOGIN PLAYER_ENTERING_WORLD"
+events["lum:afkdnd"] = "PLAYER_FLAGS_CHANGED PLAYER_LOGIN PLAYER_ENTERING_WORLD"
 
 -- AFK and DND status
-tags["lumen:playerstatus"] = function(unit)
+tags["lum:playerstatus"] = function(unit)
   if UnitIsAFK(unit) then
     return "|cff666666<" .. AFK .. ">|r"
   elseif (UnitIsDead(unit)) then
@@ -242,5 +242,5 @@ tags["lumen:playerstatus"] = function(unit)
     return ""
   end
 end
-events["lumen:playerstatus"] =
+events["lum:playerstatus"] =
   "UNIT_HEALTH PLAYER_UPDATE_RESTING UNIT_CONNECTION PLAYER_FLAGS_CHANGED PLAYER_LOGIN PLAYER_ENTERING_WORLD"
