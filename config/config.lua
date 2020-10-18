@@ -10,7 +10,7 @@ local cfg, oUF = ns.cfg, ns.oUF
 
 -- Examples
 -- cfg.fontsize = 14 -- The Global Font Size
--- cfg.scale = 1.25 -- The elements Scale
+-- cfg.scale = 1.1 -- The elements Scale
 
 -- Compact UI
 -- cfg.frames.main.margin = 10

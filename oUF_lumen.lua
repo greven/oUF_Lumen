@@ -105,6 +105,8 @@ function lum:globalStyle(self, type)
 	self:SetScript("OnEnter", OnEnter)
 	self:SetScript("OnLeave", OnLeave)
 
+	self:SetScale(cfg.scale)
+
 	-- HP Bar
 	self.Health = CreateFrame("StatusBar", nil, self)
 	self.Health:SetHeight(self.cfg.height - cfg.frames[type].health.margin - self.cfg.power.height)
