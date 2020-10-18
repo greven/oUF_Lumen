@@ -155,5 +155,10 @@ end
 if cfg.units[frame].show then
   oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
   oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
-  oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+  local f = oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+  -- Frame Visibility
+  if cfg.units[frame].visibility then
+    f:Disable()
+    RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
+  end
 end

@@ -62,7 +62,7 @@ local createStyle = function(self)
   lum:globalStyle(self, "secondary")
 
   -- Texts
-  core:createNameString(self, font, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
+  core:createNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
   self:Tag(self.Name, "[lum:name]")
   -- core:createHPString(self, font, cfg.fontsize - 4, "THINOUTLINE", -4, 0, "RIGHT")
   -- self:Tag(self.Health.value, '[lum:hpperc]')
@@ -71,10 +71,10 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Buffs
-  local buffs = auras:CreateAura(self, 4, 1, cfg.frames.secondary.height + 4, 2)
-  buffs:SetPoint("BOTTOMRIGHT", "oUF_LumenPlayer", "TOPLEFT", -6, 6)
-  buffs.initialAnchor = "BOTTOMRIGHT"
-  buffs["growth-x"] = "LEFT"
+  local buffs = auras:CreateAura(self, 5, 1, cfg.frames.secondary.height + 4, 2)
+  buffs:SetPoint("BOTTOMLEFT", "oUF_LumenPet", "TOPLEFT", -2, 6)
+  buffs.initialAnchor = "BOTTOMLEFT"
+  buffs["growth-x"] = "RIGHT"
   buffs.PostUpdateIcon = PostUpdateIcon
   if (self.cfg.buffs.filter) then
     buffs.CustomFilter = PetBuffsFilter
@@ -91,5 +91,10 @@ end
 if cfg.units[frame].show then
   oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
   oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
-  oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+  local f = oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+  -- Frame Visibility
+  if cfg.units[frame].visibility then
+    f:Disable()
+    RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
+  end
 end

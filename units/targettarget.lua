@@ -36,7 +36,7 @@ local createStyle = function(self)
   lum:globalStyle(self, "secondary")
 
   -- Texts
-  core:createNameString(self, font, cfg.fontsize, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 4)
+  core:createNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 4)
   self:Tag(self.Name, "[lum:name]")
   -- core:createHPString(self, font, cfg.fontsize - 4, "THINOUTLINE", -4, 0, "RIGHT")
   -- self:Tag(self.Health.value, '[lum:hpperc]')
@@ -54,5 +54,10 @@ end
 if cfg.units[frame].show then
   oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
   oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
-  oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+  local f = oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+  -- Frame Visibility
+  if cfg.units[frame].visibility then
+    f:Disable()
+    RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
+  end
 end

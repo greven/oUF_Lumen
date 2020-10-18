@@ -1,6 +1,17 @@
+### Version 9.1.0:
+
+- Add frame visibility options
+- Move default Pet position
+- Add visibility conditions to pet frame
+
+### Version 9.0.2:
+
+- New version of oUF_MovableFrames
+- Add scaling to frames
+
 ### Version 9.0.1:
 
-- First pass for .
+- First pass for Shadowlands.
 
 ### Version 8.0.12:
 

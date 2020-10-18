@@ -30,5 +30,14 @@ local cfg, oUF = ns.cfg, ns.oUF
 --   x = cfg.frames.main.margin,
 --   y = 0
 -- }
+-- cfg.units.focus.pos = {
+--   a1 = "BOTTOMLEFT",
+--   a2 = "TOPLEFT",
+--   af = "oUF_LumenPlayer",
+--   x = 0,
+--   y = cfg.frames.secondary.margin
+-- }
+-- cfg.units.pet.width = cfg.frames.secondary.width
+-- cfg.units.pet.pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", af = "oUF_LumenPlayer", x = 0, y = cfg.frames.secondary.margin},
 
 -- ------------------------------------------------------------------------
