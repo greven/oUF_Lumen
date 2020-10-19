@@ -1,3 +1,7 @@
+### Version 9.1.1:
+
+- Update frame visibility options
+
 ### Version 9.1.0:
 
 - Add frame visibility options
