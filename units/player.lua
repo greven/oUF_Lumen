@@ -508,23 +508,6 @@ local createStyle = function(self)
   -- Power
   self.Power.frequentUpdates = self.cfg.power.frequentUpdates
 
-  -- Out of Combat Frame Fading
-  if self.cfg.fader.enable then
-    self:SetAlpha(self.cfg.fader.alpha)
-    self:RegisterEvent(
-      "PLAYER_REGEN_DISABLED",
-      function(self)
-        self:SetAlpha(1)
-      end
-    )
-    self:RegisterEvent(
-      "PLAYER_REGEN_ENABLED",
-      function(self)
-        self:SetAlpha(self.cfg.fader.alpha)
-      end
-    )
-  end
-
   -- Castbar
   if self.cfg.castbar.enable then
     core:CreateCastbar(self)
@@ -697,5 +680,9 @@ if cfg.units[frame].show then
   if cfg.units[frame].visibility then
     f:Disable()
     RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
+  end
+  -- Fader
+  if cfg.units[frame].fader then
+    core:CreateFrameFader(f, cfg.units[frame].fader)
   end
 end

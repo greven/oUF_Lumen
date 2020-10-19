@@ -95,7 +95,6 @@ cfg.units = {
       frequentUpdates = true,
       smooth = true
     },
-    -- visibility = "[combat][mod][@target,exists][vehicleui][group] show; hide",
     name = {
       show = true
     },
@@ -121,9 +120,12 @@ cfg.units = {
         show = true
       }
     },
+    -- visibility = "[combat][mod][@target,exists][@mouseover,harm][vehicleui][group][channeling] show; hide",
     fader = {
-      enable = false,
-      alpha = 0.3
+      fadeInAlpha = 1,
+      fadeInDuration = 0.3,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3
     }
   },
   target = {
@@ -160,6 +162,12 @@ cfg.units = {
       barTimers = {
         show = true
       }
+    },
+    fader = {
+      fadeInAlpha = 1,
+      fadeInDuration = 0.3,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3
     }
   },
   targettarget = {
@@ -179,6 +187,12 @@ cfg.units = {
       classColored = false,
       frequentUpdates = false,
       smooth = true
+    },
+    fader = {
+      fadeInAlpha = 1,
+      fadeInDuration = 0.3,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3
     }
   },
   focus = {
@@ -204,6 +218,12 @@ cfg.units = {
       color = {123 / 255, 66 / 255, 200 / 255},
       width = 282,
       height = cfg.frames.main.height
+    },
+    fader = {
+      fadeInAlpha = 1,
+      fadeInDuration = 0.3,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3
     }
   },
   pet = {
@@ -233,7 +253,13 @@ cfg.units = {
     buffs = {
       filter = true
     },
-    visibility = "[petbattle][overridebar][vehicleui][possessbar][shapeshift][channeling] hide; [pet,mod][harm][combat] show; hide"
+    visibility = "[petbattle][overridebar][vehicleui][possessbar][shapeshift][channeling] hide; [pet,mod][pet,harm][pet,combat] show; hide",
+    fader = {
+      fadeInAlpha = 1,
+      fadeInDuration = 0.3,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3
+    }
   },
   boss = {
     show = true,
@@ -330,7 +356,14 @@ cfg.elements = {
     backdrop = {
       color = {r = 0, g = 0, b = 0, a = 0.85}
     },
-    timeToHold = 2
+    timeToHold = 1.5,
+    fader = {
+      fadeInAlpha = 1,
+      fadeInDuration = 0.1,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3,
+      fadeOutDelay = 0.5
+    }
   },
   experiencebar = {
     show = true,

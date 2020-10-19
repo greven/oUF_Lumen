@@ -18,74 +18,6 @@ local function resetAttributes(self)
   self.spellID = nil
 end
 
-local OnUpdate = function(self, elapsed)
-  if (self.casting or self.channeling) then
-    local isCasting = self.casting
-    self:SetAlpha(1)
-
-    if (isCasting) then
-      self.duration = self.duration + elapsed
-      if (self.duration >= self.max) then
-        local spellID = self.spellID
-
-        resetAttributes(self)
-        self:Hide()
-
-        if (self.PostCastStop) then
-          self:PostCastStop(self.__owner.unit, spellID)
-        end
-
-        return
-      end
-    else
-      self.duration = self.duration - elapsed
-      if (self.duration <= 0) then
-        local spellID = self.spellID
-
-        resetAttributes(self)
-        self:Hide()
-
-        if (self.PostCastStop) then
-          self:PostCastStop(self.__owner.unit, spellID)
-        end
-
-        return
-      end
-    end
-
-    if (self.Time) then
-      if (self.delay ~= 0) then
-        if (self.CustomDelayText) then
-          self:CustomDelayText(self.duration)
-        else
-          self.Time:SetFormattedText("%.1f|cffff0000%s%.2f|r", self.duration, isCasting and "+" or "-", self.delay)
-        end
-      else
-        if (self.CustomTimeText) then
-          self:CustomTimeText(self.duration)
-        else
-          self.Time:SetFormattedText("%.1f", self.duration)
-        end
-      end
-    end
-
-    self:SetValue(self.duration)
-  elseif (self.holdTime > 0) then
-    self.holdTime = self.holdTime - elapsed
-
-    -- Fade castbar
-    local alpha = self:GetAlpha() - 0.025
-    if alpha > 0 then
-      self:SetAlpha(alpha)
-    else
-      self:SetAlpha(0)
-    end
-  else
-    resetAttributes(self)
-    self:Hide()
-  end
-end
-
 local CheckForSpellInterrupt = function(self, unit)
   local initialColor = cfg.units[unit].castbar.color
 
@@ -116,11 +48,13 @@ local onPostCastStart = function(self, unit)
   -- Set the castbar unit's initial color
   self:SetStatusBarColor(unpack(cfg.units[unit].castbar.color))
   CheckForSpellInterrupt(self, unit)
+  core:StartFadeIn(self)
 end
 
 local OnPostCastFail = function(self, unit)
   -- Color castbar red when cast fails
   self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255)
+  core:StartFadeOut(self)
 
   if self.Max then
     self.Max:Hide()
@@ -260,10 +194,13 @@ function core:CreateCastbar(self)
   Castbar.PostCastStart = onPostCastStart
   Castbar.PostCastFail = OnPostCastFail
   Castbar.PostCastInterruptible = OnPostCastInterruptible
-  Castbar.OnUpdate = OnUpdate
 
-  Castbar.timeToHold = cfg.elements.castbar.timeToHold
   Castbar.CustomTimeText = CustomCastTimeText
+  Castbar.timeToHold = cfg.elements.castbar.timeToHold
+
+  -- FadeIn / FadeOut animation
+  core:CreateFaderAnimation(Castbar)
+  Castbar.faderConfig = cfg.elements.castbar.fader
 
   Castbar.bg = Background
   Castbar.Text = Text

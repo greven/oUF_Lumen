@@ -97,4 +97,8 @@ if cfg.units[frame].show then
     f:Disable()
     RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
   end
+  -- Fader
+  if cfg.units[frame].fader then
+    core:CreateFrameFader(f, cfg.units[frame].fader)
+  end
 end

@@ -84,3 +84,85 @@ function core:createDropShadow(frame, point, edge, color)
   shadow:SetBackdropColor(0, 0, 0, 0)
   shadow:SetBackdropBorderColor(unpack(color))
 end
+
+-- Frame Fader
+local function FaderOnFinished(self)
+  self.__owner:SetAlpha(self.finAlpha)
+end
+
+local function FaderOnUpdate(self)
+  self.__owner:SetAlpha(self.__animFrame:GetAlpha())
+end
+
+function core:IsMouseOverFrame(frame)
+  if MouseIsOver(frame) then
+    return true
+  end
+  return false
+end
+
+function core:StartFadeIn(frame)
+  if frame.fader.direction == "in" then
+    return
+  end
+  frame.fader:Pause()
+  frame.fader.anim:SetFromAlpha(frame.faderConfig.fadeOutAlpha or 0)
+  frame.fader.anim:SetToAlpha(frame.faderConfig.fadeInAlpha or 1)
+  frame.fader.anim:SetDuration(frame.faderConfig.fadeInDuration or 0.3)
+  frame.fader.anim:SetSmoothing(frame.faderConfig.fadeInSmooth or "OUT")
+  --start right away
+  frame.fader.anim:SetStartDelay(frame.faderConfig.fadeInDelay or 0)
+  frame.fader.finAlpha = frame.faderConfig.fadeInAlpha
+  frame.fader.direction = "in"
+  frame.fader:Play()
+end
+
+function core:StartFadeOut(frame)
+  if frame.fader.direction == "out" then
+    return
+  end
+  frame.fader:Pause()
+  frame.fader.anim:SetFromAlpha(frame.faderConfig.fadeInAlpha or 1)
+  frame.fader.anim:SetToAlpha(frame.faderConfig.fadeOutAlpha or 0)
+  frame.fader.anim:SetDuration(frame.faderConfig.fadeOutDuration or 0.3)
+  frame.fader.anim:SetSmoothing(frame.faderConfig.fadeOutSmooth or "OUT")
+  -- wait for some time before starting the fadeout
+  frame.fader.anim:SetStartDelay(frame.faderConfig.fadeOutDelay or 0)
+  frame.fader.finAlpha = frame.faderConfig.fadeOutAlpha
+  frame.fader.direction = "out"
+  frame.fader:Play()
+end
+
+function core:CreateFaderAnimation(frame)
+  if frame.fader then
+    return
+  end
+  local animFrame = CreateFrame("Frame", nil, frame)
+  animFrame.__owner = frame
+  frame.fader = animFrame:CreateAnimationGroup()
+  frame.fader.__owner = frame
+  frame.fader.__animFrame = animFrame
+  frame.fader.direction = nil
+  frame.fader.setToFinalAlpha = false
+  frame.fader.anim = frame.fader:CreateAnimation("Alpha")
+  frame.fader:HookScript("OnFinished", FaderOnFinished)
+  frame.fader:HookScript("OnUpdate", FaderOnUpdate)
+end
+
+local function fadeIn(frame)
+  core:StartFadeIn(frame)
+end
+
+local function fadeOut(frame)
+  core:StartFadeOut(frame)
+end
+
+function core:CreateFrameFader(frame, faderConfig)
+  if frame.faderConfig then
+    return
+  end
+  frame.faderConfig = faderConfig
+  core:CreateFaderAnimation(frame)
+  frame:HookScript("OnShow", fadeIn)
+  frame:HookScript("OnHide", fadeOut)
+end
