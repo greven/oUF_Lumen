@@ -124,9 +124,9 @@ local createStyle = function(self)
   end
 
   -- Quest Icon
-  local QuestIcon = core:createFontstring(self, font, 26, "THINOUTLINE")
-  QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 5, -2)
-  QuestIcon:SetText("!")
+  local QuestIcon = core:createFontstring(self.Health, m.fonts.symbols, 18, "THINOUTLINE")
+  QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 8, 0)
+  QuestIcon:SetText("")
   QuestIcon:SetTextColor(238 / 255, 217 / 255, 43 / 255)
   self.QuestIndicator = QuestIcon
 
