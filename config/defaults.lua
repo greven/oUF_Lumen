@@ -120,6 +120,7 @@ cfg.units = {
         show = true
       }
     },
+    visibility = "[indoors][flying] hide; show",
     -- visibility = "[combat][mod][@target,exists][@mouseover,harm][vehicleui][group][channeling] show; hide",
     fader = {
       fadeInAlpha = 1,
