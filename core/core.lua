@@ -169,16 +169,6 @@ function core:createPowerString(self, font, size, outline, x, y, point)
   self:Tag(self.Power.value, "[lum:powervalue]")
 end
 
--- Create Border
-function core:createBorder(self, frame, e_size, f_level, texture)
-  local border = {edgeFile = texture, edgeSize = e_size}
-  frame:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
-  frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
-  frame:SetBackdrop(border)
-  frame:SetFrameLevel(f_level)
-  frame:Hide()
-end
-
 -- Create Glow Border
 function core:setglowBorder(self)
   local glow = CreateFrame("Frame", nil, self, "BackdropTemplate")

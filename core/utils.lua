@@ -20,6 +20,16 @@ function core:toHex(r, g, b)
   end
 end
 
+-- Create Border
+function core:createBorder(self, frame, e_size, f_level, texture)
+  local border = {edgeFile = texture, edgeSize = e_size}
+  frame:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
+  frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
+  frame:SetBackdrop(border)
+  frame:SetFrameLevel(f_level)
+  frame:Hide()
+end
+
 -- Set the Backdrop
 function core:setBackdrop(frame, inset_l, inset_r, inset_t, inset_b)
   if not frame.Backdrop then
@@ -52,8 +62,8 @@ function core:setBackdrop(frame, inset_l, inset_r, inset_t, inset_b)
 end
 
 -- Fontstring Function
-function core:createFontstring(frame, font, size, outline, layer)
-  local fs = frame:CreateFontString(nil, layer or "OVERLAY")
+function core:createFontstring(frame, font, size, outline, layer, sublayer, inheritsFrom)
+  local fs = frame:CreateFontString(nil, layer or "OVERLAY", sublayer or 0, inheritsFrom or nil)
   fs:SetFont(font, size, outline)
   fs:SetShadowColor(0, 0, 0, 1)
   fs:SetShadowOffset(1, -1)

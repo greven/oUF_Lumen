@@ -57,6 +57,10 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
   if max then
     local LastBar = element[max]
     local r, g, b = unpack(LastBarColor[core.playerClass])
+
+    if not LastBar then
+      return
+    end
     LastBar:SetStatusBarColor(r, g, b)
     LastBar.bg:SetColorTexture(r * 0.2, g * 0.2, b * 0.2)
   end
@@ -98,9 +102,9 @@ local function CreateClassPower(self)
 
   for index = 1, 10 do
     local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self, "BackdropTemplate")
-    Bar:SetHeight(2)
+    Bar:SetHeight(cfg.frames.main.classPower.height)
     Bar:SetStatusBarTexture(m.textures.status_texture)
-    core:setBackdrop(Bar, 2, 2, 2, 2)
+    core:setBackdrop(Bar, 1.5, 1.5, 1.5, 1.5)
 
     if (index > 1) then
       Bar:SetPoint("LEFT", ClassPower[index - 1], "RIGHT", 6, 0)
@@ -360,7 +364,7 @@ end
 local function CreatePowerPrediction(self)
   local mainBar = CreateFrame("StatusBar", nil, self.Power)
   mainBar:SetStatusBarTexture(m.textures.status_texture)
-  mainBar:SetStatusBarColor(1, 1, 1, 0.5)
+  mainBar:SetStatusBarColor(0.4, 0.8, 1, 0.7)
   mainBar:SetReverseFill(true)
   mainBar:SetPoint("TOP")
   mainBar:SetPoint("BOTTOM")
@@ -497,6 +501,7 @@ local createStyle = function(self)
     core:createNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
     self:Tag(self.Name, "[lum:level]  [lum:name]")
   end
+
   core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
   self:Tag(self.Health.value, "[lum:hpvalue]")
   core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")

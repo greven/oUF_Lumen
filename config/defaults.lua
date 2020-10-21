@@ -21,7 +21,7 @@ cfg.healingSpecs = {
 
 cfg.colors = {
   backdrop = {r = 0, g = 0, b = 0, a = 1}, -- Backdrop Color (Some frames might not be affected)
-  health = {0.3, 0.3, 0.3, 1}, -- Fallback color
+  health = {0.2, 0.2, 0.2, 1}, -- Fallback color
   inverted = {0.1, 0.1, 0.1, 1} -- Inverted Color
 }
 
@@ -45,10 +45,13 @@ cfg.frames = {
       margin = 2 -- Spacing between HP and Power Bars
     },
     power = {
-      height = 1.5, -- Height of the Power Bar
+      height = 2, -- Height of the Power Bar
       text = {
         hideMax = true
       }
+    },
+    classPower = {
+      height = 2
     }
   },
   secondary = {
@@ -81,9 +84,9 @@ cfg.units = {
     show = true,
     width = cfg.frames.main.width,
     height = cfg.frames.main.height,
-    pos = {a1 = "LEFT", a2 = "CENTER", af = "UIParent", x = -322, y = -362},
+    pos = {a1 = "LEFT", a2 = "CENTER", af = "UIParent", x = -322, y = -322},
     health = {
-      classColored = true,
+      classColored = false,
       gradientColored = true,
       classColoredText = false,
       reactionColored = false,
@@ -99,17 +102,17 @@ cfg.units = {
       show = true
     },
     altpower = {
-      height = 2
+      height = 3
     },
     castbar = {
       enable = true,
-      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height + 2, y = -96},
+      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height + 2, y = -135},
       color = {5 / 255, 107 / 255, 246 / 255},
       width = cfg.frames.main.width * 2 + cfg.frames.main.margin - cfg.frames.main.height / 2 + 6,
       height = cfg.frames.main.height,
       latency = {
         show = true,
-        color = {1, 0, 0, 0.4}
+        color = {1, 0, 0, 0.5}
       }
     },
     auras = {
@@ -337,6 +340,12 @@ cfg.units = {
     width = 120,
     height = 8,
     pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0},
+    power = {
+      height = 4,
+      classColored = false,
+      frequentUpdates = true,
+      smooth = true
+    },
     classpower = true,
     debuffs = true,
     castbar = {

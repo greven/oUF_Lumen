@@ -16,6 +16,12 @@ local font = m.fonts.font
 -- > HEAL PREDICTION
 -- -----------------------------------
 
+-- myBar          - A `StatusBar` used to represent incoming heals from the player.
+-- otherBar       - A `StatusBar` used to represent incoming heals from others.
+-- absorbBar      - A `StatusBar` used to represent damage absorbs.
+-- healAbsorbBar  - A `StatusBar` used to represent heal absorbs.
+-- overAbsorb     - A `Texture` used to signify that the amount of damage absorb is greater than the unit's missing health.
+-- overHealAbsorb - A `Texture` used to signify that the amount of heal absorb is greater than the unit's current health.
 function CreateHealPrediction(self)
 	local myBar = CreateFrame("StatusBar", nil, self.Health)
 	myBar:SetPoint("TOP")
@@ -39,7 +45,7 @@ function CreateHealPrediction(self)
 	absorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
 	absorbBar:SetWidth(self.cfg.width)
 	absorbBar:SetStatusBarTexture(m.textures.status_texture)
-	absorbBar:SetStatusBarColor(180 / 255, 255 / 255, 205 / 255, .35)
+	absorbBar:SetStatusBarColor(18053 / 255, 255 / 255, 205 / 255, .35)
 
 	local healAbsorbBar = CreateFrame("StatusBar", nil, self.Health)
 	healAbsorbBar:SetPoint("TOP")
@@ -55,7 +61,7 @@ function CreateHealPrediction(self)
 		otherBar = otherBar,
 		absorbBar = absorbBar,
 		healAbsorbBar = healAbsorbBar,
-		maxOverflow = 1.00
+		maxOverflow = 1
 	}
 end
 
@@ -132,7 +138,7 @@ function lum:globalStyle(self, type)
 	self.Power.bg = self.Power:CreateTexture(nil, "BACKGROUND")
 	self.Power.bg:SetAllPoints(self.Power)
 	self.Power.bg:SetTexture(m.textures.bg_texture)
-	self.Power.bg:SetAlpha(0.3)
+	self.Power.bg:SetAlpha(0.2)
 
 	-- Colors
 	if self.cfg.health.classColored then

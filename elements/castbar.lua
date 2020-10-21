@@ -73,11 +73,11 @@ function core:CreateCastbar(self)
   Castbar:SetFrameStrata("HIGH")
   Castbar:SetToplevel(true)
 
-  local Background = Castbar:CreateTexture(nil, "BORDER")
-  Background:SetAllPoints()
-  Background:SetAlpha(0.2)
+  local Background = Castbar:CreateTexture(nil, "BACKGROUND")
+  Background:SetAllPoints(Castbar)
   Background:SetTexture(m.textures.bg_texture)
-  Background:SetColorTexture(0.2, 0.2, 0.2)
+  Background:SetColorTexture(.1, .1, .1)
+  Background:SetAlpha(0.4)
 
   local Text = Castbar:CreateFontString(nil, "OVERLAY")
   Text:SetTextColor(1, 1, 1)
@@ -202,12 +202,12 @@ function core:CreateCastbar(self)
   core:CreateFaderAnimation(Castbar)
   Castbar.faderConfig = cfg.elements.castbar.fader
 
-  Castbar.bg = Background
   Castbar.Text = Text
   Castbar.Time = Time
   Castbar.Icon = Icon
-  Castbar.SafeZone = SafeZone
   -- Castbar.Shield = Shield
+  Castbar.SafeZone = SafeZone
+  Castbar.bg = Background
   self.Castbar = Castbar -- register with oUF
 end
 
