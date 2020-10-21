@@ -184,6 +184,7 @@ filters.list = {
   },
   PET = {
     -- Buffs
+    [GetSpellInfo(63560) or "Dark Transformation"] = true,
     [GetSpellInfo(193396) or "Demonic Empowerment"] = true,
     [GetSpellInfo(136) or "Mend Pet"] = true
   }

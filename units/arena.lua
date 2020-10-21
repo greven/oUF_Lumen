@@ -52,7 +52,7 @@ local createStyle = function(self)
   core:CreateCastbar(self)
 
   -- Heal Prediction
-  CreateHealPrediction(self)
+  lum:CreateHealPrediction(self)
 end
 
 -- -----------------------------------

@@ -176,7 +176,7 @@ local createStyle = function(self)
   self.ReadyCheckIndicator = ReadyCheck
 
   -- Heal Prediction
-  CreateHealPrediction(self)
+  lum:CreateHealPrediction(self)
 
   -- Health warning border
   core:CreateHPBorder(self)

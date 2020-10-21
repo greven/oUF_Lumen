@@ -45,7 +45,7 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Heal Prediction
-  CreateHealPrediction(self)
+  lum:CreateHealPrediction(self)
 end
 
 -- -----------------------------------

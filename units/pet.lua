@@ -82,7 +82,7 @@ local createStyle = function(self)
   self.Buffs = buffs
 
   -- Heal Prediction
-  CreateHealPrediction(self)
+  lum:CreateHealPrediction(self)
 end
 
 -- -----------------------------------

@@ -137,7 +137,7 @@ local createStyle = function(self)
   self.RaidTargetIndicator = RaidIcon
 
   -- Heal Prediction
-  CreateHealPrediction(self)
+  lum:CreateHealPrediction(self)
 
   -- BarTimers Auras
   local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)

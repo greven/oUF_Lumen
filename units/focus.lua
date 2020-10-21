@@ -50,7 +50,7 @@ local createStyle = function(self)
   end
 
   -- Heal Prediction
-  CreateHealPrediction(self)
+  lum:CreateHealPrediction(self)
 end
 
 -- -----------------------------------

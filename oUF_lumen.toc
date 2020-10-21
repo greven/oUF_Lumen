@@ -14,7 +14,9 @@
 embeds\_embeds.xml
 media\media.lua
 config\_config.xml
-core\_core.xml
-elements\_elements.xml
+core.lua
+tags.lua
+functions.lua
 oUF_Lumen.lua
+elements\_elements.xml
 units\_units.xml
