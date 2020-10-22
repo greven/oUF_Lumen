@@ -2,7 +2,7 @@ general:
   ☐ Add scale back to frames (player, party, target, etc)
 
 party:
-  ☐ Health is showing as depleted when 100% @bug
+  ✔ Health is showing as depleted when 100% @bug @done(20-10-22 22:01)
   ☐ Finish the party frames
     ☐ Add debuffs
     ☐ Add buffs?

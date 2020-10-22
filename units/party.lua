@@ -122,6 +122,7 @@ local createStyle = function(self)
   lum:sharedStyle(self, "secondary")
 
   -- Health & Power
+  self.Health.colorClass = false
   self.Health.PostUpdate = PostUpdateHealth
   self.Power.PostUpdate = PostUpdatePower
 
