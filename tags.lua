@@ -27,16 +27,15 @@ tags["lum:level"] = function(unit)
 end
 events["lum:level"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
 
--- Unit smart level with color
+-- Unit smart level with color and Elite classification
 tags["lum:levelplus"] = function(unit)
-  local c = UnitClassification(unit)
   local l = UnitLevel(unit)
   local d = GetQuestDifficultyColor(l)
 
   if l <= 0 then
     l = "??"
   end
-  return string.format("|cff%02x%02x%02x%s|r", d.r * 255, d.g * 255, d.b * 255, l)
+  return core:toHex(d.r, d.g, d.b) .. l .. "|r"
 end
 events["lum:levelplus"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
 
@@ -61,13 +60,13 @@ events["lum:classification"] = "UNIT_CLASSIFICATION_CHANGED"
 tags["lum:classificationshort"] = function(unit)
   local c = UnitClassification(unit)
   if (c == "rare") then
-    return "|cff008ff7R|r"
+    return "|cff008ff7r|r"
   elseif (c == "rareelite") then
-    return "|cff008ff7R+|r"
+    return "|cff008ff7r+|r"
   elseif (c == "elite") then
-    return "|cffffe453E|r"
+    return "|cffffe453+|r"
   elseif (c == "worldboss") then
-    return "|cfff03a4cB|r"
+    return "|cfff03a4cb|r"
   elseif (c == "minus") then
     return ""
   end

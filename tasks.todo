@@ -14,5 +14,6 @@ raid:
   ☐ Add corner indicators (example healers: DoTs, etc, debuffs, etc, make it configurable)
   ☐ Add PhaseIndicator
 
-personal resource display:
-  ☐ skin the element
+nameplates:
+  ☐ tweak castbar
+    ☐ Icon backdrop border not showing

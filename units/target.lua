@@ -88,7 +88,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self, "main")
+  lum:sharedStyle(self, "main")
 
   -- Texts
   if self.cfg.name.show then
@@ -109,44 +109,31 @@ local createStyle = function(self)
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
 
-  -- Buffs
-  local buffs = auras:CreateAura(self, 8, 1, cfg.frames.secondary.height + 4, 2)
-  buffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 2)
-  buffs.initialAnchor = "BOTTOMLEFT"
-  buffs["growth-x"] = "RIGHT"
-  buffs.showStealableBuffs = true
-  buffs.PostUpdateIcon = PostUpdateIcon
-  self.Buffs = buffs
+  lum:CreateCastbar(self)
+  lum:CreateHealPrediction(self)
+  lum:CreateTargetIconIndicators(self)
 
-  -- Castbar
-  if self.cfg.castbar.enable then
-    core:CreateCastbar(self)
+  -- Buffs
+  if self.cfg.auras.buffs.show then
+    local buffs = auras:CreateAura(self, 8, 1, cfg.frames.secondary.height + 4, 2)
+    buffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 2)
+    buffs.initialAnchor = "BOTTOMLEFT"
+    buffs["growth-x"] = "RIGHT"
+    buffs.showStealableBuffs = true
+    buffs.PostUpdateIcon = PostUpdateIcon
+    self.Buffs = buffs
   end
 
-  -- Quest Icon
-  local QuestIcon = core:createFontstring(self.Health, m.fonts.symbols, 18, "THINOUTLINE")
-  QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 8, 0)
-  QuestIcon:SetText("")
-  QuestIcon:SetTextColor(238 / 255, 217 / 255, 43 / 255)
-  self.QuestIndicator = QuestIcon
-
-  -- Raid Icons
-  local RaidIcon = self:CreateTexture(nil, "OVERLAY")
-  RaidIcon:SetPoint("LEFT", self, "RIGHT", 8, 0)
-  RaidIcon:SetSize(20, 20)
-  self.RaidTargetIndicator = RaidIcon
-
-  -- Heal Prediction
-  lum:CreateHealPrediction(self)
-
   -- BarTimers Auras
-  local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
-  barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
-  barTimers.initialAnchor = "BOTTOMLEFT"
-  barTimers["growth-y"] = "UP"
-  barTimers.CustomFilter = TargetCustomFilter
-  barTimers.PostUpdateIcon = PostUpdateBarTimer
-  self.Debuffs = barTimers
+  if self.cfg.auras.barTimers.show then
+    local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
+    barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
+    barTimers.initialAnchor = "BOTTOMLEFT"
+    barTimers["growth-y"] = "UP"
+    barTimers.CustomFilter = TargetCustomFilter
+    barTimers.PostUpdateIcon = PostUpdateBarTimer
+    self.Debuffs = barTimers
+  end
 end
 
 -- -----------------------------------

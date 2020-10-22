@@ -4,19 +4,9 @@ local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 
 local font = m.fonts.font
 
-local _G = _G
-
 -- ------------------------------------------------------------------------
 -- > CASTBARS
 -- ------------------------------------------------------------------------
-
-local function resetAttributes(self)
-  self.castID = nil
-  self.casting = nil
-  self.channeling = nil
-  self.notInterruptible = nil
-  self.spellID = nil
-end
 
 local CheckForSpellInterrupt = function(self, unit)
   local initialColor = cfg.units[unit].castbar.color
@@ -66,7 +56,13 @@ local OnPostCastInterruptible = function(self, unit)
 end
 
 -- Castbar generator
-function core:CreateCastbar(self)
+function lum:CreateCastbar(self)
+  local unit = self.mystyle
+
+  if not unit and not cfg.units[unit].castbar.enabled then
+    return
+  end
+
   local Castbar = CreateFrame("StatusBar", nil, self)
   Castbar:SetStatusBarTexture(m.textures.status_texture)
   Castbar:GetStatusBarTexture():SetHorizTile(false)
@@ -103,7 +99,7 @@ function core:CreateCastbar(self)
   Castbar.Max:SetFont(font, cfg.fontsize - 2, "THINOUTLINE")
   Castbar.Max:SetPoint("RIGHT", Time, "LEFT", 0, 0)
 
-  if (self.mystyle == "player") then
+  if (unit == "player") then
     core:setBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
     Castbar:SetWidth(cfg.units.player.castbar.width - cfg.units.player.castbar.height + 6)
@@ -133,7 +129,7 @@ function core:CreateCastbar(self)
       SafeZone:SetTexture(m.textures.status_texture)
       SafeZone:SetVertexColor(unpack(cfg.units.player.castbar.latency.color))
     end
-  elseif (self.mystyle == "target") then
+  elseif (unit == "target") then
     core:setBackdrop(Castbar, cfg.units.target.castbar.height + 4, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.target.castbar.color))
     Castbar:SetWidth(cfg.units.target.castbar.width - cfg.units.target.castbar.height + 6)
@@ -150,7 +146,7 @@ function core:CreateCastbar(self)
     Icon:SetHeight(cfg.units.target.castbar.height)
     Icon:SetWidth(cfg.units.target.castbar.height)
     Icon:SetPoint("LEFT", Castbar, -(cfg.units.target.castbar.height + 2), 0)
-  elseif (self.mystyle == "focus") then
+  elseif (unit == "focus") then
     core:setBackdrop(Castbar, cfg.units.focus.castbar.height + 4, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.focus.castbar.color))
     Castbar:SetWidth(cfg.units.focus.castbar.width - cfg.units.focus.castbar.height + 6)
@@ -167,7 +163,7 @@ function core:CreateCastbar(self)
     Icon:SetHeight(cfg.units.focus.castbar.height)
     Icon:SetWidth(cfg.units.focus.castbar.height)
     Icon:SetPoint("LEFT", Castbar, -(cfg.units.focus.castbar.height + 2), 0)
-  elseif (self.mystyle == "boss") then
+  elseif (unit == "boss") then
     core:setBackdrop(Castbar, 2, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.boss.castbar.color))
     Castbar:SetWidth(cfg.units.boss.castbar.width - cfg.units.boss.castbar.height + 6)
@@ -209,67 +205,4 @@ function core:CreateCastbar(self)
   Castbar.SafeZone = SafeZone
   Castbar.bg = Background
   self.Castbar = Castbar -- register with oUF
-end
-
--- -----------------------------------------
--- > MIRROR BARS (Underwater Breath, etc.)
--- -----------------------------------------
-
-local function MirrorTimer_OnUpdate(frame, elapsed)
-  if frame.paused then
-    return
-  end
-  if frame.timeSinceUpdate >= 0.3 then
-    local minutes = frame.value / 60
-    local seconds = frame.value % 60
-
-    if frame.value > 0 then
-      frame.TimerText:SetFormattedText("%d:%02d", minutes, seconds)
-    else
-      frame.TimerText:SetText("0:00")
-    end
-
-    frame.timeSinceUpdate = 0
-  else
-    frame.timeSinceUpdate = frame.timeSinceUpdate + elapsed
-  end
-end
-
-function core:MirrorBars()
-  for i = 1, _G.MIRRORTIMER_NUMTIMERS do
-    local mirrorTimer = _G["MirrorTimer" .. i]
-    local statusBar = _G["MirrorTimer" .. i .. "StatusBar"]
-    local bg = select(1, mirrorTimer:GetRegions())
-    local border = _G["MirrorTimer" .. i .. "Border"]
-    local text = _G["MirrorTimer" .. i .. "Text"]
-
-    mirrorTimer:SetParent(UIParent)
-    mirrorTimer:SetHeight(cfg.elements.mirrorTimers.height)
-    mirrorTimer:SetWidth(cfg.elements.mirrorTimers.width)
-
-    border:Hide()
-
-    statusBar:SetStatusBarTexture(m.textures.status_texture)
-    statusBar:SetAllPoints(mirrorTimer)
-    core:setBackdrop(statusBar, 2, 2, 2, 2)
-
-    bg = mirrorTimer:CreateTexture(nil, "BORDER")
-    bg:SetAllPoints()
-    bg:SetAlpha(0.1)
-    bg:SetTexture(m.textures.bg_texture)
-    bg:SetColorTexture(0.2, 0.2, 0.2)
-
-    text:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
-    text:ClearAllPoints()
-    text:SetPoint("LEFT", statusBar, 4, 0)
-    mirrorTimer.label = text
-
-    local Timer = mirrorTimer:CreateFontString(nil, "OVERLAY")
-    Timer:SetFont(m.fonts.font, cfg.fontsize, "THINOUTLINE")
-    Timer:SetPoint("RIGHT", statusBar, "RIGHT", -4, 0)
-    mirrorTimer.TimerText = Timer
-
-    mirrorTimer.timeSinceUpdate = 0.3 -- Make sure timer value updates right away on first show
-    mirrorTimer:HookScript("OnUpdate", MirrorTimer_OnUpdate)
-  end
 end

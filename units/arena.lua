@@ -33,7 +33,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self, "secondary")
+  lum:sharedStyle(self, "secondary")
 
   self:SetSize(self.cfg.width, self.cfg.height)
 
@@ -49,7 +49,7 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Castbar
-  core:CreateCastbar(self)
+  lum:CreateCastbar(self)
 
   -- Heal Prediction
   lum:CreateHealPrediction(self)

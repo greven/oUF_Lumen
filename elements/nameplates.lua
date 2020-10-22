@@ -189,9 +189,8 @@ local function CreateCastbar(self)
   local Background = Castbar:CreateTexture(nil, "BORDER")
   Background:SetAllPoints(Castbar)
   Background:SetTexture(m.textures.bg_texture)
-  -- Background:SetColorTexture(0.2, 0.2, 0.2)
-  -- Background:SetColorTexture(1, 0, 0)
-  Background:SetAlpha(1)
+  Background:SetColorTexture(0.2, 0.2, 0.2)
+  Background:SetAlpha(0.3)
 
   local Text = Castbar:CreateFontString(nil, "OVERLAY")
   Text:SetTextColor(4 / 5, 4 / 5, 4 / 5)
@@ -325,7 +324,7 @@ local PostUpdatePlates = function(self, event, unit)
 
   if not self.isPlayer then
     core:createNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 5, "CENTER", self.cfg.width - 4)
-    self:Tag(self.Name, "[lum:levelplus] [lum:name]")
+    self:Tag(self.Name, "[lum:levelplus][lum:classificationshort] [lum:name]")
   end
 end
 
@@ -432,7 +431,7 @@ local createStyle = function(self, unit)
   end
 end
 
--- Hide default mana bars spawning
+-- Temporary fix: Hide default mana bars spawning
 hooksecurefunc(
   _G.ClassNameplateManaBarFrame,
   "Show",

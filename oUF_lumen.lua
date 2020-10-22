@@ -30,8 +30,7 @@ local OnLeave = function(self)
 	UnitFrame_OnLeave(self)
 end
 
--- The Shared Style Function
-function lum:globalStyle(self, type)
+function lum:sharedStyle(self, type)
 	if (self.mystyle ~= "party" and self.mystyle ~= "raid" and self.mystyle ~= "boss" and self.mystyle ~= "arena") then
 		self:SetSize(self.cfg.width, self.cfg.height)
 		self:SetPoint(self.cfg.pos.a1, self.cfg.pos.af, self.cfg.pos.a2, self.cfg.pos.x, self.cfg.pos.y)
@@ -102,9 +101,6 @@ function lum:globalStyle(self, type)
 	-- Smooth Update
 	self.Health.Smooth = self.cfg.health.smooth
 	self.Power.Smooth = self.cfg.power.smooth
-
-	-- Mirror bars
-	core:MirrorBars()
 
 	-- Drop Shadow
 	if cfg.frames.shadow.show then

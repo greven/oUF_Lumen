@@ -119,7 +119,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self, "secondary")
+  lum:sharedStyle(self, "secondary")
 
   -- Health & Power
   self.Health.PostUpdate = PostUpdateHealth

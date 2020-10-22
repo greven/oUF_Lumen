@@ -374,7 +374,7 @@ cfg.units = {
     castbar = {
       enable = true,
       color = {5 / 255, 107 / 255, 246 / 255},
-      height = 2
+      height = 3
     },
     selectedColor = {255 / 255, 25 / 255, 25 / 255, 0.8},
     glowColor = {50 / 255, 240 / 255, 210 / 255, 0.7},

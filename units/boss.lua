@@ -45,7 +45,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self, "secondary")
+  lum:sharedStyle(self, "secondary")
 
   self:SetSize(self.cfg.width, self.cfg.height)
 
@@ -82,7 +82,7 @@ local createStyle = function(self)
 
   -- Castbar
   if self.cfg.castbar.enable then
-    core:CreateCastbar(self)
+    lum:CreateCastbar(self)
   end
 
   -- Raid Icons

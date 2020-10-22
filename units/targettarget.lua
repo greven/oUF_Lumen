@@ -33,7 +33,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:globalStyle(self, "secondary")
+  lum:sharedStyle(self, "secondary")
 
   -- Texts
   core:createNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 4)
