@@ -12,7 +12,6 @@
 ## X-WoWI-ID: 16885
 
 embeds\_embeds.xml
-media\media.lua
 config\_config.xml
 core.lua
 tags.lua
