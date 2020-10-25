@@ -1,7 +1,6 @@
 local _, ns = ...
 
-local auras = ns.auras
-local core, cfg, m, oUF = ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 
 local max = max
 
@@ -9,7 +8,7 @@ local max = max
 -- > BARTIME AURAS RELATED FUNCTIONS
 -- ------------------------------------------------------------------------
 
-function auras:BarTimer_OnUpdate(icon, elapsed)
+function lum:BarTimer_OnUpdate(icon, elapsed)
 	if icon.timeLeft then
 		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
 		icon.bar:SetValue(icon.timeLeft) -- update the statusbar
@@ -89,7 +88,7 @@ local PostCreateBar = function(Auras, button)
 	button.count:SetPoint("TOPRIGHT", button, 3, 3)
 end
 
-function auras:CreateBarTimer(self, num, rows, size, spacing)
+function lum:CreateBarTimer(self, num, rows, size, spacing)
 	local auras = CreateFrame("Frame", nil, self)
 	auras:SetSize((num * (size + 9)) / rows, (size + 9) * rows)
 	auras.num = num

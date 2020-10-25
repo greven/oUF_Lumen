@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local cfg, oUF = ns.cfg, ns.oUF
+local cfg, filters, oUF = ns.cfg, ns.filters, ns.oUF
 
 -- ------------------------------------------------------------------------
 -- > Your configuration here (will override the defaults.lua settings)
@@ -39,5 +39,17 @@ local cfg, oUF = ns.cfg, ns.oUF
 -- }
 -- cfg.units.pet.width = cfg.frames.secondary.width
 -- cfg.units.pet.pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", af = "oUF_LumenPlayer", x = 0, y = cfg.frames.secondary.margin},
+
+-- AuraBars Filters
+-- If you want to add spells not on the AuraBars filters, copy the relevant class filters table and add or remove what you want. Example for Warrior
+
+-- filters.WARRIOR = {
+--   buffs = {
+--     [184362 or "Enraged"] = true,
+--     [184364 or "Enraged Regeneration"] = true,
+--     [260708 or "Sweeping Strikes"] = true
+--   },
+--   debuffs = {}
+-- }
 
 -- ------------------------------------------------------------------------

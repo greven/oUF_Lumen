@@ -1,7 +1,7 @@
 local _, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local filters = ns.filters
 
 local font = m.fonts.font
 
@@ -32,7 +32,7 @@ local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebu
   icon:SetScript(
     "OnUpdate",
     function(self, elapsed)
-      auras:AuraTimer_OnUpdate(self, elapsed)
+      lum:AuraTimer_OnUpdate(self, elapsed)
     end
   )
 end
@@ -45,7 +45,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:sharedStyle(self, "secondary")
+  lum:SharedStyle(self, "secondary")
 
   self:SetSize(self.cfg.width, self.cfg.height)
 
@@ -61,7 +61,7 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Buffs
-  local buffs = auras:CreateAura(self, 4, 1, self.cfg.height + 4, 2)
+  local buffs = lum:CreateAura(self, 4, 1, self.cfg.height + 4, 2)
   buffs:SetPoint("TOPRIGHT", self, "LEFT", -6, self.cfg.height - 3)
   buffs.initialAnchor = "BOTTOMRIGHT"
   buffs["growth-x"] = "LEFT"
@@ -70,7 +70,7 @@ local createStyle = function(self)
   self.Buffs = buffs
 
   -- Debuffs
-  local debuffs = auras:CreateAura(self, 4, 1, self.cfg.height + 4, 2)
+  local debuffs = lum:CreateAura(self, 4, 1, self.cfg.height + 4, 2)
   debuffs:SetPoint("TOPLEFT", self, "RIGHT", 6, self.cfg.height - 3)
   debuffs.initialAnchor = "BOTTOMLEFT"
   debuffs["growth-x"] = "RIGHT"

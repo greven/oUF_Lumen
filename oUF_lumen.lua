@@ -30,7 +30,7 @@ local OnLeave = function(self)
 	UnitFrame_OnLeave(self)
 end
 
-function lum:sharedStyle(self, type)
+function lum:SharedStyle(self, type)
 	if (self.mystyle ~= "party" and self.mystyle ~= "raid" and self.mystyle ~= "boss" and self.mystyle ~= "arena") then
 		self:SetSize(self.cfg.width, self.cfg.height)
 		self:SetPoint(self.cfg.pos.a1, self.cfg.pos.af, self.cfg.pos.a2, self.cfg.pos.x, self.cfg.pos.y)

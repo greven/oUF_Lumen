@@ -1,9 +1,6 @@
 local _, ns = ...
 
-local auras = CreateFrame("Frame")
-ns.auras = auras
-
-local core, cfg, m, oUF = ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
 
 local max = max
 
@@ -11,7 +8,7 @@ local max = max
 -- > AURAS RELATED FUNCTIONS
 -- ------------------------------------------------------------------------
 
-function auras:AuraTimer_OnUpdate(icon, elapsed)
+function lum:AuraTimer_OnUpdate(icon, elapsed)
 	if icon.timeLeft then
 		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
 
@@ -29,7 +26,7 @@ function auras:AuraTimer_OnUpdate(icon, elapsed)
 	end
 end
 
-local PostCreateIcon = function(Auras, button)
+local function PostCreateIcon(Auras, button)
 	local count = button.count
 	count:ClearAllPoints()
 	count:SetFont(m.fonts.font, 12, "OUTLINE")
@@ -52,7 +49,7 @@ local PostCreateIcon = function(Auras, button)
 	button.time:SetJustifyH("CENTER")
 end
 
-function auras:CreateAura(self, num, rows, size, spacing)
+function lum:CreateAura(self, num, rows, size, spacing)
 	local auras = CreateFrame("Frame", nil, self)
 	auras:SetSize((num * (size + 9)) / rows, (size + 9) * rows)
 	auras.num = num

@@ -1,7 +1,7 @@
 local A, ns = ...
 
-local lum, core, auras, oUF = ns.lum, ns.core, ns.auras, ns.oUF
-local cfg, m, filters = ns.cfg, ns.m, ns.filters
+local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local filters = ns.filters
 
 local font = m.fonts.font
 
@@ -39,14 +39,15 @@ local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebu
   icon:SetScript(
     "OnUpdate",
     function(self, elapsed)
-      auras:AuraTimer_OnUpdate(self, elapsed)
+      lum:AuraTimer_OnUpdate(self, elapsed)
     end
   )
 end
 
 -- Filter Buffs
-local PetBuffsFilter = function(icons, unit, icon, name)
-  if (filters.list.PET[name]) then
+local PetBuffsFilter = function(...)
+  local spellID = select(13, ...)
+  if spellID and filters.PET.buffs[spellID] then
     return true
   end
 end
@@ -59,7 +60,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:sharedStyle(self, "secondary")
+  lum:SharedStyle(self, "secondary")
 
   -- Texts
   lum:CreateNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
@@ -71,7 +72,7 @@ local createStyle = function(self)
   self.Health.PostUpdate = PostUpdateHealth
 
   -- Buffs
-  local buffs = auras:CreateAura(self, 5, 1, cfg.frames.secondary.height + 4, 2)
+  local buffs = lum:CreateAura(self, 5, 1, cfg.frames.secondary.height + 4, 2)
   buffs:SetPoint("BOTTOMLEFT", "oUF_LumenPet", "TOPLEFT", -2, 6)
   buffs.initialAnchor = "BOTTOMLEFT"
   buffs["growth-x"] = "RIGHT"

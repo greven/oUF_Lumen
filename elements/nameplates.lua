@@ -1,7 +1,6 @@
 local _, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local lum, core, cfg, filters, m, oUF = ns.lum, ns.core, ns.cfg, ns.filters, ns.m, ns.oUF
 
 local _G = _G
 local UnitIsPlayer, UnitIsUnit = UnitIsPlayer, UnitIsUnit
@@ -241,7 +240,7 @@ local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebu
   icon:SetScript(
     "OnUpdate",
     function(self, elapsed)
-      auras:AuraTimer_OnUpdate(self, elapsed)
+      lum:AuraTimer_OnUpdate(self, elapsed)
     end
   )
 end
@@ -375,7 +374,7 @@ local createStyle = function(self, unit)
 
   -- Debuffs
   if cfg.units.nameplate.debuffs then
-    local debuffs = auras:CreateAura(self, 6, 1, 18, 1)
+    local debuffs = lum:CreateAura(self, 6, 1, 18, 1)
     debuffs:SetPoint("BOTTOMLEFT", self, "TOPLEFT", 0, 8)
     debuffs.initialAnchor = "BOTTOMLEFT"
     debuffs["growth-x"] = "RIGHT"

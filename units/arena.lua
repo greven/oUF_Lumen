@@ -33,7 +33,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:sharedStyle(self, "secondary")
+  lum:SharedStyle(self, "secondary")
 
   self:SetSize(self.cfg.width, self.cfg.height)
 

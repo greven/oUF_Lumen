@@ -1,7 +1,7 @@
 local A, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-local auras, filters = ns.auras, ns.filters
+local filters = ns.filters
 
 local font = m.fonts.font
 
@@ -39,7 +39,7 @@ local PostUpdateIcon = function(self, unit, icon, index)
   icon:SetScript(
     "OnUpdate",
     function(self, elapsed)
-      auras:AuraTimer_OnUpdate(self, elapsed)
+      lum:AuraTimer_OnUpdate(self, elapsed)
     end
   )
 end
@@ -68,15 +68,17 @@ local PostUpdateBarTimer = function(element, unit, button, index)
   button:SetScript(
     "OnUpdate",
     function(self, elapsed)
-      auras:BarTimer_OnUpdate(self, elapsed)
+      lum:BarTimer_OnUpdate(self, elapsed)
     end
   )
 end
 
 -- Filter Buffs
-local TargetCustomFilter = function(icons, unit, icon, name)
-  if (filters.list[core.playerClass].debuffs[name] and icon.isPlayer) then
-    return true
+local TargetCustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
+  if spellID then
+    if (filters[core.playerClass].debuffs[spellID] and button.isPlayer) then
+      return true
+    end
   end
 end
 
@@ -88,7 +90,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:sharedStyle(self, "main")
+  lum:SharedStyle(self, "main")
 
   -- Texts
   if self.cfg.name.show then
@@ -109,7 +111,7 @@ local createStyle = function(self)
 
   -- Buffs
   if self.cfg.auras.buffs.show then
-    local buffs = auras:CreateAura(self, 8, 1, cfg.frames.secondary.height + 4, 2)
+    local buffs = lum:CreateAura(self, 8, 1, cfg.frames.secondary.height + 4, 2)
     buffs:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, 2)
     buffs.initialAnchor = "BOTTOMLEFT"
     buffs["growth-x"] = "RIGHT"
@@ -120,7 +122,7 @@ local createStyle = function(self)
 
   -- BarTimers Auras
   if self.cfg.auras.barTimers.show then
-    local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
+    local barTimers = lum:CreateBarTimer(self, 12, 12, 24, 2)
     barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
     barTimers.initialAnchor = "BOTTOMLEFT"
     barTimers["growth-y"] = "UP"

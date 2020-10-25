@@ -1,7 +1,7 @@
 local A, ns = ...
 
 local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-local auras, filters, debuffs = ns.auras, ns.filters, ns.debuffs
+local filters, debuffs = ns.filters, ns.debuffs
 
 local _G = _G
 
@@ -75,7 +75,7 @@ local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebu
   icon:SetScript(
     "OnUpdate",
     function(self, elapsed)
-      auras:AuraTimer_OnUpdate(self, elapsed)
+      lum:AuraTimer_OnUpdate(self, elapsed)
     end
   )
 end
@@ -104,23 +104,25 @@ local PostUpdateBarTimer = function(element, unit, button, index)
   button:SetScript(
     "OnUpdate",
     function(self, elapsed)
-      auras:BarTimer_OnUpdate(self, elapsed)
+      lum:BarTimer_OnUpdate(self, elapsed)
     end
   )
 end
 
 -- Filter Buffs
-local PlayerCustomFilter = function(icons, unit, icon, name)
-  local f = filters.list
-  if f["DEFAULT"].buffs[name] or f[core.playerClass].buffs[name] then
-    return true
+local PlayerCustomFilter = function(...)
+  local spellID = select(13, ...)
+  if spellID then
+    if filters["ALL"].buffs[spellID] or filters[core.playerClass].buffs[spellID] then
+      return true
+    end
   end
 end
 
 -- Debuffs Filter (Blacklist)
-local DebuffsCustomFilter = function(icons, unit, icon, name, _, _, _, duration)
-  if name then
-    if debuffs.list[frame][name] or duration == 0 then
+local DebuffsCustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
+  if spellID then
+    if debuffs.list[frame][spellID] or duration == 0 then
       return false
     end
   end
@@ -135,7 +137,7 @@ local createStyle = function(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
-  lum:sharedStyle(self, "main")
+  lum:SharedStyle(self, "main")
 
   -- Text strings
   if self.cfg.name.show then
@@ -167,21 +169,21 @@ local createStyle = function(self)
   lum:CreateArtifactPowerBar(self)
 
   -- Debuffs
-  if self.cfg.auras.debuffs.show then
-    local debuffs = auras:CreateAura(self, 12, 12, cfg.frames.main.height + 4, 4)
-    debuffs:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2)
-    debuffs.initialAnchor = "BOTTOMRIGHT"
-    debuffs["growth-y"] = "UP"
-    debuffs.showDebuffType = true
-    debuffs.CustomFilter = DebuffsCustomFilter
-    debuffs.PostCreateIcon = PostCreateIcon
-    debuffs.PostUpdateIcon = PostUpdateIcon
-    self.Debuffs = debuffs
-  end
+  -- if self.cfg.auras.debuffs.show then
+  --   local debuffs = auras:CreateAura(self, 12, 12, cfg.frames.main.height + 4, 4)
+  --   debuffs:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2)
+  --   debuffs.initialAnchor = "BOTTOMRIGHT"
+  --   debuffs["growth-y"] = "UP"
+  --   debuffs.showDebuffType = true
+  --   debuffs.CustomFilter = DebuffsCustomFilter
+  --   debuffs.PostCreateIcon = PostCreateIcon
+  --   debuffs.PostUpdateIcon = PostUpdateIcon
+  --   self.Debuffs = debuffs
+  -- end
 
   -- BarTimers Auras
   if self.cfg.auras.barTimers.show then
-    local barTimers = auras:CreateBarTimer(self, 12, 12, 24, 2)
+    local barTimers = lum:CreateBarTimer(self, 12, 12, 24, 2)
     barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
     barTimers.initialAnchor = "BOTTOMLEFT"
     barTimers["growth-y"] = "UP"

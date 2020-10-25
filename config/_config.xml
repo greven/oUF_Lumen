@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-	<Script file='colors.lua' />
-	<Script file='defaults.lua' />
-	<Script file='config.lua' />
-	<Script file='filters.lua' />
-	<Script file='debuffs.lua' />
+	<Include file="AuraBars\_load.xml" />
+	<Script file="colors.lua" />
+	<Script file="defaults.lua" />
+	<Script file="config.lua" />
+	<Script file="debuffs.lua" />
 </Ui>

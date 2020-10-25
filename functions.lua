@@ -7,6 +7,24 @@ ns.lum, ns.oUF = lum, oUF
 local font = m.fonts.font
 
 -- -----------------------------------
+-- > Auras
+-- -----------------------------------
+
+function lum:CreateDebuffAuras(self, numAuras)
+  if self.cfg.auras.debuffs.show then
+    local debuffs = lum:CreateAura(self, 12, 12, cfg.frames.main.height + 4, 4)
+    debuffs:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2)
+    debuffs.initialAnchor = "BOTTOMRIGHT"
+    debuffs["growth-y"] = "UP"
+    debuffs.showDebuffType = true
+    debuffs.CustomFilter = DebuffsCustomFilter
+    debuffs.PostCreateIcon = PostCreateIcon
+    debuffs.PostUpdateIcon = PostUpdateIcon
+    self.Debuffs = debuffs
+  end
+end
+
+-- -----------------------------------
 -- > Borders
 -- -----------------------------------
 
