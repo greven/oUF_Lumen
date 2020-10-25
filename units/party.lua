@@ -127,16 +127,14 @@ local createStyle = function(self)
   self.Power.PostUpdate = PostUpdatePower
 
   -- Texts
-  core:createHPString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 8, "LEFT")
+  lum:CreateHealthValueString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 8, "LEFT")
 
-  core:createPartyNameString(self, font, cfg.fontsize)
+  lum:CreatePartyNameString(self, font, cfg.fontsize)
   if self.cfg.health.classColoredText then
     self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [raidcolor][lum:name]")
-  else
-    self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [lum:name]")
   end
 
-  self.classText = core:createFontstring(self.Health, font, cfg.fontsize, "THINOUTLINE")
+  self.classText = core:CreateFontstring(self.Health, font, cfg.fontsize, "THINOUTLINE")
   self.classText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -4, 5)
   self.classText:SetJustifyH("RIGHT")
   self:Tag(self.classText, "[lum:level] [raidcolor][class]")
@@ -162,7 +160,7 @@ local createStyle = function(self)
   self.Debuffs = debuffs
 
   -- Group Role Icon
-  local GroupRoleIndicator = core:CreateGroupRoleIndicator(self)
+  local GroupRoleIndicator = lum:CreateGroupRoleIndicator(self)
   GroupRoleIndicator:SetPoint("LEFT", self, 6, -8)
   GroupRoleIndicator:SetSize(11, 11)
   GroupRoleIndicator:SetAlpha(0.9)
@@ -180,10 +178,10 @@ local createStyle = function(self)
   lum:CreateHealPrediction(self)
 
   -- Health warning border
-  core:CreateHPBorder(self)
+  lum:CreateHealthBorder(self)
 
   -- Threat warning border
-  core:CreateThreatBorder(self)
+  lum:CreateThreatBorder(self)
 
   self.Range = cfg.frames.range
 

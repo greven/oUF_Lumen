@@ -65,7 +65,7 @@ cfg.frames = {
     height = 26, -- Height of the Player and Target Frames
     margin = 226, -- Margin between Player and Target Frames
     health = {
-      margin = 2 -- Spacing between HP and Power Bars
+      margin = 1 -- Spacing between HP and Power Bars
     },
     power = {
       height = 2, -- Height of the Power Bar
@@ -146,8 +146,7 @@ cfg.units = {
         show = true
       }
     },
-    visibility = "[combat][mod] show; [indoors][flying] hide; show",
-    -- visibility = "[combat][mod][@target,exists][@mouseover,harm][vehicleui][group][channeling] show; hide",
+    visibility = "[combat][mod] show; [indoors,resting][flying] hide; show",
     fader = {
       fadeInAlpha = 1,
       fadeInDuration = 0.3,
@@ -347,13 +346,13 @@ cfg.units = {
       smooth = true
     },
     power = {
-      height = 1.5,
+      height = 2,
       classColored = true,
       frequentUpdates = false,
       smooth = true
     },
     showPortraits = true,
-    forceRole = true
+    forceRole = false
   },
   raid = {
     show = true
@@ -379,7 +378,7 @@ cfg.units = {
     selectedColor = {255 / 255, 25 / 255, 25 / 255, 0.8},
     glowColor = {50 / 255, 240 / 255, 210 / 255, 0.7},
     showTargetArrow = false,
-    showGlow = false,
+    showGlow = true,
     showHighlight = false
   }
 }

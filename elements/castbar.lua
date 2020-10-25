@@ -43,7 +43,7 @@ end
 
 local OnPostCastFail = function(self, unit)
   -- Color castbar red when cast fails
-  self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255)
+  self:SetStatusBarColor(182 / 255, 34 / 255, 32 / 255)
   core:StartFadeOut(self)
 
   if self.Max then
@@ -73,7 +73,7 @@ function lum:CreateCastbar(self)
   Background:SetAllPoints(Castbar)
   Background:SetTexture(m.textures.bg_texture)
   Background:SetColorTexture(.1, .1, .1)
-  Background:SetAlpha(0.4)
+  Background:SetAlpha(0.3)
 
   local Text = Castbar:CreateFontString(nil, "OVERLAY")
   Text:SetTextColor(1, 1, 1)
@@ -184,7 +184,7 @@ function lum:CreateCastbar(self)
   end
 
   -- Non Interruptable glow
-  core:setglowBorder(Castbar)
+  lum:SetGlowBorder(Castbar)
   Castbar.Glowborder:SetPoint("TOPLEFT", Castbar, "TOPLEFT", -(Castbar:GetHeight() + 2) - 6, 6)
 
   Castbar.PostCastStart = onPostCastStart

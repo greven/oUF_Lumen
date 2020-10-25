@@ -7,57 +7,70 @@ ns.lum, ns.oUF = lum, oUF
 local font = m.fonts.font
 
 -- -----------------------------------
--- > Heal Prediction
+-- > Borders
 -- -----------------------------------
 
--- myBar          - A `StatusBar` used to represent incoming heals from the player.
--- otherBar       - A `StatusBar` used to represent incoming heals from others.
--- absorbBar      - A `StatusBar` used to represent damage absorbs.
--- healAbsorbBar  - A `StatusBar` used to represent heal absorbs.
--- overAbsorb     - A `Texture` used to signify that the amount of damage absorb is greater than the unit's missing health.
--- overHealAbsorb - A `Texture` used to signify that the amount of heal absorb is greater than the unit's current health.
+-- Create Target Border
+function lum:CreateTargetBorder(self)
+  self.TargetBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  core:createBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+  self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+  self:RegisterEvent("RAID_ROSTER_UPDATE", ChangedTarget)
+end
 
-function lum:CreateHealPrediction(self)
-  local myBar = CreateFrame("StatusBar", nil, self.Health)
-  myBar:SetPoint("TOP")
-  myBar:SetPoint("BOTTOM")
-  myBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  myBar:SetWidth(self.cfg.width)
-  myBar:SetStatusBarTexture(m.textures.status_texture)
-  myBar:SetStatusBarColor(125 / 255, 255 / 255, 50 / 255, .4)
+-- Create Party / Raid health warning status border
+function lum:CreateHealthBorder(self)
+  self.HPborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  core:createBorder(self, self.HPborder, 1, 4, "Interface\\ChatFrame\\ChatFrameBackground")
+  self.HPborder:SetBackdropBorderColor(180 / 255, 255 / 255, 0 / 255, 1)
+end
 
-  local otherBar = CreateFrame("StatusBar", nil, self.Health)
-  otherBar:SetPoint("TOP")
-  otherBar:SetPoint("BOTTOM")
-  otherBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  otherBar:SetWidth(self.cfg.width)
-  otherBar:SetStatusBarTexture(m.textures.status_texture)
-  otherBar:SetStatusBarColor(100 / 255, 235 / 255, 200 / 255, .4)
+local function UpdateThreat(self, event, unit)
+  if (self.unit ~= unit) then
+    return
+  end
 
-  local absorbBar = CreateFrame("StatusBar", nil, self.Health)
-  absorbBar:SetPoint("TOP")
-  absorbBar:SetPoint("BOTTOM")
-  absorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  absorbBar:SetWidth(self.cfg.width)
-  absorbBar:SetStatusBarTexture(m.textures.status_texture)
-  absorbBar:SetStatusBarColor(18053 / 255, 255 / 255, 205 / 255, .35)
+  local status = UnitThreatSituation(unit)
+  unit = unit or self.unit
 
-  local healAbsorbBar = CreateFrame("StatusBar", nil, self.Health)
-  healAbsorbBar:SetPoint("TOP")
-  healAbsorbBar:SetPoint("BOTTOM")
-  healAbsorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  healAbsorbBar:SetWidth(self.cfg.width)
-  healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
-  healAbsorbBar:SetStatusBarColor(183 / 255, 244 / 255, 255 / 255, .35)
+  if status and status > 1 then
+    local r, g, b = GetThreatStatusColor(status)
+    self.ThreatBorder:Show()
+    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 1)
+  else
+    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 0)
+    self.ThreatBorder:Hide()
+  end
+end
 
-  -- Register with oUF
-  self.HealthPrediction = {
-    myBar = myBar,
-    otherBar = otherBar,
-    absorbBar = absorbBar,
-    healAbsorbBar = healAbsorbBar,
-    maxOverflow = 1
-  }
+-- Create Party / Raid Threat Status Border
+function lum:CreateThreatBorder(self)
+  self.ThreatBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  core:createBorder(self, self.ThreatBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+  self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
+  self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+end
+
+-- Create Glow Border
+function lum:SetGlowBorder(self)
+  local glow = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  glow:SetFrameLevel(0)
+  glow:SetPoint("TOPLEFT", self, "TOPLEFT", -6, 6)
+  glow:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 6, -6)
+  glow:SetBackdrop(
+    {
+      bgFile = m.textures.white_square,
+      edgeFile = m.textures.glow_texture,
+      tile = false,
+      tileSize = 16,
+      edgeSize = 4,
+      insets = {left = -4, right = -4, top = -4, bottom = -4}
+    }
+  )
+  glow:SetBackdropColor(0, 0, 0, 0)
+  glow:SetBackdropBorderColor(0, 0, 0, 1)
+
+  self.Glowborder = glow
 end
 
 -- -----------------------------------
@@ -213,6 +226,60 @@ function lum:CreateClassPower(self)
   end
 end
 
+-- -----------------------------------
+-- > Heal Prediction
+-- -----------------------------------
+
+-- myBar          - A `StatusBar` used to represent incoming heals from the player.
+-- otherBar       - A `StatusBar` used to represent incoming heals from others.
+-- absorbBar      - A `StatusBar` used to represent damage absorbs.
+-- healAbsorbBar  - A `StatusBar` used to represent heal absorbs.
+-- overAbsorb     - A `Texture` used to signify that the amount of damage absorb is greater than the unit's missing health.
+-- overHealAbsorb - A `Texture` used to signify that the amount of heal absorb is greater than the unit's current health.
+
+function lum:CreateHealPrediction(self)
+  local myBar = CreateFrame("StatusBar", nil, self.Health)
+  myBar:SetPoint("TOP")
+  myBar:SetPoint("BOTTOM")
+  myBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  myBar:SetWidth(self.cfg.width)
+  myBar:SetStatusBarTexture(m.textures.status_texture)
+  myBar:SetStatusBarColor(125 / 255, 255 / 255, 50 / 255, .4)
+
+  local otherBar = CreateFrame("StatusBar", nil, self.Health)
+  otherBar:SetPoint("TOP")
+  otherBar:SetPoint("BOTTOM")
+  otherBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  otherBar:SetWidth(self.cfg.width)
+  otherBar:SetStatusBarTexture(m.textures.status_texture)
+  otherBar:SetStatusBarColor(100 / 255, 235 / 255, 200 / 255, .4)
+
+  local absorbBar = CreateFrame("StatusBar", nil, self.Health)
+  absorbBar:SetPoint("TOP")
+  absorbBar:SetPoint("BOTTOM")
+  absorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  absorbBar:SetWidth(self.cfg.width)
+  absorbBar:SetStatusBarTexture(m.textures.status_texture)
+  absorbBar:SetStatusBarColor(18053 / 255, 255 / 255, 205 / 255, .35)
+
+  local healAbsorbBar = CreateFrame("StatusBar", nil, self.Health)
+  healAbsorbBar:SetPoint("TOP")
+  healAbsorbBar:SetPoint("BOTTOM")
+  healAbsorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  healAbsorbBar:SetWidth(self.cfg.width)
+  healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
+  healAbsorbBar:SetStatusBarColor(183 / 255, 244 / 255, 255 / 255, .35)
+
+  -- Register with oUF
+  self.HealthPrediction = {
+    myBar = myBar,
+    otherBar = otherBar,
+    absorbBar = absorbBar,
+    healAbsorbBar = healAbsorbBar,
+    maxOverflow = 1
+  }
+end
+
 -- ----------------------------------------
 -- > Additional Power
 -- Power bar for specs like Feral Druid
@@ -250,10 +317,10 @@ function lum:CreateAdditionalPower(self)
   local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")
   bg:SetAllPoints(AdditionalPower)
   bg:SetTexture(m.textures.bg_texture)
-  bg:SetVertexColor(r * 0.3, g * 0.3, b * 0.3)
+  bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
 
   -- Value
-  local PowerValue = core:createFontstring(AdditionalPower, font, cfg.fontsize - 4, "THINOUTLINE")
+  local PowerValue = core:CreateFontstring(AdditionalPower, font, cfg.fontsize - 4, "THINOUTLINE")
   PowerValue:SetPoint("RIGHT", AdditionalPower, -8, 0)
   PowerValue:SetJustifyH("RIGHT")
   self:Tag(PowerValue, "[lum:altpower]")
@@ -362,7 +429,7 @@ function lum:CreateAlternativePower(self)
     AlternativePower:SetWidth(200)
     AlternativePower:SetPoint("CENTER", "UIParent", "CENTER", 0, 350)
 
-    AlternativePower.Text = core:createFontstring(AlternativePower, font, 10, "THINOUTLINE")
+    AlternativePower.Text = core:CreateFontstring(AlternativePower, font, 10, "THINOUTLINE")
     AlternativePower.Text:SetPoint("CENTER", 0, 0)
 
     local AlternativePowerBG = AlternativePower:CreateTexture(nil, "BORDER")
@@ -386,7 +453,7 @@ end
 
 function lum:CreatePlayerIconIndicators(self)
   -- Combat indicator
-  local Combat = core:createFontstring(self, m.fonts.symbols, 18, "THINOUTLINE")
+  local Combat = core:CreateFontstring(self, m.fonts.symbols, 18, "THINOUTLINE")
   Combat:SetPoint("RIGHT", self, "LEFT", -10, 0)
   Combat:SetText("")
   Combat:SetTextColor(255 / 255, 26 / 255, 48 / 255, 0.9)
@@ -394,7 +461,7 @@ function lum:CreatePlayerIconIndicators(self)
 
   -- Resting
   if not core:isPlayerMaxLevel() then
-    local Resting = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
+    local Resting = core:CreateFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
     Resting:SetPoint("CENTER", self.Health, "TOP", 0, 1)
     Resting:SetText("zZz")
     Resting:SetTextColor(255 / 255, 255 / 255, 255 / 255, 0.80)
@@ -404,7 +471,7 @@ end
 
 function lum:CreateTargetIconIndicators(self)
   -- Quest Icon
-  local QuestIcon = core:createFontstring(self.Health, m.fonts.symbols, 18, "THINOUTLINE")
+  local QuestIcon = core:CreateFontstring(self.Health, m.fonts.symbols, 18, "THINOUTLINE")
   QuestIcon:SetPoint("LEFT", self.Health, "RIGHT", 8, 0)
   QuestIcon:SetText("")
   QuestIcon:SetTextColor(238 / 255, 217 / 255, 43 / 255)
@@ -415,6 +482,96 @@ function lum:CreateTargetIconIndicators(self)
   RaidIcon:SetPoint("LEFT", self, "RIGHT", 8, 0)
   RaidIcon:SetSize(20, 20)
   self.RaidTargetIndicator = RaidIcon
+end
+
+-- ------------------------------------------
+-- > Party / Raid
+-- ------------------------------------------
+
+-- Group Role Indicator
+local function UpdateRoleIcon(event)
+  local lfdrole = self.GroupRoleIndicator
+
+  local role = UnitGroupRolesAssigned(self.unit)
+  -- Show roles when testing
+  if role == "NONE" and cfg.units.party.forceRole then
+    local rnd = random(1, 3)
+    role = rnd == 1 and "TANK" or (rnd == 2 and "HEALER" or (rnd == 3 and "DAMAGER"))
+  end
+
+  if UnitIsConnected(self.unit) and role ~= "NONE" then
+    lfdrole:SetTexture(roleIconTextures[role])
+    lfdrole:SetVertexColor(unpack(roleIconColor[role]))
+  else
+    lfdrole:Hide()
+  end
+end
+
+function lum:CreateGroupRoleIndicator(self)
+  local roleIcon = self.Health:CreateTexture(nil, "OVERLAY")
+  roleIcon:SetPoint("LEFT", self, 8, 0)
+  roleIcon:SetSize(16, 16)
+  roleIcon.Override = core.UpdateRoleIcon
+
+  self:RegisterEvent("UNIT_CONNECTION", UpdateRoleIcon)
+  return roleIcon
+end
+
+-- ------------------------------------------
+-- > Strings
+-- ------------------------------------------
+
+-- Name
+function lum:CreateNameString(self, font, size, outline, x, y, point, width)
+  self.Name = core:CreateFontstring(self.Health, font, size, outline)
+  self.Name:SetPoint(point, self.Health, x, y)
+  self.Name:SetJustifyH(point)
+  self.Name:SetWidth(width)
+  self.Name:SetHeight(size)
+  self:Tag(self.Name, "[lum:level]  [lum:name]")
+end
+
+-- Party Name
+function lum:CreatePartyNameString(self, font, size)
+  self.Name = core:CreateFontstring(self.Health, font, size, "THINOUTLINE")
+  self.Name:SetPoint("TOPRIGHT", self, "TOPRIGHT", -4, -5)
+  self.Name:SetJustifyH("RIGHT")
+  self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [lum:name]")
+end
+
+-- Health Value
+function lum:CreateHealthValueString(self, font, size, outline, x, y, point)
+  self.Health.value = core:CreateFontstring(self.Health, font, size, outline)
+  self.Health.value:SetPoint(point, self.Health, x, y)
+  self.Health.value:SetJustifyH(point)
+  self.Health.value:SetTextColor(1, 1, 1)
+  self:Tag(self.Health.value, "[lum:hpvalue]")
+end
+
+-- Health Percent
+function lum:CreateHealthPercentString(self, font, size, outline, x, y, point, layer)
+  self.Health.percent = core:CreateFontstring(self.Health, font, size, outline, layer)
+  self.Health.percent:SetPoint(point, self.Health.value, x, y)
+  self.Health.percent:SetJustifyH("RIGHT")
+  self.Health.percent:SetTextColor(0.5, 0.5, 0.5, 0.5)
+  self.Health.percent:SetShadowColor(0, 0, 0, 0)
+  self:Tag(self.Health.percent, "[lum:hpperc]")
+end
+
+-- Power Value
+function lum:CreatePowerValueString(self, font, size, outline, x, y, point)
+  self.Power.value = core:CreateFontstring(self.Power, font, size, outline)
+  self.Power.value:SetPoint(point, self.Power, x, y)
+  self.Power.value:SetJustifyH(point)
+  self:Tag(self.Power.value, "[lum:powervalue]")
+end
+
+-- Classification
+function lum:CreateClassificationString(self, font, size)
+  local clf = core:CreateFontstring(self, font, size, "THINOUTLINE")
+  clf:SetPoint("LEFT", self, "TOPLEFT", 0, 12)
+  clf:SetTextColor(1, 1, 1, 1)
+  self:Tag(clf, "[lum:classification]")
 end
 
 -- ------------------------------------------

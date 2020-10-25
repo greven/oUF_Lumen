@@ -95,7 +95,7 @@ local function AddTargetIndicators(self)
 
   -- Targeted Arrow
   if self.cfg.showTargetArrow then
-    self.arrow = core:createFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
+    self.arrow = core:CreateFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
     self.arrow:SetPoint("CENTER", self, "CENTER", 0, 62)
     self.arrow:SetText("")
     self.arrow:SetTextColor(unpack(selectedColor))
@@ -103,22 +103,12 @@ local function AddTargetIndicators(self)
 
   -- Targeted Glow
   if self.cfg.showGlow then
-    self.glow = CreateFrame("Frame", nil, self)
-    self.glow:SetFrameLevel(0)
-    self.glow:SetPoint("TOPLEFT", self, "TOPLEFT", -5, 5)
-    self.glow:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 5, -5)
-    self.glow:SetBackdrop(
-      {
-        bgFile = m.textures.white_square,
-        edgeFile = m.textures.glow_texture,
-        tile = false,
-        tileSize = 16,
-        edgeSize = 4,
-        insets = {left = -4, right = -4, top = -4, bottom = -4}
-      }
-    )
-    self.glow:SetBackdropBorderColor(unpack(glowColor))
-    self.glow:SetBackdropColor(0, 0, 0, 0)
+    self.glow = self:CreateTexture(nil, "BACKGROUND", nil, -5)
+    self.glow:SetSize(150, 60)
+    self.glow:SetTexture("Interface\\GLUES\\Models\\UI_Draenei\\GenericGlow64")
+    self.glow:SetVertexColor(0, 0.5, 1)
+    self.glow:SetBlendMode("ADD")
+    self.glow:SetPoint("CENTER", self, "CENTER", 0, 2)
   end
 
   -- Highlight
@@ -148,33 +138,6 @@ local CheckForSpellInterrupt = function(self, unit)
   end
 end
 
--- Castbar PostCastStart
-local myPostCastStart = function(self, unit, name, castID, spellID)
-  CheckForSpellInterrupt(self, unit)
-  self.Castbar.Icon.border:Show()
-end
-
--- Castbar PostCastStop
-local myPostCastStop = function(self, unit, name, castID, spellID)
-  self.Castbar.Icon.border:Hide()
-end
-
--- Castbar PostCastFailed
-local myPostCastFailed = function(self, unit, spellname, castID, spellID)
-  self.Castbar.Icon.border:Hide()
-end
-
--- Castbar PostCastChannel Update
-local myPostChannelStart = function(self, unit, name, castID, spellID)
-  CheckForSpellInterrupt(self, unit)
-  self.Castbar.Icon.border:Show()
-end
-
--- Castbar PostCastChannelStop
-local myPostChannelStop = function(self, unit, name, castID, spellID)
-  self.Castbar.Icon.border:Hide()
-end
-
 local function CreateCastbar(self)
   local Castbar = CreateFrame("StatusBar", nil, self)
   Castbar:SetStatusBarTexture(m.textures.status_texture)
@@ -189,7 +152,7 @@ local function CreateCastbar(self)
   local Background = Castbar:CreateTexture(nil, "BORDER")
   Background:SetAllPoints(Castbar)
   Background:SetTexture(m.textures.bg_texture)
-  Background:SetColorTexture(0.2, 0.2, 0.2)
+  Background:SetColorTexture(.1, .1, .1)
   Background:SetAlpha(0.3)
 
   local Text = Castbar:CreateFontString(nil, "OVERLAY")
@@ -235,7 +198,7 @@ local function CreateCastbar(self)
 
   local OnPostCastFail = function(self, unit)
     -- Color castbar red when cast fails
-    self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255)
+    self:SetStatusBarColor(182 / 255, 34 / 255, 32 / 255)
 
     if self.Max then
       self.Max:Hide()
@@ -323,7 +286,7 @@ local PostUpdatePlates = function(self, event, unit)
   end
 
   if not self.isPlayer then
-    core:createNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 5, "CENTER", self.cfg.width - 4)
+    lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 5, "CENTER", self.cfg.width - 4)
     self:Tag(self.Name, "[lum:levelplus][lum:classificationshort] [lum:name]")
   end
 end
@@ -343,7 +306,7 @@ local createStyle = function(self, unit)
   -- Size and position
   self:SetSize(self.cfg.width, self.cfg.height)
   self:SetPoint("CENTER", 0, -10)
-  core:createDropShadow(self, 4, 4, {0, 0, 0, cfg.frames.shadow.opacity})
+  core:createDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
 
   -- Health bar
   local health = CreateFrame("StatusBar", nil, self)
@@ -368,7 +331,7 @@ local createStyle = function(self, unit)
   self.Health = health
 
   -- Health Percentage
-  health.percent = core:createFontstring(self.Health, font, cfg.fontsize - 3, "THINOUTLINE", "BACKGROUND")
+  health.percent = core:CreateFontstring(self.Health, font, cfg.fontsize - 4, "THINOUTLINE", "BACKGROUND")
   health.percent:SetPoint("LEFT", self.Health, "RIGHT", 4, 0)
   health.percent:SetJustifyH("LEFT")
   health.percent:SetWidth(self.cfg.width)
@@ -395,7 +358,7 @@ local createStyle = function(self, unit)
 
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then
-    classPower = core:createFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
+    classPower = core:CreateFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
     classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
     classPower:SetJustifyH("RIGHT")
     classPower:SetWidth(self.cfg.width)

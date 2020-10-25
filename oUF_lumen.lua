@@ -55,7 +55,7 @@ function lum:sharedStyle(self, type)
 
 	self.Health.bg = self.Health:CreateTexture(nil, "BACKGROUND")
 	self.Health.bg:SetAllPoints(self.Health)
-	self.Health.bg:SetAlpha(0.125)
+	self.Health.bg:SetAlpha(0.1)
 	self.Health.bg:SetTexture(m.textures.bg_texture)
 
 	-- Power Bar
@@ -69,7 +69,7 @@ function lum:sharedStyle(self, type)
 	self.Power.bg = self.Power:CreateTexture(nil, "BACKGROUND")
 	self.Power.bg:SetAllPoints(self.Power)
 	self.Power.bg:SetTexture(m.textures.bg_texture)
-	self.Power.bg:SetAlpha(0.2)
+	self.Power.bg:SetAlpha(0.15)
 
 	-- Colors
 	if self.cfg.health.classColored then

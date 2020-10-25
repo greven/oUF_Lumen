@@ -96,6 +96,7 @@ filters.list = {
       [GetSpellInfo(194249) or "Voidform"] = true
     },
     debuffs = {
+      [GetSpellInfo(335467) or "Devouring Plague"] = true,
       [GetSpellInfo(204213) or "Purge the Wicked"] = true,
       [GetSpellInfo(214621) or "Schism"] = true,
       [GetSpellInfo(64044) or "Psychic Horror"] = true,

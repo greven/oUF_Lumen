@@ -161,13 +161,11 @@ tags["lum:classpower"] = function(unit)
       color = "FF1A30"
     end
   elseif (PlayerClass == "PALADIN") then
-    if (GetSpecialization() == SPEC_PALADIN_RETRIBUTION) then
-      num = UnitPower("player", Enum.PowerType.HolyPower)
-      max = UnitPowerMax("player", Enum.PowerType.HolyPower)
-      color = "FFFF7D"
-      if (num == max) then
-        color = "FF1A30"
-      end
+    num = UnitPower("player", Enum.PowerType.HolyPower)
+    max = UnitPowerMax("player", Enum.PowerType.HolyPower)
+    color = "FFFF7D"
+    if (num == max) then
+      color = "FF1A30"
     end
   elseif (PlayerClass == "MAGE") then
     if (GetSpecialization() == SPEC_MAGE_ARCANE) then

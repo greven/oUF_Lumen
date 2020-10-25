@@ -92,19 +92,13 @@ local createStyle = function(self)
 
   -- Texts
   if self.cfg.name.show then
-    core:createNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
-    self:Tag(self.Name, "[lum:level]  [lum:name]")
+    lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
   end
 
-  core:createHPString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  self:Tag(self.Health.value, "[lum:hpvalue]")
-  core:createHPPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
-  core:createPowerString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
-
-  local clf = core:createFontstring(self, font, cfg.fontsize - 1, "THINOUTLINE") -- Classification
-  clf:SetPoint("LEFT", self, "TOPLEFT", 0, 12)
-  clf:SetTextColor(1, 1, 1, 1)
-  self:Tag(clf, "[lum:classification]")
+  lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
+  lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
+  lum:CreatePowerValueString(self, font, cfg.fontsize - 3, "THINOUTLINE", 0, 0, "CENTER")
+  lum:CreateClassificationString(self, font, cfg.fontsize - 1)
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
