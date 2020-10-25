@@ -1,9 +1,7 @@
 local A, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-local filters, debuffs = ns.filters, ns.debuffs
-
-local _G = _G
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
+local filters = ns.filters
 
 local font = m.fonts.font
 
@@ -18,115 +16,14 @@ local PostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
 
   if cfg.units[frame].health.gradientColored then
-    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:raidColor(unit))))
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
     health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Class colored text
   if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(core:raidColor(unit)))
+    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
   end
-end
-
-local PostCreateIcon = function(Auras, button)
-  local count = button.count
-  count:ClearAllPoints()
-  count:SetFont(m.fonts.font, 12, "OUTLINE")
-  count:SetPoint("TOPRIGHT", button, 3, 3)
-
-  button.icon:SetTexCoord(.08, .92, .08, .92)
-
-  button.overlay:SetTexture(m.textures.border)
-  button.overlay:SetTexCoord(0, 1, 0, 1)
-  button.overlay.Hide = function(self)
-    self:SetVertexColor(0.3, 0.3, 0.3)
-  end
-
-  button.spell = button:CreateFontString(nil, "OVERLAY")
-  button.spell:SetPoint("RIGHT", button, "LEFT", -4, 0)
-  button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
-  button.spell:SetTextColor(1, 1, 1)
-  button.spell:SetShadowOffset(1, -1)
-  button.spell:SetShadowColor(0, 0, 0, 1)
-  button.spell:SetJustifyH("RIGHT")
-  button.spell:SetWordWrap(false)
-
-  button.time = button:CreateFontString(nil, "OVERLAY")
-  button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
-  button.time:SetPoint("BOTTOMLEFT", button, -2, -2)
-  button.time:SetTextColor(1, 1, 0.65)
-  button.time:SetShadowOffset(1, -1)
-  button.time:SetShadowColor(0, 0, 0, 1)
-  button.time:SetJustifyH("CENTER")
-end
-
--- Post Update Aura Icon
-local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
-  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-  if duration and duration > 0 then
-    icon.timeLeft = expirationTime - GetTime()
-  else
-    icon.timeLeft = math.huge
-  end
-
-  icon.spell:SetText(name) -- set spell name
-
-  icon:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-      lum:AuraTimer_OnUpdate(self, elapsed)
-    end
-  )
-end
-
--- Post Update BarTimer Aura
-local PostUpdateBarTimer = function(element, unit, button, index)
-  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, button.filter)
-
-  if duration and duration > 0 then
-    button.timeLeft = expirationTime - GetTime()
-    button.bar:SetMinMaxValues(0, duration)
-    button.bar:SetValue(button.timeLeft)
-
-    if button.isDebuff then -- bar color
-      button.bar:SetStatusBarColor(1, 0.1, 0.2)
-    else
-      button.bar:SetStatusBarColor(0, 0.4, 1)
-    end
-  else
-    button.timeLeft = math.huge
-    button.bar:SetStatusBarColor(0.6, 0, 0.8) -- permenant buff / debuff
-  end
-
-  button.spell:SetText(name) -- set spell name
-
-  button:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-      lum:BarTimer_OnUpdate(self, elapsed)
-    end
-  )
-end
-
--- Filter Buffs
-local PlayerCustomFilter = function(...)
-  local spellID = select(13, ...)
-  if spellID then
-    if filters["ALL"].buffs[spellID] or filters[core.playerClass].buffs[spellID] then
-      return true
-    end
-  end
-end
-
--- Debuffs Filter (Blacklist)
-local DebuffsCustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
-  if spellID then
-    if debuffs.list[frame][spellID] or duration == 0 then
-      return false
-    end
-  end
-  return true
 end
 
 -- -----------------------------------
@@ -168,29 +65,40 @@ local createStyle = function(self)
   lum:CreateReputationBar(self)
   lum:CreateArtifactPowerBar(self)
 
-  -- Debuffs
-  -- if self.cfg.auras.debuffs.show then
-  --   local debuffs = auras:CreateAura(self, 12, 12, cfg.frames.main.height + 4, 4)
-  --   debuffs:SetPoint("BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2)
-  --   debuffs.initialAnchor = "BOTTOMRIGHT"
-  --   debuffs["growth-y"] = "UP"
-  --   debuffs.showDebuffType = true
-  --   debuffs.CustomFilter = DebuffsCustomFilter
-  --   debuffs.PostCreateIcon = PostCreateIcon
-  --   debuffs.PostUpdateIcon = PostUpdateIcon
-  --   self.Debuffs = debuffs
-  -- end
+  -- Auras
+  lum:SetDebuffAuras(
+    self,
+    frame,
+    12,
+    12,
+    cfg.frames.main.height + 4,
+    4,
+    "BOTTOMRIGHT",
+    self,
+    "BOTTOMLEFT",
+    -56,
+    -2,
+    "BOTTOMRIGHT",
+    "UP",
+    nil,
+    true
+  )
 
-  -- BarTimers Auras
-  if self.cfg.auras.barTimers.show then
-    local barTimers = lum:CreateBarTimer(self, 12, 12, 24, 2)
-    barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
-    barTimers.initialAnchor = "BOTTOMLEFT"
-    barTimers["growth-y"] = "UP"
-    barTimers.CustomFilter = PlayerCustomFilter
-    barTimers.PostUpdateIcon = PostUpdateBarTimer
-    self.Buffs = barTimers
-  end
+  lum:SetBarTimerAuras(
+    self,
+    frame,
+    12,
+    12,
+    24,
+    2,
+    "BOTTOMLEFT",
+    self,
+    "TOPLEFT",
+    -2,
+    cfg.frames.secondary.height + 16,
+    "BOTTOMLEFT",
+    "UP"
+  )
 end
 
 -- -----------------------------------
@@ -207,6 +115,6 @@ if cfg.units[frame].show then
   end
   -- Fader
   if cfg.units[frame].fader then
-    core:CreateFrameFader(f, cfg.units[frame].fader)
+    api:CreateFrameFader(f, cfg.units[frame].fader)
   end
 end

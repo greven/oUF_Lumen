@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 local filters = ns.filters
 
 local font = m.fonts.font
@@ -22,7 +22,7 @@ local PostUpdateHealth = function(health, unit, min, max)
 
   -- Class colored text
   if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(core:raidColor(unit)))
+    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
   end
 end
 
@@ -100,6 +100,6 @@ if cfg.units[frame].show then
   end
   -- Fader
   if cfg.units[frame].fader then
-    core:CreateFrameFader(f, cfg.units[frame].fader)
+    api:CreateFrameFader(f, cfg.units[frame].fader)
   end
 end

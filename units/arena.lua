@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local font = m.fonts.font
 
@@ -15,13 +15,13 @@ local PostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
 
   if cfg.units[frame].health.gradientColored then
-    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:raidColor(unit))))
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
     health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Class colored text
   if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(core:raidColor(unit)))
+    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
   end
 end
 

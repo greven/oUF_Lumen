@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local font = m.fonts.font
 
@@ -46,7 +46,7 @@ function lum:MirrorBars()
 
     statusBar:SetStatusBarTexture(m.textures.status_texture)
     statusBar:SetAllPoints(mirrorTimer)
-    core:setBackdrop(statusBar, 2, 2, 2, 2)
+    api:SetBackdrop(statusBar, 2, 2, 2, 2)
 
     bg = mirrorTimer:CreateTexture(nil, "BORDER")
     bg:SetAllPoints()

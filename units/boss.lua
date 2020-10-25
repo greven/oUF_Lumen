@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 local filters = ns.filters
 
 local font = m.fonts.font

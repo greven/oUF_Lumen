@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local max = max
 
@@ -15,7 +15,7 @@ function lum:BarTimer_OnUpdate(icon, elapsed)
 
 		-- text color
 		if icon.timeLeft > 0 and icon.timeLeft < 60 then
-			icon.time:SetFormattedText(core:formatTime(icon.timeLeft))
+			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
 			if icon.timeLeft < 6 then
 				icon.time:SetTextColor(1, 0.25, 0.25)
 			elseif icon.timeLeft < 10 then
@@ -25,7 +25,7 @@ function lum:BarTimer_OnUpdate(icon, elapsed)
 			end
 		elseif icon.timeLeft > 60 and icon.timeLeft < 60 * 5 then
 			icon.time:SetTextColor(1, 1, 1)
-			icon.time:SetFormattedText(core:formatTime(icon.timeLeft))
+			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
 		else
 			icon.time:SetText()
 		end
@@ -57,7 +57,7 @@ local PostCreateBar = function(Auras, button)
 	button.bar:SetPoint("TOPLEFT", button, "TOPRIGHT", 4, -2)
 	button.bar:SetHeight(Auras.size - 4)
 	button.bar:SetWidth(cfg.frames.main.width - Auras.size - 2)
-	core:setBackdrop(button.bar, 2, 2, 2, 2)
+	api:SetBackdrop(button.bar, 2, 2, 2, 2)
 
 	button.bar.bg = button.bar:CreateTexture(nil, "BORDER")
 	button.bar.bg:SetAllPoints()

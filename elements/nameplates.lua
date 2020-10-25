@@ -1,8 +1,9 @@
 local _, ns = ...
 
-local lum, core, cfg, filters, m, oUF = ns.lum, ns.core, ns.cfg, ns.filters, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local _G = _G
+
 local UnitIsPlayer, UnitIsUnit = UnitIsPlayer, UnitIsUnit
 
 local font = m.fonts.font
@@ -90,11 +91,11 @@ local function AddTargetIndicators(self)
 
   -- Target Border
   self.TargetBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  core:createBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+  api:CreateBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
 
   -- Targeted Arrow
   if self.cfg.showTargetArrow then
-    self.arrow = core:CreateFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
+    self.arrow = api:CreateFontstring(self, m.fonts.symbols_light, 32, "THINOUTLINE")
     self.arrow:SetPoint("CENTER", self, "CENTER", 0, 62)
     self.arrow:SetText("")
     self.arrow:SetTextColor(unpack(selectedColor))
@@ -142,7 +143,7 @@ local function CreateCastbar(self)
   Castbar:SetStatusBarTexture(m.textures.status_texture)
   Castbar:GetStatusBarTexture():SetHorizTile(false)
 
-  core:setBackdrop(Castbar, 1, 1, 1, 1)
+  api:SetBackdrop(Castbar, 1, 1, 1, 1)
   Castbar:SetStatusBarColor(unpack(cfg.units.nameplate.castbar.color))
   Castbar:SetWidth(cfg.units.nameplate.width)
   Castbar:SetHeight(cfg.units.nameplate.castbar.height)
@@ -170,7 +171,7 @@ local function CreateCastbar(self)
   Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
 
   local iconborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  core:createBorder(Icon, iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+  api:CreateBorder(Icon, iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
   iconborder:SetBackdropColor(0, 0, 0, 1)
   iconborder:SetBackdropBorderColor(0, 0, 0, 1)
   Icon.border = iconborder
@@ -305,7 +306,7 @@ local createStyle = function(self, unit)
   -- Size and position
   self:SetSize(self.cfg.width, self.cfg.height)
   self:SetPoint("CENTER", 0, -10)
-  core:createDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
+  api:CreateDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
 
   -- Health bar
   local health = CreateFrame("StatusBar", nil, self)
@@ -325,12 +326,12 @@ local createStyle = function(self, unit)
   health.bg:SetAlpha(0.20)
   health.bg:SetTexture(m.textures.bg_texture)
 
-  core:setBackdrop(health, 2, 2, 2, 2)
+  api:SetBackdrop(health, 2, 2, 2, 2)
 
   self.Health = health
 
   -- Health Percentage
-  health.percent = core:CreateFontstring(self.Health, font, cfg.fontsize - 4, "THINOUTLINE", "BACKGROUND")
+  health.percent = api:CreateFontstring(self.Health, font, cfg.fontsize - 4, "THINOUTLINE", "BACKGROUND")
   health.percent:SetPoint("LEFT", self.Health, "RIGHT", 4, 0)
   health.percent:SetJustifyH("LEFT")
   health.percent:SetWidth(self.cfg.width)
@@ -351,13 +352,13 @@ local createStyle = function(self, unit)
   -- power.bg:SetTexture(m.textures.bg_texture)
   -- power.bg:SetAlpha(0.2)
 
-  -- core:setBackdrop(power, 2, 2, 2, 2)
+  -- api:SetBackdrop(power, 2, 2, 2, 2)
 
   -- self.Power = power
 
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then
-    classPower = core:CreateFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
+    classPower = api:CreateFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE", "BACKGROUND")
     classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
     classPower:SetJustifyH("RIGHT")
     classPower:SetWidth(self.cfg.width)

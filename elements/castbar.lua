@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local font = m.fonts.font
 
@@ -38,13 +38,13 @@ local onPostCastStart = function(self, unit)
   -- Set the castbar unit's initial color
   self:SetStatusBarColor(unpack(cfg.units[unit].castbar.color))
   CheckForSpellInterrupt(self, unit)
-  core:StartFadeIn(self)
+  api:StartFadeIn(self)
 end
 
 local OnPostCastFail = function(self, unit)
   -- Color castbar red when cast fails
   self:SetStatusBarColor(182 / 255, 34 / 255, 32 / 255)
-  core:StartFadeOut(self)
+  api:StartFadeOut(self)
 
   if self.Max then
     self.Max:Hide()
@@ -100,7 +100,7 @@ function lum:CreateCastbar(self)
   Castbar.Max:SetPoint("RIGHT", Time, "LEFT", 0, 0)
 
   if (unit == "player") then
-    core:setBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
+    api:SetBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
     Castbar:SetWidth(cfg.units.player.castbar.width - cfg.units.player.castbar.height + 6)
     Castbar:SetHeight(cfg.units.player.castbar.height)
@@ -130,7 +130,7 @@ function lum:CreateCastbar(self)
       SafeZone:SetVertexColor(unpack(cfg.units.player.castbar.latency.color))
     end
   elseif (unit == "target") then
-    core:setBackdrop(Castbar, cfg.units.target.castbar.height + 4, 2, 2, 2)
+    api:SetBackdrop(Castbar, cfg.units.target.castbar.height + 4, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.target.castbar.color))
     Castbar:SetWidth(cfg.units.target.castbar.width - cfg.units.target.castbar.height + 6)
     Castbar:SetHeight(cfg.units.target.castbar.height)
@@ -147,7 +147,7 @@ function lum:CreateCastbar(self)
     Icon:SetWidth(cfg.units.target.castbar.height)
     Icon:SetPoint("LEFT", Castbar, -(cfg.units.target.castbar.height + 2), 0)
   elseif (unit == "focus") then
-    core:setBackdrop(Castbar, cfg.units.focus.castbar.height + 4, 2, 2, 2)
+    api:SetBackdrop(Castbar, cfg.units.focus.castbar.height + 4, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.focus.castbar.color))
     Castbar:SetWidth(cfg.units.focus.castbar.width - cfg.units.focus.castbar.height + 6)
     Castbar:SetHeight(cfg.units.focus.castbar.height)
@@ -164,7 +164,7 @@ function lum:CreateCastbar(self)
     Icon:SetWidth(cfg.units.focus.castbar.height)
     Icon:SetPoint("LEFT", Castbar, -(cfg.units.focus.castbar.height + 2), 0)
   elseif (unit == "boss") then
-    core:setBackdrop(Castbar, 2, 2, 2, 2)
+    api:SetBackdrop(Castbar, 2, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.boss.castbar.color))
     Castbar:SetWidth(cfg.units.boss.castbar.width - cfg.units.boss.castbar.height + 6)
     Castbar:SetHeight(cfg.units.boss.castbar.height)
@@ -195,7 +195,7 @@ function lum:CreateCastbar(self)
   Castbar.timeToHold = cfg.elements.castbar.timeToHold
 
   -- FadeIn / FadeOut animation
-  core:CreateFaderAnimation(Castbar)
+  api:CreateFaderAnimation(Castbar)
   Castbar.faderConfig = cfg.elements.castbar.fader
 
   Castbar.Text = Text

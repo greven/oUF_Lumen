@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local oUF = ns.oUF
+local oUF = ns.oUF or oUF
 
 -- -----------------------------------
 -- > COLORS

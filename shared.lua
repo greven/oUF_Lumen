@@ -6,8 +6,7 @@
 
 local _, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
-ns.lum, ns.oUF = lum, oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local font = m.fonts.font
 
@@ -36,7 +35,7 @@ function lum:SharedStyle(self, type)
 		self:SetPoint(self.cfg.pos.a1, self.cfg.pos.af, self.cfg.pos.a2, self.cfg.pos.x, self.cfg.pos.y)
 	end
 
-	core:setBackdrop(self, 2, 2, 2, 2)
+	api:SetBackdrop(self, 2, 2, 2, 2)
 
 	self:RegisterForClicks("AnyDown")
 	self:SetScript("OnEnter", OnEnter)
@@ -104,6 +103,6 @@ function lum:SharedStyle(self, type)
 
 	-- Drop Shadow
 	if cfg.frames.shadow.show then
-		core:createDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
+		api:CreateDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
 	end
 end

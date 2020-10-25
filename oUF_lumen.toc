@@ -11,11 +11,4 @@
 
 ## X-WoWI-ID: 16885
 
-embeds\_embeds.xml
-config\_config.xml
-core.lua
-tags.lua
-functions.lua
-oUF_Lumen.lua
-elements\_elements.xml
-units\_units.xml
+_load.xml

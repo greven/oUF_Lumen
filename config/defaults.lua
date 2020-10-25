@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local cfg, m, oUF = {}, {}, ns.oUF
+local cfg, m = {}, {}
 ns.cfg = cfg
 ns.m = m
 
@@ -24,6 +24,18 @@ m.textures = {
   damager_texture = "Interface\\AddOns\\oUF_lumen\\media\\damager",
   healer_texture = "Interface\\AddOns\\oUF_lumen\\media\\healer",
   tank_texture = "Interface\\AddOns\\oUF_lumen\\media\\tank"
+}
+
+cfg.roleIconTextures = {
+  TANK = m.textures.tank_texture,
+  HEALER = m.textures.healer_texture,
+  DAMAGER = m.textures.damager_texture
+}
+
+cfg.roleIconColor = {
+  TANK = {0 / 255, 175 / 255, 255 / 255},
+  HEALER = {0 / 255, 255 / 255, 100 / 255},
+  DAMAGER = {225 / 255, 0 / 255, 25 / 255}
 }
 
 -- ------------------------------------------------------------------------

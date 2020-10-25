@@ -1,6 +1,6 @@
 local A, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 local filters, debuffs = ns.filters, ns.debuffs
 
 local font = m.fonts.font
@@ -20,7 +20,7 @@ local PostUpdateHealth = function(health, unit, min, max)
   -- Inverted colors
   if cfg.units[frame].health.invertedColors or cfg.units[frame].showPortraits then
     health:SetStatusBarColor(unpack(cfg.colors.inverted))
-    health.bg:SetVertexColor(unpack(core:raidColor(unit)))
+    health.bg:SetVertexColor(unpack(api:RaidColor(unit)))
     health.bg:SetAlpha(1)
   end
 
@@ -31,7 +31,7 @@ local PostUpdateHealth = function(health, unit, min, max)
   end
 
   -- Show health value as the missing value
-  health.value:SetText("-" .. core:shortNumber(max - min))
+  health.value:SetText("-" .. core:ShortNumber(max - min))
 
   if disconnnected or dead or ghost then
     self.HPborder:Hide()
@@ -108,7 +108,7 @@ local PostUpdatePortrait = function(element, unit)
 end
 
 -- local PartyUpdate = function(self)
---   print(core:isPlayerHealer())
+--   print(api:IsPlayerHealer())
 -- end
 
 -- -----------------------------------
@@ -134,7 +134,7 @@ local createStyle = function(self)
     self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [raidcolor][lum:name]")
   end
 
-  self.classText = core:CreateFontstring(self.Health, font, cfg.fontsize, "THINOUTLINE")
+  self.classText = api:CreateFontstring(self.Health, font, cfg.fontsize, "THINOUTLINE")
   self.classText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -4, 5)
   self.classText:SetJustifyH("RIGHT")
   self:Tag(self.classText, "[lum:level] [raidcolor][class]")

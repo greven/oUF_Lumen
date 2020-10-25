@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local lum, core, cfg, m, oUF = ns.lum, ns.core, ns.cfg, ns.m, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local max = max
 
@@ -14,7 +14,7 @@ function lum:AuraTimer_OnUpdate(icon, elapsed)
 
 		-- text color
 		if icon.timeLeft > 0 and icon.timeLeft < 60 then
-			icon.time:SetFormattedText(core:formatTime(icon.timeLeft))
+			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
 			if icon.timeLeft < 6 then
 				icon.time:SetTextColor(0.9, 0.05, 0.05)
 			else

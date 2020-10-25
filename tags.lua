@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local core, cfg, oUF = ns.core, ns.cfg, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 -- ------------------------------------------------------------------------
 -- > Custom Tags
@@ -35,7 +35,7 @@ tags["lum:levelplus"] = function(unit)
   if l <= 0 then
     l = "??"
   end
-  return core:toHex(d.r, d.g, d.b) .. l .. "|r"
+  return core:ToHex(d.r, d.g, d.b) .. l .. "|r"
 end
 events["lum:levelplus"] = "UNIT_LEVEL PLAYER_LEVEL_UP UNIT_CLASSIFICATION_CHANGED"
 
@@ -75,7 +75,7 @@ events["lum:classificationshort"] = "UNIT_CLASSIFICATION_CHANGED"
 
 -- Current Spec
 tags["lum:spec"] = function()
-  return core:GetCurrentSpec()
+  return api:GetCurrentSpec()
 end
 events["lum:spec"] =
   "PLAYER_LOGIN PLAYER_ENTERING_WORLD PLAYER_TALENT_UPDATE CHARACTER_POINTS_CHANGED PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE GROUP_JOINED"
@@ -86,7 +86,7 @@ tags["lum:hpvalue"] = function(unit)
   if min == 0 or not UnitIsConnected(unit) or UnitIsGhost(unit) or UnitIsDead(unit) then
     return ""
   end
-  return core:shortNumber(min)
+  return core:ShortNumber(min)
 end
 events["lum:hpvalue"] = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE"
 
@@ -140,7 +140,7 @@ events["lum:altpower"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
 
 -- Class Power (Combo Points, Insanity, )
 tags["lum:classpower"] = function(unit)
-  local PlayerClass = core.playerClass
+  local PlayerClass = G.playerClass
   local num, max, color
 
   if (PlayerClass == "MONK") then

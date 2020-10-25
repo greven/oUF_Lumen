@@ -1,6 +1,6 @@
 local _, ns = ...
 
-local cfg, filters, oUF = ns.cfg, ns.filters, ns.oUF
+local cfg, filters = ns.cfg, ns.filters
 
 -- ------------------------------------------------------------------------
 -- > Your configuration here (will override the defaults.lua settings)
