@@ -5,45 +5,70 @@ local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns
 local max = max
 
 -- ------------------------------------------------------------------------
--- > BARTIME AURAS RELATED FUNCTIONS
+-- > BarTimer Auras
 -- ------------------------------------------------------------------------
 
-function lum:BarTimer_OnUpdate(icon, elapsed)
-	if icon.timeLeft then
-		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
-		icon.bar:SetValue(icon.timeLeft) -- update the statusbar
+local function OnUpdate(self, elapsed)
+	if self.timeLeft then
+		self.timeLeft = max(self.timeLeft - elapsed, 0)
+		self.bar:SetValue(self.timeLeft) -- update the statusbar
 
 		-- text color
-		if icon.timeLeft > 0 and icon.timeLeft < 60 then
-			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
-			if icon.timeLeft < 6 then
-				icon.time:SetTextColor(1, 0.25, 0.25)
-			elseif icon.timeLeft < 10 then
-				icon.time:SetTextColor(1, 0.9, 0.5)
+		if self.timeLeft > 0 and self.timeLeft < 60 then
+			self.time:SetFormattedText(core:FormatTime(self.timeLeft))
+			if self.timeLeft < 6 then
+				self.time:SetTextColor(1, 0.25, 0.25)
+			elseif self.timeLeft < 10 then
+				self.time:SetTextColor(1, 0.9, 0.5)
 			else
-				icon.time:SetTextColor(1, 1, 1)
+				self.time:SetTextColor(1, 1, 1)
 			end
-		elseif icon.timeLeft > 60 and icon.timeLeft < 60 * 5 then
-			icon.time:SetTextColor(1, 1, 1)
-			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
+		elseif self.timeLeft > 60 and self.timeLeft < 60 * 5 then
+			self.time:SetTextColor(1, 1, 1)
+			self.time:SetFormattedText(core:FormatTime(self.timeLeft))
 		else
-			icon.time:SetText()
+			self.time:SetText()
 		end
 	end
 end
 
-local SortAuras = function(a, b)
+local PostUpdateBar = function(element, unit, button, index)
+	local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, button.filter)
+
+	if duration and duration > 0 then
+		button.timeLeft = expirationTime - GetTime()
+		button.bar:SetMinMaxValues(0, duration)
+		button.bar:SetValue(button.timeLeft)
+
+		if button.isDebuff then -- bar color
+			button.bar:SetStatusBarColor(1, 0.1, 0.2)
+		else
+			button.bar:SetStatusBarColor(0, 0.4, 1)
+		end
+	else
+		-- Permanent buff / debuff
+		button.timeLeft = math.huge
+		button.bar:SetStatusBarColor(0.6, 0, 0.8)
+	end
+
+	-- set spell name
+	button.spell:SetText(name)
+
+	button:SetScript("OnUpdate", OnUpdate)
+end
+
+local function SortAuras(a, b)
 	if a and b and a.timeLeft and b.timeLeft then
 		return a.timeLeft > b.timeLeft
 	end
 end
 
-local PreSetPosition = function(Auras)
-	table.sort(Auras, SortAuras)
+local function PreSetPosition(self)
+	table.sort(self, SortAuras)
 	return 1
 end
 
-local PostCreateBar = function(Auras, button)
+local function PostCreateBar(self, button)
 	button.icon:SetTexCoord(0, 1, 0, 1)
 
 	button.overlay:SetTexture(m.textures.border)
@@ -55,8 +80,8 @@ local PostCreateBar = function(Auras, button)
 	button.bar = CreateFrame("StatusBar", nil, button)
 	button.bar:SetStatusBarTexture(m.textures.status_texture)
 	button.bar:SetPoint("TOPLEFT", button, "TOPRIGHT", 4, -2)
-	button.bar:SetHeight(Auras.size - 4)
-	button.bar:SetWidth(cfg.frames.main.width - Auras.size - 2)
+	button.bar:SetHeight(self.size - 4)
+	button.bar:SetWidth(cfg.frames.main.width - self.size - 2)
 	api:SetBackdrop(button.bar, 2, 2, 2, 2)
 
 	button.bar.bg = button.bar:CreateTexture(nil, "BORDER")
@@ -95,7 +120,8 @@ function lum:CreateBarTimer(self, num, rows, size, spacing)
 	auras.size = size
 	auras.spacing = spacing or 4
 	auras.disableCooldown = true
-	auras.PreSetPosition = PreSetPosition -- sort auras by time remaining
-	auras.PostCreateIcon = PostCreateBar -- set overlay, cd, count, timer
+	auras.PreSetPosition = PreSetPosition -- Sort auras by time remaining
+	auras.PostCreateIcon = PostCreateBar -- Set overlay, cd, count, timer
+	auras.PostUpdateIcon = PostUpdateBar
 	return auras
 end

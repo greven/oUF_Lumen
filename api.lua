@@ -56,45 +56,50 @@ function api:RaidColor(unit)
   return color and {color.r, color.g, color.b} or {.5, .5, .5}
 end
 
--- Create Border
-function api:CreateBorder(self, frame, e_size, f_level, texture)
-  local border = {edgeFile = texture, edgeSize = e_size}
-  frame:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
-  frame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
-  frame:SetBackdrop(border)
-  frame:SetFrameLevel(f_level)
-  frame:Hide()
-end
+-- Set the frame backdrop
+function api:SetBackdrop(self, insetLeft, insetRight, insetTop, insetBottom, color)
+  local frame = self
 
--- Set the Backdrop
-function api:SetBackdrop(frame, inset_l, inset_r, inset_t, inset_b)
+  if self:GetObjectType() == "Texture" then
+    frame = self:GetParent()
+  end
+
+  local lvl = frame:GetFrameLevel()
+
   if not frame.Backdrop then
     local backdrop = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    backdrop = CreateFrame("Frame", nil, frame, "BackdropTemplate")
-    backdrop:SetAllPoints()
-    backdrop:SetFrameLevel(frame:GetFrameLevel())
+    backdrop:SetAllPoints(frame)
+    backdrop:SetFrameLevel(lvl == 0 and 0 or lvl - 1)
 
     backdrop:SetBackdrop {
       bgFile = "Interface\\ChatFrame\\ChatFrameBackground",
       tile = false,
       tileSize = 0,
       insets = {
-        left = -inset_l,
-        right = -inset_r,
-        top = -inset_t,
-        bottom = -inset_b
+        left = -insetLeft,
+        right = -insetRight,
+        top = -insetTop,
+        bottom = -insetBottom
       }
     }
-
-    backdrop:SetBackdropColor(
-      cfg.colors.backdrop.r,
-      cfg.colors.backdrop.g,
-      cfg.colors.backdrop.b,
-      cfg.colors.backdrop.a
-    )
-
+    backdrop:SetBackdropColor(unpack(color or cfg.colors.backdrop))
     frame.Backdrop = backdrop
   end
+end
+
+-- Create a backdrop border
+function api:CreateBorder(self, borderFrame, edgeSize, frameLevel, texture)
+  if borderFrame:GetObjectType() == "Texture" then
+    borderFrame = self:GetParent()
+  end
+
+  local backdrop = {edgeFile = texture or "Interface\\ChatFrame\\ChatFrameBackground", edgeSize = edgeSize}
+  borderFrame:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
+  borderFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
+  borderFrame:SetBackdrop(backdrop)
+  borderFrame:SetFrameLevel(frameLevel or borderFrame:GetFrameLevel() - 1)
+  borderFrame:SetBackdropBorderColor(0, 0, 0)
+  borderFrame:Hide()
 end
 
 -- Fontstring Function
@@ -128,7 +133,7 @@ function api:CreateDropShadow(frame, point, edge, color)
     }
   )
   shadow:SetBackdropColor(0, 0, 0, 0)
-  shadow:SetBackdropBorderColor(unpack(color))
+  shadow:SetBackdropBorderColor(unpack(color or cfg.frames.shadow.color))
 end
 
 -- Frame Fader

@@ -77,7 +77,7 @@ local createStyle = function(self)
   buffs.initialAnchor = "BOTTOMLEFT"
   buffs["growth-x"] = "RIGHT"
   buffs.PostUpdateIcon = PostUpdateIcon
-  if (self.cfg.buffs.filter) then
+  if (self.cfg.auras.buffs.filter) then
     buffs.CustomFilter = PetBuffsFilter
   end
   self.Buffs = buffs

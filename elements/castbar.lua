@@ -63,6 +63,8 @@ function lum:CreateCastbar(self)
     return
   end
 
+  local backdropColor = cfg.elements.castbar.backdrop.color
+
   local Castbar = CreateFrame("StatusBar", nil, self)
   Castbar:SetStatusBarTexture(m.textures.status_texture)
   Castbar:GetStatusBarTexture():SetHorizTile(false)
@@ -100,7 +102,7 @@ function lum:CreateCastbar(self)
   Castbar.Max:SetPoint("RIGHT", Time, "LEFT", 0, 0)
 
   if (unit == "player") then
-    api:SetBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2)
+    api:SetBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2, backdropColor)
     Castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
     Castbar:SetWidth(cfg.units.player.castbar.width - cfg.units.player.castbar.height + 6)
     Castbar:SetHeight(cfg.units.player.castbar.height)

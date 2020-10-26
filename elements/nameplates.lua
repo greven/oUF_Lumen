@@ -91,7 +91,7 @@ local function AddTargetIndicators(self)
 
   -- Target Border
   self.TargetBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  api:CreateBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+  api:CreateBorder(self, self.TargetBorder, 1, 3)
 
   -- Targeted Arrow
   if self.cfg.showTargetArrow then
@@ -169,12 +169,9 @@ local function CreateCastbar(self)
   Icon:SetHeight(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
   Icon:SetWidth(self.cfg.height + cfg.units.nameplate.castbar.height + 4)
   Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
-
-  local iconborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  api:CreateBorder(Icon, iconborder, 2, 3, "Interface\\ChatFrame\\ChatFrameBackground")
-  iconborder:SetBackdropColor(0, 0, 0, 1)
-  iconborder:SetBackdropBorderColor(0, 0, 0, 1)
-  Icon.border = iconborder
+  Icon.border = CreateFrame("Frame", nil, Castbar, "BackdropTemplate")
+  api:CreateBorder(Icon, Icon.border, 2)
+  Icon.border:Show()
 
   local CheckForSpellInterrupt = function(self, unit)
     local initialColor = cfg.units.nameplate.castbar.color
@@ -228,24 +225,6 @@ local PostUpdateHealth = function(health, unit, min, max)
   health.percent:SetTextColor(color:GetRGB())
 end
 
--- Post Update Aura Icon
-local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
-  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-  if duration and duration > 0 then
-    icon.timeLeft = expirationTime - GetTime()
-  else
-    icon.timeLeft = math.huge
-  end
-
-  icon:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-      lum:AuraTimer_OnUpdate(self, elapsed)
-    end
-  )
-end
-
 local PostCreateIcon = function(Auras, button)
   local count = button.count
   count:ClearAllPoints()
@@ -280,13 +259,11 @@ local PostUpdatePlates = function(self, event, unit)
 
   if event == "NAME_PLATE_UNIT_ADDED" or event == "PLAYER_TARGET_CHANGED" then
     self.isPlayer = UnitIsPlayer(unit)
-
-    self.Castbar.Icon.border:Hide()
     OnTargetChanged(self)
   end
 
   if not self.isPlayer then
-    lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 5, "CENTER", self.cfg.width - 4)
+    lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 4, "CENTER", self.cfg.width - 4)
     self:Tag(self.Name, "[lum:levelplus][lum:classificationshort] [lum:name]")
   end
 end
@@ -306,7 +283,7 @@ local createStyle = function(self, unit)
   -- Size and position
   self:SetSize(self.cfg.width, self.cfg.height)
   self:SetPoint("CENTER", 0, -10)
-  api:CreateDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
+  api:CreateDropShadow(self, 6, 6)
 
   -- Health bar
   local health = CreateFrame("StatusBar", nil, self)
@@ -323,10 +300,10 @@ local createStyle = function(self, unit)
 
   health.bg = health:CreateTexture(nil, "BACKGROUND")
   health.bg:SetAllPoints(health)
-  health.bg:SetAlpha(0.20)
+  health.bg:SetAlpha(0.2)
   health.bg:SetTexture(m.textures.bg_texture)
 
-  api:SetBackdrop(health, 2, 2, 2, 2)
+  api:SetBackdrop(health, 2, 2, 2, 2, {0, 0, 0, 0.8})
 
   self.Health = health
 
@@ -337,24 +314,6 @@ local createStyle = function(self, unit)
   health.percent:SetWidth(self.cfg.width)
   health.percent:SetTextColor(0.8, 0.8, 0.8, 1)
   self:Tag(health.percent, "[lum:hpperc]")
-
-  -- -- Power Bar
-  -- local power = CreateFrame("StatusBar", nil, self)
-  -- power:SetHeight(self.cfg.power.height)
-  -- power:SetWidth(self.cfg.width)
-  -- power:SetStatusBarTexture(m.textures.status_texture)
-  -- power:GetStatusBarTexture():SetHorizTile(false)
-  -- power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
-  -- power.colorPower = true
-
-  -- power.bg = self:CreateTexture(nil, "BACKGROUND")
-  -- power.bg:SetAllPoints(power)
-  -- power.bg:SetTexture(m.textures.bg_texture)
-  -- power.bg:SetAlpha(0.2)
-
-  -- api:SetBackdrop(power, 2, 2, 2, 2)
-
-  -- self.Power = power
 
   -- Class Power (Combo Points, Insanity, etc...)
   if cfg.units.nameplate.classpower then
@@ -381,7 +340,7 @@ local createStyle = function(self, unit)
     debuffs["growth-x"] = "RIGHT"
     debuffs["growth-y"] = "UP"
     debuffs.onlyShowPlayer = true
-    debuffs.PostUpdateIcon = PostUpdateIcon
+    -- debuffs.PostUpdateIcon = PostUpdateIcon
     debuffs.PostCreateIcon = PostCreateIcon
     self.Debuffs = debuffs
   end

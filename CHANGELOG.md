@@ -1,3 +1,12 @@
+### Version 9.2.0:
+
+- Refactoring
+- Update Rogue filters
+- Refactor AuraBar Filters and settings
+- Add fonts and media to defaults
+- Update player visibility function
+- Update Target Quest Icon
+
 ### Version 9.1.1:
 
 - Update frame visibility options

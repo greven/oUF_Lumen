@@ -1,10 +1,11 @@
 general:
-  ☐ Add scale back to frames (player, party, target, etc)
+  ☐ Refactor @today
+  ✔ Add scale back to frames (player, party, target, etc) @done(20-10-25 20:12)
 
 party:
   ✔ Health is showing as depleted when 100% @bug @done(20-10-22 22:01)
   ☐ Finish the party frames
-    ☐ Add debuffs
+    ✔ Add debuffs @done(20-10-25 20:12)
     ☐ Add buffs?
   ☐ Add seperate layouts for healing specs and rest (even to detect spec on joining party)
   ☐ Add PhaseIndicator
@@ -15,5 +16,5 @@ raid:
   ☐ Add PhaseIndicator
 
 nameplates:
-  ☐ Icon backdrop border not showing
-  ☐ Paladin holy power not showing on nameplate
+  ✔ Icon backdrop border not showing @done(20-10-26 00:12)
+  ✔ Paladin holy power not showing on nameplate @done(20-10-26 00:12)

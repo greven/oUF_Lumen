@@ -8,25 +8,9 @@ local max = max
 -- > AURAS RELATED FUNCTIONS
 -- ------------------------------------------------------------------------
 
-function lum:AuraTimer_OnUpdate(icon, elapsed)
-	if icon.timeLeft then
-		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
+local function PostCreateIcon(self, button)
+	local unit = self.__owner.unit
 
-		-- text color
-		if icon.timeLeft > 0 and icon.timeLeft < 60 then
-			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
-			if icon.timeLeft < 6 then
-				icon.time:SetTextColor(0.9, 0.05, 0.05)
-			else
-				icon.time:SetTextColor(1, 1, 0.60)
-			end
-		else
-			icon.time:SetText()
-		end
-	end
-end
-
-local function PostCreateIcon(Auras, button)
 	local count = button.count
 	count:ClearAllPoints()
 	count:SetFont(m.fonts.font, 12, "OUTLINE")
@@ -49,6 +33,40 @@ local function PostCreateIcon(Auras, button)
 	button.time:SetJustifyH("CENTER")
 end
 
+local function OnUpdate(icon, elapsed)
+	if icon.timeLeft then
+		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
+
+		-- text color
+		if icon.timeLeft > 0 and icon.timeLeft < 60 then
+			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
+			if icon.timeLeft < 6 then
+				icon.time:SetTextColor(0.9, 0.05, 0.05)
+			else
+				icon.time:SetTextColor(1, 1, 0.60)
+			end
+		else
+			icon.time:SetText()
+		end
+	end
+end
+
+local function PostUpdateIcon(icons, unit, icon, index)
+	local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+
+	if duration and duration > 0 then
+		icon.timeLeft = expirationTime - GetTime()
+	else
+		icon.timeLeft = math.huge
+	end
+
+	if (icon.spell) then
+		icon.spell:SetText(name)
+	end
+
+	icon:SetScript("OnUpdate", OnUpdate)
+end
+
 function lum:CreateAura(self, num, rows, size, spacing)
 	local auras = CreateFrame("Frame", nil, self)
 	auras:SetSize((num * (size + 9)) / rows, (size + 9) * rows)
@@ -57,5 +75,6 @@ function lum:CreateAura(self, num, rows, size, spacing)
 	auras.spacing = spacing or 9
 	auras.disableCooldown = true
 	auras.PostCreateIcon = PostCreateIcon
+	auras.PostUpdateIcon = PostUpdateIcon
 	return auras
 end

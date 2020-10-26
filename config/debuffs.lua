@@ -9,18 +9,18 @@ ns.debuffs = debuffs
 
 debuffs.list = {
   player = {
-    [GetSpellInfo(45181) or "Cheated Death"] = true,
-    [GetSpellInfo(57723) or "Exhaustion"] = true,
-    [GetSpellInfo(264689) or "Fatigued"] = true,
-    [GetSpellInfo(95809) or "Insanity"] = true,
-    [GetSpellInfo(57724) or "Sated"] = true,
-    [GetSpellInfo(80354) or "Temporal Displacement"] = true
+    [45181 or "Cheated Death"] = true,
+    [57723 or "Exhaustion"] = true,
+    [264689 or "Fatigued"] = true,
+    [95809 or "Insanity"] = true,
+    [57724 or "Sated"] = true,
+    [80354 or "Temporal Displacement"] = true
   },
   party = {
-    [GetSpellInfo(57723) or "Exhaustion"] = true,
-    [GetSpellInfo(264689) or "Fatigued"] = true,
-    [GetSpellInfo(95809) or "Insanity"] = true,
-    [GetSpellInfo(57724) or "Sated"] = true,
-    [GetSpellInfo(80354) or "Temporal Displacement"] = true
+    [57723 or "Exhaustion"] = true,
+    [264689 or "Fatigued"] = true,
+    [95809 or "Insanity"] = true,
+    [57724 or "Sated"] = true,
+    [80354 or "Temporal Displacement"] = true
   }
 }

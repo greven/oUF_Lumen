@@ -26,6 +26,43 @@ local PostUpdateHealth = function(health, unit, min, max)
   end
 end
 
+local function PostCreateIcon(self, button)
+  local unit = self.__owner.unit
+
+  local count = button.count
+  count:ClearAllPoints()
+  count:SetFont(m.fonts.font, 12, "OUTLINE")
+  count:SetPoint("TOPRIGHT", button, 3, 3)
+
+  button.icon:SetTexCoord(.08, .92, .08, .92)
+
+  button.overlay:SetTexture(m.textures.border)
+  button.overlay:SetTexCoord(0, 1, 0, 1)
+  button.overlay.Hide = function(self)
+    self:SetVertexColor(0.1, 0.1, 0.1)
+  end
+
+  button.time = button:CreateFontString(nil, "OVERLAY")
+  button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
+  button.time:SetPoint("BOTTOMLEFT", button, -2, -2)
+  button.time:SetTextColor(1, 1, 0.65)
+  button.time:SetShadowOffset(1, -1)
+  button.time:SetShadowColor(0, 0, 0, 1)
+  button.time:SetJustifyH("CENTER")
+
+  -- For player debuffs show the spell name
+  if cfg.units[unit].auras.debuffs.spellName then
+    button.spell = button:CreateFontString(nil, "OVERLAY")
+    button.spell:SetPoint("RIGHT", button, "LEFT", -4, 0)
+    button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
+    button.spell:SetTextColor(1, 1, 1)
+    button.spell:SetShadowOffset(1, -1)
+    button.spell:SetShadowColor(0, 0, 0, 1)
+    button.spell:SetJustifyH("RIGHT")
+    button.spell:SetWordWrap(false)
+  end
+end
+
 -- -----------------------------------
 -- > PLAYER STYLE
 -- -----------------------------------
@@ -66,7 +103,8 @@ local createStyle = function(self)
   lum:CreateArtifactPowerBar(self)
 
   -- Auras
-  lum:SetDebuffAuras(
+  local debuffs =
+    lum:SetDebuffAuras(
     self,
     frame,
     12,
@@ -79,10 +117,11 @@ local createStyle = function(self)
     -56,
     -2,
     "BOTTOMRIGHT",
-    "UP",
     nil,
+    "UP",
     true
   )
+  debuffs.PostCreateIcon = PostCreateIcon
 
   lum:SetBarTimerAuras(
     self,

@@ -55,7 +55,7 @@ cfg.healingSpecs = {
 -- -----------------------------------
 
 cfg.colors = {
-  backdrop = {r = 0, g = 0, b = 0, a = 1}, -- Backdrop Color (Some frames might not be affected)
+  backdrop = {0, 0, 0, 0.9}, -- Backdrop Color (Some frames might not be affected)
   health = {0.2, 0.2, 0.2, 1}, -- Fallback color
   inverted = {0.1, 0.1, 0.1, 1} -- Inverted Color
 }
@@ -102,11 +102,50 @@ cfg.frames = {
   },
   shadow = {
     show = true, -- Use frame drop shadows
-    opacity = 0.7
+    color = {0, 0, 0, 0.7}
   },
   range = {
     insideAlpha = 1,
     outsideAlpha = 0.25
+  }
+}
+
+-- -----------------------------------
+-- > Elements
+-- -----------------------------------
+
+cfg.elements = {
+  castbar = {
+    backdrop = {
+      color = {0, 0, 0, 0.9}
+    },
+    timeToHold = 1.5,
+    fader = {
+      fadeInAlpha = 1,
+      fadeInDuration = 0.1,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3,
+      fadeOutDelay = 0.5
+    }
+  },
+  experiencebar = {
+    show = true,
+    height = 3,
+    width = Minimap:GetWidth() + 4,
+    pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -12}
+  },
+  artifactpowerbar = {
+    show = true,
+    height = 3,
+    width = Minimap:GetWidth() + 4,
+    pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24}
+  },
+  altpowerbar = {
+    show = true
+  },
+  mirrorTimers = {
+    width = 220,
+    height = cfg.frames.main.height + 2
   }
 }
 
@@ -151,8 +190,13 @@ cfg.units = {
       }
     },
     auras = {
+      buffs = {
+        show = false,
+        spellName = false
+      },
       debuffs = {
-        show = true
+        show = true,
+        spellName = true
       },
       barTimers = {
         show = true
@@ -195,7 +239,12 @@ cfg.units = {
     },
     auras = {
       buffs = {
-        show = true
+        show = true,
+        spellName = false
+      },
+      debuffs = {
+        show = false,
+        spellName = false
       },
       barTimers = {
         show = true
@@ -225,6 +274,16 @@ cfg.units = {
       classColored = false,
       frequentUpdates = false,
       smooth = true
+    },
+    auras = {
+      buffs = {
+        show = false,
+        spellName = false
+      },
+      debuffs = {
+        show = false,
+        spellName = false
+      }
     },
     fader = {
       fadeInAlpha = 1,
@@ -257,6 +316,16 @@ cfg.units = {
       width = 282,
       height = cfg.frames.main.height
     },
+    auras = {
+      buffs = {
+        show = false,
+        spellName = false
+      },
+      debuffs = {
+        show = false,
+        spellName = false
+      }
+    },
     fader = {
       fadeInAlpha = 1,
       fadeInDuration = 0.3,
@@ -288,8 +357,15 @@ cfg.units = {
       frequentUpdates = false,
       smooth = true
     },
-    buffs = {
-      filter = true
+    auras = {
+      buffs = {
+        show = false,
+        filter = true
+      },
+      debuffs = {
+        show = false,
+        spellName = false
+      }
     },
     visibility = "[petbattle][overridebar][vehicleui][possessbar][shapeshift][channeling] hide; [pet,mod][pet,harm][pet,combat] show; hide",
     fader = {
@@ -323,6 +399,16 @@ cfg.units = {
       color = {5 / 255, 107 / 255, 246 / 255},
       width = 282,
       height = cfg.frames.main.height
+    },
+    auras = {
+      buffs = {
+        show = false,
+        spellName = false
+      },
+      debuffs = {
+        show = false,
+        spellName = false
+      }
     }
   },
   arena = {
@@ -342,6 +428,16 @@ cfg.units = {
       classColored = false,
       frequentUpdates = false,
       smooth = true
+    },
+    auras = {
+      buffs = {
+        show = false,
+        spellName = false
+      },
+      debuffs = {
+        show = false,
+        spellName = false
+      }
     }
   },
   party = {
@@ -363,6 +459,16 @@ cfg.units = {
       frequentUpdates = false,
       smooth = true
     },
+    auras = {
+      buffs = {
+        show = false,
+        spellName = false
+      },
+      debuffs = {
+        show = true,
+        spellName = false
+      }
+    },
     showPortraits = true,
     forceRole = false
   },
@@ -372,7 +478,7 @@ cfg.units = {
   nameplate = {
     show = true,
     width = 120,
-    height = 8,
+    height = 6,
     pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0},
     power = {
       height = 4,
@@ -392,40 +498,5 @@ cfg.units = {
     showTargetArrow = false,
     showGlow = true,
     showHighlight = false
-  }
-}
-
-cfg.elements = {
-  castbar = {
-    backdrop = {
-      color = {r = 0, g = 0, b = 0, a = 0.85}
-    },
-    timeToHold = 1.5,
-    fader = {
-      fadeInAlpha = 1,
-      fadeInDuration = 0.1,
-      fadeOutAlpha = 0,
-      fadeOutDuration = 0.3,
-      fadeOutDelay = 0.5
-    }
-  },
-  experiencebar = {
-    show = true,
-    height = 3,
-    width = Minimap:GetWidth() + 4,
-    pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -12}
-  },
-  artifactpowerbar = {
-    show = true,
-    height = 3,
-    width = Minimap:GetWidth() + 4,
-    pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24}
-  },
-  altpowerbar = {
-    show = true
-  },
-  mirrorTimers = {
-    width = 220,
-    height = cfg.frames.main.height + 2
   }
 }

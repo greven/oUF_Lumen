@@ -67,8 +67,8 @@ local createStyle = function(self)
     0,
     2,
     "BOTTOMLEFT",
-    nil,
     "RIGHT",
+    "DOWN",
     true
   )
 

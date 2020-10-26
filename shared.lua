@@ -54,7 +54,7 @@ function lum:SharedStyle(self, type)
 
 	self.Health.bg = self.Health:CreateTexture(nil, "BACKGROUND")
 	self.Health.bg:SetAllPoints(self.Health)
-	self.Health.bg:SetAlpha(0.1)
+	self.Health.bg:SetAlpha(0.05)
 	self.Health.bg:SetTexture(m.textures.bg_texture)
 
 	-- Power Bar
@@ -103,6 +103,6 @@ function lum:SharedStyle(self, type)
 
 	-- Drop Shadow
 	if cfg.frames.shadow.show then
-		api:CreateDropShadow(self, 5, 5, {0, 0, 0, cfg.frames.shadow.opacity})
+		api:CreateDropShadow(self, 6, 6)
 	end
 end

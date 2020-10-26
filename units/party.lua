@@ -74,34 +74,6 @@ local PostUpdatePower = function(power, unit, min, max)
   end
 end
 
--- Post Update Aura Icon
-local PostUpdateIcon = function(element, unit, icon, index)
-  local name, _, count, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-  if duration and duration > 0 then
-    icon.timeLeft = expirationTime - GetTime()
-  else
-    icon.timeLeft = math.huge
-  end
-
-  icon:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-      lum:AuraTimer_OnUpdate(self, elapsed)
-    end
-  )
-end
-
--- Filter Debuffs
-local PartyDebuffsFilter = function(icons, unit, icon, name)
-  if name then
-    if debuffs.list[frame][name] or duration == 0 then -- Ignore debuffs in the party list
-      return false
-    end
-  end
-  return true
-end
-
 local PostUpdatePortrait = function(element, unit)
   element:SetModelAlpha(0.15)
   element:SetDesaturation(1)
@@ -130,6 +102,7 @@ local createStyle = function(self)
   lum:CreateHealthValueString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 8, "LEFT")
 
   lum:CreatePartyNameString(self, font, cfg.fontsize)
+
   if self.cfg.health.classColoredText then
     self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [raidcolor][lum:name]")
   end
@@ -148,16 +121,24 @@ local createStyle = function(self)
     self.Portrait = Portrait
   end
 
-  -- Defuffs
-  local debuffs = lum:CreateAura(self, 12, 2, self.cfg.height / 2 + 2, 3)
-  debuffs:SetPoint("TOPRIGHT", self, "TOPLEFT", -6, 2)
-  debuffs.initialAnchor = "TOPRIGHT"
-  debuffs["growth-x"] = "LEFT"
-  debuffs["growth-y"] = "DOWN"
-  debuffs.showDebuffType = true
-  debuffs.CustomFilter = PartyDebuffsFilter
-  debuffs.PostUpdateIcon = PostUpdateIcon
-  self.Debuffs = debuffs
+  -- Debuffs
+  lum:SetDebuffAuras(
+    self,
+    frame,
+    12,
+    2,
+    self.cfg.height / 2 + 2,
+    3,
+    "TOPRIGHT",
+    self,
+    "TOPLEFT",
+    -6,
+    2,
+    "TOPRIGHT",
+    "LEFT",
+    "DOWN",
+    true
+  )
 
   -- Group Role Icon
   local GroupRoleIndicator = lum:CreateGroupRoleIndicator(self)

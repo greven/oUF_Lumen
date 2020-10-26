@@ -11,59 +11,6 @@ local font = m.fonts.font
 -- > Auras
 -- -----------------------------------
 
-local PostCreateIcon = function(Auras, button)
-  local count = button.count
-  count:ClearAllPoints()
-  count:SetFont(m.fonts.font, 12, "OUTLINE")
-  count:SetPoint("TOPRIGHT", button, 3, 3)
-
-  button.icon:SetTexCoord(.08, .92, .08, .92)
-
-  button.overlay:SetTexture(m.textures.border)
-  button.overlay:SetTexCoord(0, 1, 0, 1)
-  button.overlay.Hide = function(self)
-    self:SetVertexColor(0.3, 0.3, 0.3)
-  end
-
-  button.spell = button:CreateFontString(nil, "OVERLAY")
-  button.spell:SetPoint("RIGHT", button, "LEFT", -4, 0)
-  button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
-  button.spell:SetTextColor(1, 1, 1)
-  button.spell:SetShadowOffset(1, -1)
-  button.spell:SetShadowColor(0, 0, 0, 1)
-  button.spell:SetJustifyH("RIGHT")
-  button.spell:SetWordWrap(false)
-
-  button.time = button:CreateFontString(nil, "OVERLAY")
-  button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
-  button.time:SetPoint("BOTTOMLEFT", button, -2, -2)
-  button.time:SetTextColor(1, 1, 0.65)
-  button.time:SetShadowOffset(1, -1)
-  button.time:SetShadowColor(0, 0, 0, 1)
-  button.time:SetJustifyH("CENTER")
-end
-
-local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
-  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-  if duration and duration > 0 then
-    icon.timeLeft = expirationTime - GetTime()
-  else
-    icon.timeLeft = math.huge
-  end
-
-  if (icon.spell) then
-    icon.spell:SetText(name)
-  end
-
-  icon:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-      lum:AuraTimer_OnUpdate(self, elapsed)
-    end
-  )
-end
-
 function lum:SetBuffAuras(
   self,
   frame,
@@ -77,12 +24,9 @@ function lum:SetBuffAuras(
   posX,
   posY,
   initialAnchor,
-  growthY,
   growthX,
-  showStealableBuffs,
-  CustomFilter,
-  PostCreate,
-  PostUpdate)
+  growthY,
+  showStealableBuffs)
   if not cfg.units[frame].auras.buffs.show then
     return
   end
@@ -92,9 +36,9 @@ function lum:SetBuffAuras(
   buffs.initialAnchor = initialAnchor
   buffs["growth-y"] = growthY or "DOWN"
   buffs["growth-x"] = growthX or "RIGHT"
-  buffs.showStealableBuffs = true
-  buffs.PostUpdateIcon = PostUpdate or PostUpdateIcon
+  buffs.showStealableBuffs = showStealableBuffs
   self.Buffs = buffs
+  return buffs
 end
 
 function lum:SetDebuffAuras(
@@ -110,12 +54,9 @@ function lum:SetDebuffAuras(
   posX,
   posY,
   initialAnchor,
-  growthY,
   growthX,
-  showDebuffType,
-  CustomFilter,
-  PostCreate,
-  PostUpdate)
+  growthY,
+  showDebuffType)
   if not cfg.units[frame].auras.debuffs.show then
     return
   end
@@ -135,56 +76,10 @@ function lum:SetDebuffAuras(
   debuffs.initialAnchor = initialAnchor
   debuffs["growth-y"] = growthY or "DOWN"
   debuffs["growth-x"] = growthX or "RIGHT"
-  debuffs.showDebuffType = showDebuffType or true
-  debuffs.CustomFilter = CustomFilter or DebuffsCustomFilter
-  debuffs.PostCreateIcon = PostCreate or PostCreateIcon
-  debuffs.PostUpdateIcon = PostUpdate or PostUpdateIcon
+  debuffs.showDebuffType = showDebuffType
+  debuffs.CustomFilter = DebuffsCustomFilter
   self.Debuffs = debuffs
-end
-
-local PostUpdateBarTimer = function(element, unit, button, index)
-  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, button.filter)
-
-  if duration and duration > 0 then
-    button.timeLeft = expirationTime - GetTime()
-    button.bar:SetMinMaxValues(0, duration)
-    button.bar:SetValue(button.timeLeft)
-
-    if button.isDebuff then -- bar color
-      button.bar:SetStatusBarColor(1, 0.1, 0.2)
-    else
-      button.bar:SetStatusBarColor(0, 0.4, 1)
-    end
-  else
-    button.timeLeft = math.huge
-    button.bar:SetStatusBarColor(0.6, 0, 0.8) -- permenant buff / debuff
-  end
-
-  button.spell:SetText(name) -- set spell name
-
-  button:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-      lum:BarTimer_OnUpdate(self, elapsed)
-    end
-  )
-end
-
-local PlayerCustomFilter = function(...)
-  local spellID = select(13, ...)
-  if spellID then
-    if filters["ALL"].buffs[spellID] or filters[G.playerClass].buffs[spellID] then
-      return true
-    end
-  end
-end
-
-local TargetCustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
-  if spellID then
-    if (filters[G.playerClass].debuffs[spellID] and button.isPlayer) then
-      return true
-    end
-  end
+  return debuffs
 end
 
 function lum:SetBarTimerAuras(
@@ -200,28 +95,44 @@ function lum:SetBarTimerAuras(
   posX,
   posY,
   initialAnchor,
-  growthY,
-  CustomFilter,
-  PostUpdate)
+  growthY)
   if not cfg.units[frame].auras.barTimers.show then
     return
+  end
+
+  local PlayerCustomFilter = function(...)
+    local spellID = select(13, ...)
+    if spellID then
+      if filters["ALL"].buffs[spellID] or filters[G.playerClass].buffs[spellID] then
+        return true
+      end
+    end
+  end
+
+  local TargetCustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
+    if spellID then
+      if (filters[G.playerClass].debuffs[spellID] and button.isPlayer) then
+        return true
+      end
+    end
   end
 
   local barTimers = lum:CreateBarTimer(self, numAuras, numRows, size, spacing)
   barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16)
   barTimers.initialAnchor = "BOTTOMLEFT"
   barTimers["growth-y"] = "UP"
-  barTimers.PostUpdateIcon = PostUpdate or PostUpdateBarTimer
 
   if frame == "player" then
-    barTimers.CustomFilter = CustomFilter or PlayerCustomFilter
+    barTimers.CustomFilter = PlayerCustomFilter
     self.Buffs = barTimers
   end
 
   if frame == "target" then
-    barTimers.CustomFilter = CustomFilter or TargetCustomFilter
+    barTimers.CustomFilter = TargetCustomFilter
     self.Debuffs = barTimers
   end
+
+  return barTimers
 end
 
 -- -----------------------------------
@@ -239,7 +150,7 @@ end
 -- Create Party / Raid health warning status border
 function lum:CreateHealthBorder(self)
   self.HPborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  api:CreateBorder(self, self.HPborder, 1, 4, "Interface\\ChatFrame\\ChatFrameBackground")
+  api:CreateBorder(self, self.HPborder, 1, 4)
   self.HPborder:SetBackdropBorderColor(180 / 255, 255 / 255, 0 / 255, 1)
 end
 
@@ -264,7 +175,7 @@ end
 -- Create Party / Raid Threat Status Border
 function lum:CreateThreatBorder(self)
   self.ThreatBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  api:CreateBorder(self, self.ThreatBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+  api:CreateBorder(self, self.ThreatBorder, 1, 3)
   self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
   self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
 end
@@ -328,6 +239,7 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
     if not LastBar then
       return
     end
+
     LastBar:SetStatusBarColor(r, g, b)
     LastBar.bg:SetColorTexture(r * 0.2, g * 0.2, b * 0.2)
   end
@@ -407,7 +319,7 @@ local function CreateRuneBar(self)
 
     Rune:SetSize(width, 2)
     Rune:SetStatusBarTexture(m.textures.status_texture)
-    api:SetBackdrop(Rune, 2, 2, 2, 2) -- Backdrop
+    api:SetBackdrop(Rune, 2, 2, 2, 2)
 
     if (index == 1) then
       Rune:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
@@ -705,7 +617,7 @@ end
 -- ------------------------------------------
 
 -- Group Role Indicator
-local function UpdateRoleIcon(event)
+local function UpdateRoleIcon(self, event)
   local lfdrole = self.GroupRoleIndicator
 
   local role = UnitGroupRolesAssigned(self.unit)
@@ -727,8 +639,7 @@ function lum:CreateGroupRoleIndicator(self)
   local roleIcon = self.Health:CreateTexture(nil, "OVERLAY")
   roleIcon:SetPoint("LEFT", self, 8, 0)
   roleIcon:SetSize(16, 16)
-  roleIcon.Override = core.UpdateRoleIcon
-
+  roleIcon.Override = UpdateRoleIcon
   self:RegisterEvent("UNIT_CONNECTION", UpdateRoleIcon)
   return roleIcon
 end
