@@ -208,103 +208,76 @@ end
 -- > Class Power
 -- -----------------------------------
 
+-- Colorize the last power color element
+local function SetMaxClassPowerColor(element, max, powerType)
+  if not element or not max then
+    return
+  end
+
+  local LastBar = element[max]
+  local color = element.__owner.colors.power.max[powerType]
+
+  if color then
+    local r, g, b = color[1], color[2], color[3]
+    LastBar:SetStatusBarColor(r, g, b)
+
+    local bg = LastBar.bg
+    if (bg) then
+      local mu = bg.multiplier or 1
+      bg:SetColorTexture(r * mu, g * mu, b * mu)
+    end
+  end
+end
+
 -- Post Update ClassPower
 local function PostUpdateClassPower(element, cur, max, diff, powerType)
   if (diff) then
     local maxWidth, gap = cfg.frames.main.width, 6
 
-    for index = 1, max do
-      local Bar = element[index]
+    for i = 1, max do
+      local Bar = element[i]
       Bar:SetWidth(((maxWidth / max) - (((max - 1) * gap) / max)))
 
-      if (index > 1) then
+      if (i > 1) then
         Bar:ClearAllPoints()
-        Bar:SetPoint("LEFT", element[index - 1], "RIGHT", gap, 0)
+        Bar:SetPoint("LEFT", element[i - 1], "RIGHT", gap, 0)
       end
     end
   end
 
-  -- Colorize the last bar
-  local LastBarColor = {
-    DRUID = {161 / 255, 92 / 255, 255 / 255},
-    MAGE = {5 / 255, 96 / 255, 250 / 255},
-    MONK = {0 / 255, 143 / 255, 247 / 255},
-    PALADIN = {255 / 255, 26 / 255, 48 / 255},
-    ROGUE = {161 / 255, 92 / 255, 255 / 255},
-    WARLOCK = {255 / 255, 26 / 255, 48 / 255}
-  }
-
-  if max then
-    local LastBar = element[max]
-    local r, g, b = unpack(LastBarColor[G.playerClass])
-
-    if not LastBar then
-      return
-    end
-
-    LastBar:SetStatusBarColor(r, g, b)
-    LastBar.bg:SetColorTexture(r * 0.2, g * 0.2, b * 0.2)
-  end
-end
-
--- Post Update ClassPower Texture
-local function UpdateClassPowerColor(element)
-  -- Default color
-  local r, g, b = 102 / 255, 221 / 255, 255 / 255
-
-  if (not UnitHasVehicleUI("player")) then
-    if (G.playerClass == "ROGUE") then
-      r, g, b = 255 / 255, 26 / 255, 48 / 255
-    elseif (G.playerClass == "DRUID") then
-      r, g, b = 255 / 255, 26 / 255, 48 / 255
-    elseif (G.playerClass == "MONK") then
-      r, g, b = 0, 204 / 255, 153 / 255
-    elseif (G.playerClass == "WARLOCK") then
-      r, g, b = 161 / 255, 92 / 255, 255 / 255
-    elseif (G.playerClass == "PALADIN") then
-      r, g, b = 255 / 255, 255 / 255, 125 / 255
-    elseif (G.playerClass == "MAGE") then
-      r, g, b = 25 / 255, 182 / 255, 255 / 255
-    end
-  end
-
-  for index = 1, #element do
-    local Bar = element[index]
-    Bar:SetStatusBarColor(r, g, b)
-    Bar.bg:SetColorTexture(r * 0.2, g * 0.2, b * 0.2)
-  end
+  SetMaxClassPowerColor(element, max, powerType)
 end
 
 -- Create Class Power Bars (Combo Points...)
 local function CreateClassPower(self)
   local ClassPower = {}
-  ClassPower.UpdateColor = UpdateClassPowerColor
-  ClassPower.PostUpdate = PostUpdateClassPower
 
-  for index = 1, 10 do
+  for i = 1, 10 do
     local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self, "BackdropTemplate")
     Bar:SetHeight(cfg.frames.main.classPower.height)
     Bar:SetStatusBarTexture(m.textures.status_texture)
     api:SetBackdrop(Bar, 1.5, 1.5, 1.5, 1.5)
 
-    if (index > 1) then
-      Bar:SetPoint("LEFT", ClassPower[index - 1], "RIGHT", 6, 0)
+    if (i > 1) then
+      Bar:SetPoint("LEFT", ClassPower[i - 1], "RIGHT", 6, 0)
     else
       Bar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
     end
 
-    if (index > 5) then
+    if (i > 5) then
       Bar:SetFrameLevel(Bar:GetFrameLevel() + 1)
     end
 
     local Background = Bar:CreateTexture(nil, "BORDER")
     Background:SetAllPoints()
     Background:SetTexture(m.textures.bg_texture)
+    Background.multiplier = 0.2
     Bar.bg = Background
 
-    ClassPower[index] = Bar
+    ClassPower[i] = Bar
   end
 
+  ClassPower.PostUpdate = PostUpdateClassPower
   self.ClassPower = ClassPower
 end
 
@@ -312,9 +285,9 @@ end
 local function CreateRuneBar(self)
   local Runes = {}
   Runes.sortOrder = "asc"
-  Runes.colorSpec = true -- color runes by spec
+  Runes.colorSpec = true
 
-  for index = 1, 6 do
+  for i = 1, 6 do
     local Rune = CreateFrame("StatusBar", nil, self)
     local numRunes, maxWidth, gap = 6, cfg.frames.main.width, 6
     local width = ((maxWidth / numRunes) - (((numRunes - 1) * gap) / numRunes))
@@ -323,19 +296,19 @@ local function CreateRuneBar(self)
     Rune:SetStatusBarTexture(m.textures.status_texture)
     api:SetBackdrop(Rune, 2, 2, 2, 2)
 
-    if (index == 1) then
+    if (i == 1) then
       Rune:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
     else
-      Rune:SetPoint("LEFT", Runes[index - 1], "RIGHT", gap, 0)
+      Rune:SetPoint("LEFT", Runes[i - 1], "RIGHT", gap, 0)
     end
 
-    local RuneBG = Rune:CreateTexture(nil, "BORDER")
-    RuneBG:SetAllPoints()
-    RuneBG:SetTexture(m.textures.bg_texture)
-    RuneBG.multiplier = 0.2
-    Rune.bg = RuneBG
+    local Background = Rune:CreateTexture(nil, "BORDER")
+    Background:SetAllPoints()
+    Background:SetTexture(m.textures.bg_texture)
+    Background.multiplier = 0.2
+    Rune.bg = Background
 
-    Runes[index] = Rune
+    Runes[i] = Rune
   end
 
   self.Runes = Runes
@@ -343,17 +316,10 @@ end
 
 -- Class Power (Combo Points, Runes, etc...)
 function lum:CreateClassPower(self)
-  if
-    G.playerClass == "ROGUE" or G.playerClass == "DRUID" or G.playerClass == "MAGE" or G.playerClass == "MONK" or
-      G.playerClass == "PALADIN" or
-      G.playerClass == "WARLOCK"
-   then
-    CreateClassPower(self)
-  end
-
-  -- Death Knight Runes
   if G.playerClass == "DEATHKNIGHT" then
     CreateRuneBar(self)
+  else
+    CreateClassPower(self)
   end
 end
 

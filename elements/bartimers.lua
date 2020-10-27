@@ -86,7 +86,7 @@ local function PostCreateBar(self, button)
 
 	button.bar.bg = button.bar:CreateTexture(nil, "BORDER")
 	button.bar.bg:SetAllPoints()
-	button.bar.bg:SetAlpha(0.15)
+	button.bar.bg:SetAlpha(0.05)
 	button.bar.bg:SetTexture(m.textures.bg_texture)
 	button.bar.bg:SetColorTexture(1 / 3, 1 / 3, 1 / 3)
 

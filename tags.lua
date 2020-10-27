@@ -140,60 +140,109 @@ events["lum:altpower"] = "UNIT_MAXPOWER UNIT_POWER_UPDATE"
 
 -- Class Power (Combo Points, Insanity, )
 tags["lum:classpower"] = function(unit)
+  local SPEC_MAGE_ARCANE = SPEC_MAGE_ARCANE or 1
+  local SPEC_MONK_WINDWALKER = SPEC_MONK_WINDWALKER or 3
+  local SPELL_POWER_COMBO_POINTS = Enum.PowerType.ComboPoints or 4
+  local SPELL_POWER_SOUL_SHARDS = Enum.PowerType.SoulShards or 7
+  local SPELL_POWER_HOLY_POWER = Enum.PowerType.HolyPower or 9
+  local SPELL_POWER_CHI = Enum.PowerType.Chi or 12
+  local SPELL_POWER_ARCANE_CHARGES = Enum.PowerType.ArcaneCharges or 16
+
+  local GetSpecialization = GetSpecialization
+
+  local ClassPowerID, ClassPowerType, RequireSpec
   local PlayerClass = G.playerClass
-  local num, max, color
 
   if (PlayerClass == "MONK") then
-    -- num = _TAGS['chi']()
-    if (GetSpecialization() == SPEC_MONK_WINDWALKER) then
-      num = UnitPower("player", Enum.PowerType.Chi)
-      max = UnitPowerMax("player", Enum.PowerType.Chi)
-      color = "00CC99"
-      if (num == max) then
-        color = "008FF7"
-      end
-    end
-  elseif (PlayerClass == "WARLOCK") then
-    num = UnitPower("player", Enum.PowerType.SoulShards)
-    max = UnitPowerMax("player", Enum.PowerType.SoulShards)
-    color = "A15CFF"
-    if (num == max) then
-      color = "FF1A30"
-    end
+    ClassPowerID = SPELL_POWER_CHI
+    ClassPowerType = "CHI"
+    RequireSpec = SPEC_MONK_WINDWALKER
   elseif (PlayerClass == "PALADIN") then
-    num = UnitPower("player", Enum.PowerType.HolyPower)
-    max = UnitPowerMax("player", Enum.PowerType.HolyPower)
-    color = "FFFF7D"
-    if (num == max) then
-      color = "FF1A30"
-    end
+  elseif (PlayerClass == "PALADIN") then
+    ClassPowerID = SPELL_POWER_HOLY_POWER
+    ClassPowerType = "HOLY_POWER"
+  elseif (PlayerClass == "WARLOCK") then
+    ClassPowerID = SPELL_POWER_SOUL_SHARDS
+    ClassPowerType = "SOUL_SHARDS"
+  elseif (PlayerClass == "ROGUE" or PlayerClass == "DRUID") then
+    ClassPowerID = SPELL_POWER_COMBO_POINTS
+    ClassPowerType = "COMBO_POINTS"
   elseif (PlayerClass == "MAGE") then
-    if (GetSpecialization() == SPEC_MAGE_ARCANE) then
-      num = UnitPower("player", Enum.PowerType.ArcaneCharges)
-      max = UnitPowerMax("player", Enum.PowerType.ArcaneCharges)
-      color = "19B6FF"
-      if (num == max) then
-        color = "0560FA"
-      end
-    end
-  else -- Combo Points
-    if (UnitHasVehicleUI("player")) then
-      num = GetComboPoints("vehicle", "target")
-    else
-      num = GetComboPoints("player", "target")
-      max = UnitPowerMax("player", Enum.PowerType.ComboPoints)
-      color = "FFF569"
-      if (num == max) then
-        color = "FF1A30"
-      end
-    end
+    ClassPowerID = SPELL_POWER_ARCANE_CHARGES
+    ClassPowerType = "ARCANE_CHARGES"
+    RequireSpec = SPEC_MAGE_ARCANE
   end
 
-  if (num and num > 0) then
-    return string.format("|cff%s%d|r", color, num)
+  local powerID = unit == "vehicle" and SPELL_POWER_COMBO_POINTS or ClassPowerID
+  local powerType = unit == "vehicle" and "COMBO_POINTS" or ClassPowerType
+
+  if RequireSpec and RequireSpec ~= GetSpecialization() or not powerID then
+    return
   end
+
+  local cur = UnitPower("player", powerID)
+  local max = UnitPowerMax("player", powerID)
+  local color, maxColor = oUF.colors.power[powerType], oUF.colors.power.max[powerType]
+
+  if cur == max then
+    color = maxColor
+  end
+
+  if cur and cur > 0 then
+    return string.format("%s%d|r", core:ToHex(color), cur)
+  end
+
+  -- if (PlayerClass == "MONK") then
+  --   -- num = _TAGS['chi']()
+  --   if (GetSpecialization() == SPEC_MONK_WINDWALKER) then
+  --     num = UnitPower("player", Enum.PowerType.Chi)
+  --     max = UnitPowerMax("player", Enum.PowerType.Chi)
+  --     color = "00CC99"
+  --     if (num == max) then
+  --       color = "008FF7"
+  --     end
+  --   end
+  -- elseif (PlayerClass == "WARLOCK") then
+  --   num = UnitPower("player", Enum.PowerType.SoulShards)
+  --   max = UnitPowerMax("player", Enum.PowerType.SoulShards)
+  --   color = "A15CFF"
+  --   if (num == max) then
+  --     color = "FF1A30"
+  --   end
+  -- elseif (PlayerClass == "PALADIN") then
+  --   num = UnitPower("player", Enum.PowerType.HolyPower)
+  --   max = UnitPowerMax("player", Enum.PowerType.HolyPower)
+  --   color = "FFFF7D"
+  --   if (num == max) then
+  --     color = "FF1A30"
+  --   end
+  -- elseif (PlayerClass == "MAGE") then
+  --   if (GetSpecialization() == SPEC_MAGE_ARCANE) then
+  --     num = UnitPower("player", Enum.PowerType.ArcaneCharges)
+  --     max = UnitPowerMax("player", Enum.PowerType.ArcaneCharges)
+  --     color = "19B6FF"
+  --     if (num == max) then
+  --       color = "0560FA"
+  --     end
+  --   end
+  -- else -- Combo Points
+  --   if (UnitHasVehicleUI("player")) then
+  --     num = GetComboPoints("vehicle", "target")
+  --   else
+  --     num = GetComboPoints("player", "target")
+  --     max = UnitPowerMax("player", Enum.PowerType.ComboPoints)
+  --     color = "FFF569"
+  --     if (num == max) then
+  --       color = "FF1A30"
+  --     end
+  --   end
+  -- end
+
+  -- if (num and num > 0) then
+  --   return string.format("|cff%s%d|r", color, num)
+  -- end
 end
-events["lum:classpower"] = "UNIT_POWER_UPDATE SPELLS_CHANGED UNIT_POWER_FREQUENT PLAYER_TARGET_CHANGED"
+events["lum:classpower"] = "UNIT_POWER_UPDATE PLAYER_TARGET_CHANGED"
 
 tags["lum:role"] = function(unit)
   local Role = UnitGroupRolesAssigned(unit)
