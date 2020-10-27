@@ -217,7 +217,7 @@ local function SetMaxClassPowerColor(element, max, powerType)
   local LastBar = element[max]
   local color = element.__owner.colors.power.max[powerType]
 
-  if color then
+  if LastBar and color then
     local r, g, b = color[1], color[2], color[3]
     LastBar:SetStatusBarColor(r, g, b)
 
