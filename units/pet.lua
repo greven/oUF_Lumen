@@ -26,24 +26,6 @@ local PostUpdateHealth = function(health, unit, min, max)
   end
 end
 
--- Post Update Aura Icon
-local PostUpdateIcon = function(icons, unit, icon, index, offset, filter, isDebuff)
-  local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
-
-  if duration and duration > 0 then
-    icon.timeLeft = expirationTime - GetTime()
-  else
-    icon.timeLeft = math.huge
-  end
-
-  icon:SetScript(
-    "OnUpdate",
-    function(self, elapsed)
-      lum:AuraTimer_OnUpdate(self, elapsed)
-    end
-  )
-end
-
 -- Filter Buffs
 local PetBuffsFilter = function(...)
   local spellID = select(13, ...)
@@ -65,22 +47,33 @@ local createStyle = function(self)
   -- Texts
   lum:CreateNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
   self:Tag(self.Name, "[lum:name]")
-  -- lum:CreateHealthValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", -4, 0, "RIGHT")
-  -- self:Tag(self.Health.value, '[lum:hpperc]')
 
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
 
-  -- Buffs
-  local buffs = lum:CreateAura(self, 5, 1, cfg.frames.secondary.height + 4, 2)
-  buffs:SetPoint("BOTTOMLEFT", "oUF_LumenPet", "TOPLEFT", -2, 6)
-  buffs.initialAnchor = "BOTTOMLEFT"
-  buffs["growth-x"] = "RIGHT"
-  buffs.PostUpdateIcon = PostUpdateIcon
+  -- Auras
+  local buffs =
+    lum:SetBuffAuras(
+    self,
+    frame,
+    5,
+    1,
+    cfg.frames.secondary.height + 4,
+    2,
+    "BOTTOMLEFT",
+    self,
+    "TOPLEFT",
+    -2,
+    6,
+    "BOTTOMLEFT",
+    "RIGHT",
+    "UP",
+    true
+  )
+
   if (self.cfg.auras.buffs.filter) then
     buffs.CustomFilter = PetBuffsFilter
   end
-  self.Buffs = buffs
 
   -- Heal Prediction
   lum:CreateHealPrediction(self)
