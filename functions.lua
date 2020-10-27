@@ -56,13 +56,14 @@ function lum:SetDebuffAuras(
   initialAnchor,
   growthX,
   growthY,
-  showDebuffType)
+  showDebuffType,
+  onlyShowPlayer)
   if not cfg.units[frame].auras.debuffs.show then
     return
   end
 
-  -- Debuffs Filter (Blacklist)
-  local DebuffsCustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
+  -- Debuffs filter (Blacklist)
+  local CustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
     if spellID then
       if debuffs.list[frame][spellID] or duration == 0 then
         return false
@@ -77,7 +78,8 @@ function lum:SetDebuffAuras(
   debuffs["growth-y"] = growthY or "DOWN"
   debuffs["growth-x"] = growthX or "RIGHT"
   debuffs.showDebuffType = showDebuffType
-  debuffs.CustomFilter = DebuffsCustomFilter
+  debuffs.onlyShowPlayer = onlyShowPlayer
+  debuffs.CustomFilter = CustomFilter
   self.Debuffs = debuffs
   return debuffs
 end
@@ -358,13 +360,6 @@ end
 -- -----------------------------------
 -- > Heal Prediction
 -- -----------------------------------
-
--- myBar          - A `StatusBar` used to represent incoming heals from the player.
--- otherBar       - A `StatusBar` used to represent incoming heals from others.
--- absorbBar      - A `StatusBar` used to represent damage absorbs.
--- healAbsorbBar  - A `StatusBar` used to represent heal absorbs.
--- overAbsorb     - A `Texture` used to signify that the amount of damage absorb is greater than the unit's missing health.
--- overHealAbsorb - A `Texture` used to signify that the amount of heal absorb is greater than the unit's current health.
 
 function lum:CreateHealPrediction(self)
   local myBar = CreateFrame("StatusBar", nil, self.Health)
@@ -655,7 +650,7 @@ function lum:CreateNameString(self, font, size, outline, x, y, point, width)
   self.Name:SetJustifyH(point)
   self.Name:SetWidth(width)
   self.Name:SetHeight(size)
-  self:Tag(self.Name, "[lum:level]  [lum:name]")
+  self:Tag(self.Name, "[lum:level] [lum:name]")
 end
 
 -- Party Name
@@ -738,8 +733,8 @@ local function ExperiencePostUpdate(self)
     self:SetStatusBarColor(255 / 255, 75 / 255, 75 / 255)
     self.Rested:SetStatusBarColor(255 / 255, 205 / 255, 90 / 255)
   else -- Experience
-    self:SetStatusBarColor(150 / 255, 40 / 255, 200 / 255)
-    self.Rested:SetStatusBarColor(40 / 255, 100 / 255, 200 / 255)
+    self:SetStatusBarColor(0 / 255, 100 / 225, 255 / 255)
+    self.Rested:SetStatusBarColor(0 / 255, 100 / 225, 255 / 255, 0.35)
   end
 end
 
@@ -803,7 +798,7 @@ function lum:CreateExperienceBar(self)
     ExperienceBG:SetAllPoints()
     ExperienceBG:SetAlpha(0.3)
     ExperienceBG:SetTexture(m.textures.bg_texture)
-    ExperienceBG:SetColorTexture(1 / 3, 1 / 3, 1 / 3)
+    ExperienceBG:SetColorTexture(0.2, 0.2, 0.2)
 
     Experience:EnableMouse(true)
     Experience.UpdateTooltip = UpdateExperienceTooltip

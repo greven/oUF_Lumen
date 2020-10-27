@@ -7,24 +7,7 @@ local font = m.fonts.font
 
 local frame = "pet"
 
--- ------------------------------------------------------------------------
--- > PET UNIT SPECIFIC FUNCTiONS
--- ------------------------------------------------------------------------
-
--- Post Health Update
-local PostUpdateHealth = function(health, unit, min, max)
-  local self = health.__owner
-
-  if cfg.units[frame].health.gradientColored then
-    local color = CreateColor(oUF.ColorGradient(min, max, 1, 0, 0, 1, 1, 0, 0 / 255, 204 / 255, 180 / 255)) -- Red, Yellow, Full Health Color
-    health:SetStatusBarColor(color:GetRGB())
-  end
-
-  -- Class colored text
-  if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
-  end
-end
+-- -----------------------------------
 
 -- Filter Buffs
 local PetBuffsFilter = function(...)
@@ -47,9 +30,6 @@ local createStyle = function(self)
   -- Texts
   lum:CreateNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
   self:Tag(self.Name, "[lum:name]")
-
-  -- Health & Power Updates
-  self.Health.PostUpdate = PostUpdateHealth
 
   -- Auras
   local buffs =

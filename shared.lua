@@ -11,8 +11,6 @@ local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns
 local font = m.fonts.font
 
 -- -----------------------------------
--- > FRAMES STYLE
--- -----------------------------------
 
 local OnEnter = function(self)
 	self:SetAlpha(1) -- Player frame fading
@@ -28,6 +26,26 @@ local OnLeave = function(self)
 	self.Highlight:Hide() -- Mouseover highlight Hide
 	UnitFrame_OnLeave(self)
 end
+
+-- Post Health Update
+local PostUpdateHealth = function(health, unit, min, max)
+	local self = health.__owner
+	local frame = self.mystyle
+
+	if cfg.units[frame].health.gradientColored then
+		local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
+		health:SetStatusBarColor(color:GetRGB())
+	end
+
+	-- Class colored text
+	if cfg.units[frame].health.classColoredText then
+		self.Name:SetTextColor(unpack(api:RaidColor(unit)))
+	end
+end
+
+-- -----------------------------------
+-- > Shared Style Function
+-- -----------------------------------
 
 function lum:SharedStyle(self, type)
 	if (self.mystyle ~= "party" and self.mystyle ~= "raid" and self.mystyle ~= "boss" and self.mystyle ~= "arena") then
@@ -56,6 +74,9 @@ function lum:SharedStyle(self, type)
 	self.Health.bg:SetAllPoints(self.Health)
 	self.Health.bg:SetAlpha(0.05)
 	self.Health.bg:SetTexture(m.textures.bg_texture)
+
+	-- Health Updates
+	self.Health.PostUpdate = PostUpdateHealth
 
 	-- Power Bar
 	self.Power = CreateFrame("StatusBar", nil, self)

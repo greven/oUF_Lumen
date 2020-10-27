@@ -19,5 +19,7 @@ auras:
   ☐ Update bar timers filters for all classes @today
 
 nameplates:
+  ☐ Refactor
+  ☐ Try to improve personal resource nameplate to show Class power and power?
   ✔ Icon backdrop border not showing @done(20-10-26 00:12)
   ✔ Paladin holy power not showing on nameplate @done(20-10-26 00:12)

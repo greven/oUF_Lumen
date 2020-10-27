@@ -7,25 +7,6 @@ local font = m.fonts.font
 
 local frame = "target"
 
--- ------------------------------------------------------------------------
--- > TARGET UNIT SPECIFIC FUNCTiONS
--- ------------------------------------------------------------------------
-
--- Post Health Update
-local PostUpdateHealth = function(health, unit, min, max)
-  local self = health.__owner
-
-  if cfg.units[frame].health.gradientColored then
-    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
-    health:SetStatusBarColor(color:GetRGB())
-  end
-
-  -- Class colored text
-  if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
-  end
-end
-
 -- -----------------------------------
 -- > TARGET STYLE
 -- -----------------------------------
@@ -45,9 +26,6 @@ local createStyle = function(self)
   lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   lum:CreatePowerValueString(self, font, cfg.fontsize - 3, "THINOUTLINE", 0, 0, "CENTER")
   lum:CreateClassificationString(self, font, cfg.fontsize - 1)
-
-  -- Health & Power Updates
-  self.Health.PostUpdate = PostUpdateHealth
 
   lum:CreateCastbar(self)
   lum:CreateHealPrediction(self)
