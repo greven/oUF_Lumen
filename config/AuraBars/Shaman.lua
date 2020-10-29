@@ -10,6 +10,7 @@ filters.SHAMAN = {
     [193796 or "Flametongue"] = true,
     [196834 or "Frostbrand"] = true,
     [260734 or "Master of the Elements"] = true,
+    [58875 or "Spirit Walk"] = true,
     [191634 or "Stormkeeper"] = true,
     [73685 or "Unleash Life"] = true
   },
