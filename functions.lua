@@ -11,22 +11,7 @@ local font = m.fonts.font
 -- > Auras
 -- -----------------------------------
 
-function lum:SetBuffAuras(
-  self,
-  frame,
-  numAuras,
-  numRows,
-  height,
-  width,
-  anchor,
-  parent,
-  parentAnchor,
-  posX,
-  posY,
-  initialAnchor,
-  growthX,
-  growthY,
-  showStealableBuffs)
+function lum:SetBuffAuras(self, frame, numAuras, numRows, height, width, anchor, parent, parentAnchor, posX, posY, initialAnchor, growthX, growthY, showStealableBuffs)
   if not cfg.units[frame].auras.buffs.show then
     return
   end
@@ -41,23 +26,7 @@ function lum:SetBuffAuras(
   return buffs
 end
 
-function lum:SetDebuffAuras(
-  self,
-  frame,
-  numAuras,
-  numRows,
-  height,
-  width,
-  anchor,
-  parent,
-  parentAnchor,
-  posX,
-  posY,
-  initialAnchor,
-  growthX,
-  growthY,
-  showDebuffType,
-  onlyShowPlayer)
+function lum:SetDebuffAuras(self, frame, numAuras, numRows, height, width, anchor, parent, parentAnchor, posX, posY, initialAnchor, growthX, growthY, showDebuffType, onlyShowPlayer)
   if not cfg.units[frame].auras.debuffs.show then
     return
   end
@@ -84,20 +53,7 @@ function lum:SetDebuffAuras(
   return debuffs
 end
 
-function lum:SetBarTimerAuras(
-  self,
-  frame,
-  numAuras,
-  numRows,
-  size,
-  spacing,
-  anchor,
-  parent,
-  parentAnchor,
-  posX,
-  posY,
-  initialAnchor,
-  growthY)
+function lum:SetBarTimerAuras(self, frame, numAuras, numRows, size, spacing, anchor, parent, parentAnchor, posX, posY, initialAnchor, growthY)
   if not cfg.units[frame].auras.barTimers.show then
     return
   end
@@ -474,12 +430,7 @@ local function AltPowerPostUpdate(self, unit, cur, min, max)
   self:SetStatusBarColor(r, g, b)
   if cur < max then
     if self.isMouseOver then
-      self.Text:SetFormattedText(
-        "%s / %s - %d%%",
-        core:ShortNumber(cur),
-        core:ShortNumber(max),
-        core:NumberToPerc(cur, max)
-      )
+      self.Text:SetFormattedText("%s / %s - %d%%", core:ShortNumber(cur), core:ShortNumber(max), core:NumberToPerc(cur, max))
     elseif cur > 0 then
       self.Text:SetFormattedText("%s", core:ShortNumber(cur))
     else
@@ -701,7 +652,7 @@ local function ExperiencePostUpdate(self)
     self.Rested:SetStatusBarColor(255 / 255, 205 / 255, 90 / 255)
   else -- Experience
     self:SetStatusBarColor(0 / 255, 100 / 225, 255 / 255)
-    self.Rested:SetStatusBarColor(0 / 255, 100 / 225, 255 / 255, 0.35)
+    self.Rested:SetStatusBarColor(0 / 255, 125 / 225, 255 / 255, 0.3)
   end
 end
 
@@ -726,16 +677,12 @@ local function UpdateReputationTooltip(self)
     end
 
     GameTooltip:AddLine(format("|cff%02x%02x%02x%s|r", 0, 100, 255, name))
-    GameTooltip:AddLine(
-      format("|cffcecece%s:|r |cffb7b7b7%d / %d|r", _G["FACTION_STANDING_LABEL" .. standing], value, max - min)
-    )
+    GameTooltip:AddLine(format("|cffcecece%s:|r |cffb7b7b7%d / %d|r", _G["FACTION_STANDING_LABEL" .. standing], value, max - min))
     GameTooltip:Show()
   else
     if name and color then
       GameTooltip:AddLine(format("|cff%02x%02x%02x%s|r", color.r * 255, color.g * 255, color.b * 255, name))
-      GameTooltip:AddLine(
-        format("|cffcecece%s:|r |cffb7b7b7%d / %d|r", _G["FACTION_STANDING_LABEL" .. standing], value - min, max - min)
-      )
+      GameTooltip:AddLine(format("|cffcecece%s:|r |cffb7b7b7%d / %d|r", _G["FACTION_STANDING_LABEL" .. standing], value - min, max - min))
       GameTooltip:Show()
     end
   end

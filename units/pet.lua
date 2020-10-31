@@ -28,28 +28,11 @@ local createStyle = function(self)
   lum:SharedStyle(self, "secondary")
 
   -- Texts
-  lum:CreateNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 8)
+  lum:CreateNameString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 8)
   self:Tag(self.Name, "[lum:name]")
 
   -- Auras
-  local buffs =
-    lum:SetBuffAuras(
-    self,
-    frame,
-    5,
-    1,
-    cfg.frames.secondary.height + 4,
-    2,
-    "BOTTOMLEFT",
-    self,
-    "TOPLEFT",
-    -2,
-    6,
-    "BOTTOMLEFT",
-    "RIGHT",
-    "UP",
-    true
-  )
+  local buffs = lum:SetBuffAuras(self, frame, 5, 1, cfg.frames.secondary.height + 4, 2, "TOPRIGHT", self, "TOPLEFT", -6, 2, "TOPRIGHT", "LEFT", "DOWN", true)
 
   if (self.cfg.auras.buffs.filter) then
     buffs.CustomFilter = PetBuffsFilter

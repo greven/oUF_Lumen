@@ -36,7 +36,7 @@ local createStyle = function(self)
   lum:SharedStyle(self, "secondary")
 
   -- Texts
-  lum:CreateNameString(self, font, cfg.fontsize - 1, "THINOUTLINE", 2, 0, "LEFT", self.cfg.width - 4)
+  lum:CreateNameString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 4)
   self:Tag(self.Name, "[lum:name]")
 
   -- Health & Power Updates

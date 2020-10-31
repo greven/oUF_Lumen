@@ -296,7 +296,13 @@ cfg.units = {
     show = true,
     width = cfg.frames.secondary.width,
     height = cfg.frames.secondary.height,
-    pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", af = "oUF_LumenPlayer", x = 0, y = cfg.frames.secondary.margin},
+    pos = {
+      a1 = "BOTTOMRIGHT",
+      a2 = "TOPRIGHT",
+      af = "oUF_LumenPlayer",
+      x = 0,
+      y = cfg.frames.secondary.margin
+    },
     health = {
       classColored = true,
       gradientColored = false,
@@ -335,18 +341,12 @@ cfg.units = {
   },
   pet = {
     show = true,
-    width = 140,
+    width = cfg.frames.secondary.width,
     height = cfg.frames.secondary.height,
-    pos = {
-      a1 = "LEFT",
-      a2 = "RIGHT",
-      af = "oUF_LumenPlayer",
-      x = cfg.frames.main.margin / 2 - 140 / 2,
-      y = 0
-    },
+    pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", af = "oUF_LumenPlayer", x = 0, y = cfg.frames.secondary.margin},
     health = {
       classColored = false,
-      gradientColored = true,
+      gradientColored = false,
       classColoredText = false,
       reactionColored = false,
       smooth = true
