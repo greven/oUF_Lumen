@@ -28,7 +28,7 @@ local createStyle = function(self)
   lum:SharedStyle(self, "secondary")
 
   -- Texts
-  lum:CreateNameString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 8)
+  lum:CreateNameString(self, font, cfg.fontsize - 2, "THINOUTLINE", 3, 0, "LEFT", self.cfg.width - 8)
   self:Tag(self.Name, "[lum:name]")
 
   -- Auras
