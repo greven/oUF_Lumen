@@ -35,6 +35,10 @@ local CustomCastTimeText = function(self, duration)
 end
 
 local onPostCastStart = function(self, unit)
+  if unit == "vehicle" then
+    unit = "player"
+  end
+
   -- Set the castbar unit's initial color
   self:SetStatusBarColor(unpack(cfg.units[unit].castbar.color))
   CheckForSpellInterrupt(self, unit)

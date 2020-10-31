@@ -12,6 +12,10 @@ local frame = "player"
 local function PostCreateIcon(self, button)
   local unit = self.__owner.unit
 
+  if unit == "vehicle" then
+    unit = "player"
+  end
+
   local count = button.count
   count:ClearAllPoints()
   count:SetFont(m.fonts.font, 12, "OUTLINE")
@@ -83,41 +87,10 @@ local createStyle = function(self)
   lum:CreateArtifactPowerBar(self)
 
   -- Auras
-  local debuffs =
-    lum:SetDebuffAuras(
-    self,
-    frame,
-    12,
-    12,
-    cfg.frames.main.height + 4,
-    4,
-    "BOTTOMRIGHT",
-    self,
-    "BOTTOMLEFT",
-    -56,
-    -2,
-    "BOTTOMRIGHT",
-    nil,
-    "UP",
-    true
-  )
+  local debuffs = lum:SetDebuffAuras(self, frame, 12, 12, cfg.frames.main.height + 4, 4, "BOTTOMRIGHT", self, "BOTTOMLEFT", -56, -2, "BOTTOMRIGHT", nil, "UP", true)
   debuffs.PostCreateIcon = PostCreateIcon
 
-  lum:SetBarTimerAuras(
-    self,
-    frame,
-    12,
-    12,
-    24,
-    2,
-    "BOTTOMLEFT",
-    self,
-    "TOPLEFT",
-    -2,
-    cfg.frames.secondary.height + 16,
-    "BOTTOMLEFT",
-    "UP"
-  )
+  lum:SetBarTimerAuras(self, frame, 12, 12, 24, 2, "BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16, "BOTTOMLEFT", "UP")
 end
 
 -- -----------------------------------
