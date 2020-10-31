@@ -75,7 +75,7 @@ local _tags = {
   classificationshort = function(unit)
     local c = UnitClassification(unit)
 
-    if c == "worldboss" then
+    if c == "worldboss" or UnitLevel(unit) <= 0 then
       return "|cfff52c40b|r"
     elseif c == "rare" then
       return "|cff008ff7r|r"
