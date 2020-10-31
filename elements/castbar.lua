@@ -47,7 +47,7 @@ end
 
 local OnPostCastFail = function(self, unit)
   -- Color castbar red when cast fails
-  self:SetStatusBarColor(182 / 255, 34 / 255, 32 / 255)
+  self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255)
   api:StartFadeOut(self)
 
   if self.Max then
