@@ -9,19 +9,25 @@ local font = m.fonts.font
 -- ------------------------------------------------------------------------
 
 local CheckForSpellInterrupt = function(self, unit)
-  local initialColor = cfg.units[unit].castbar.color
-
   if unit == "vehicle" then
     unit = "player"
   end
 
+  local initialColor = cfg.units[unit].castbar.color
+
   if (self.notInterruptible and UnitCanAttack("player", unit)) then
-    self.Glowborder:SetBackdropBorderColor(25 / 255, 200 / 255, 255 / 255, 1)
-    self.Glowborder:Show()
     self:SetStatusBarColor(0.2, 0.2, 0.2)
+
+    if self.Glowborder then
+      self.Glowborder:SetBackdropBorderColor(25 / 255, 200 / 255, 255 / 255, 1)
+      self.Glowborder:Show()
+    end
   else
-    self.Glowborder:Hide()
     self:SetStatusBarColor(unpack(initialColor))
+
+    if self.Glowborder then
+      self.Glowborder:Hide()
+    end
   end
 end
 
@@ -37,6 +43,8 @@ end
 local onPostCastStart = function(self, unit)
   if unit == "vehicle" then
     unit = "player"
+  else
+    unit = self.__owner.mystyle
   end
 
   -- Set the castbar unit's initial color
@@ -100,7 +108,7 @@ function lum:CreateCastbar(self)
 
   -- Spell casting time
   Castbar.Max = Castbar:CreateFontString(nil, "OVERLAY")
-  Castbar.Max:SetTextColor(150 / 255, 150 / 255, 150 / 255)
+  Castbar.Max:SetTextColor(100 / 255, 100 / 255, 100 / 255)
   Castbar.Max:SetJustifyH("RIGHT")
   Castbar.Max:SetFont(font, cfg.fontsize - 2, "THINOUTLINE")
   Castbar.Max:SetPoint("RIGHT", Time, "LEFT", 0, 0)
@@ -187,6 +195,25 @@ function lum:CreateCastbar(self)
     Icon:SetHeight(cfg.units.boss.height)
     Icon:SetWidth(cfg.units.boss.height)
     Icon:SetPoint("LEFT", Castbar, -(cfg.units.boss.castbar.height + 2), 0)
+  elseif (unit == "nameplate") then
+    api:SetBackdrop(Castbar, 1, 1, 1, 1)
+    Castbar:SetStatusBarColor(unpack(cfg.units.nameplate.castbar.color))
+    Castbar:SetWidth(cfg.units.nameplate.width)
+    Castbar:SetHeight(cfg.units.nameplate.castbar.height)
+    Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -5)
+    Castbar:SetPoint("TOPRIGHT", self, 0, 0)
+
+    Text:SetFont(font, cfg.fontsize - 5, "THINOUTLINE")
+    Text:SetWidth(cfg.units.nameplate.width - 4)
+    Text:SetPoint("CENTER", Castbar, 0, -10)
+
+    Icon:SetHeight(16)
+    Icon:SetWidth(16)
+    Icon:SetPoint("TOPLEFT", self, "TOPRIGHT", 6, 0)
+
+    Icon.border = CreateFrame("Frame", nil, Castbar, "BackdropTemplate")
+    api:CreateBorder(Icon, Icon.border, 2)
+    Icon.border:Show()
   end
 
   -- Non Interruptable glow

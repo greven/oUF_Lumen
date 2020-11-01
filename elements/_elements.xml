@@ -2,6 +2,5 @@
 	<Script file='auras.lua' />
 	<Script file='bartimers.lua' />
 	<Script file='castbar.lua' />
-	<Script file='nameplates.lua' />
 	<Script file='blizzard.lua' />
 </Ui>

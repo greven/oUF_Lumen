@@ -11,6 +11,10 @@ local max = max
 local function PostCreateIcon(self, button)
 	local unit = self.__owner.unit
 
+	if unit == "vehicle" then
+		unit = "player"
+	end
+
 	local count = button.count
 	count:ClearAllPoints()
 	count:SetFont(m.fonts.font, 12, "OUTLINE")
@@ -31,13 +35,25 @@ local function PostCreateIcon(self, button)
 	button.time:SetShadowOffset(1, -1)
 	button.time:SetShadowColor(0, 0, 0, 1)
 	button.time:SetJustifyH("CENTER")
+
+	-- For player debuffs show the spell name
+	if unit == "player" and cfg.units.player.auras.debuffs.spellName then
+		button.spell = button:CreateFontString(nil, "OVERLAY")
+		button.spell:SetPoint("RIGHT", button, "LEFT", -4, 0)
+		button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
+		button.spell:SetTextColor(1, 1, 1)
+		button.spell:SetShadowOffset(1, -1)
+		button.spell:SetShadowColor(0, 0, 0, 1)
+		button.spell:SetJustifyH("RIGHT")
+		button.spell:SetWordWrap(false)
+	end
 end
 
 local function OnUpdate(icon, elapsed)
 	if icon.timeLeft then
 		icon.timeLeft = max(icon.timeLeft - elapsed, 0)
 
-		-- text color
+		-- Text color
 		if icon.timeLeft > 0 and icon.timeLeft < 60 then
 			icon.time:SetFormattedText(core:FormatTime(icon.timeLeft))
 			if icon.timeLeft < 6 then
@@ -69,10 +85,10 @@ end
 
 function lum:CreateAura(self, num, rows, size, spacing)
 	local auras = CreateFrame("Frame", nil, self)
-	auras:SetSize((num * (size + 9)) / rows, (size + 9) * rows)
+	auras:SetSize((num * (size + 6)) / rows, (size + 6) * rows)
 	auras.num = num
 	auras.size = size
-	auras.spacing = spacing or 9
+	auras.spacing = spacing or 6
 	auras.disableCooldown = true
 	auras.PostCreateIcon = PostCreateIcon
 	auras.PostUpdateIcon = PostUpdateIcon

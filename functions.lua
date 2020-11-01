@@ -8,15 +8,104 @@ local UnitAura, UnitPowerType = UnitAura, UnitPowerType
 local font = m.fonts.font
 
 -- -----------------------------------
+-- > Health bar
+-- -----------------------------------
+
+local PostUpdateHealth = function(health, unit, min, max)
+  local self = health.__owner
+  local frame = self.mystyle
+
+  if cfg.units[frame].health.gradientColored then
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
+    health:SetStatusBarColor(color:GetRGB())
+  end
+
+  -- Class colored text
+  if cfg.units[frame].health.classColoredText then
+    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
+  end
+end
+
+function lum:CreateHealthBar(self, frameType)
+  if not self.cfg.health.show then
+    return
+  end
+
+  local health = CreateFrame("StatusBar", nil, self)
+  health:SetHeight(self.cfg.height - cfg.frames[frameType].health.margin - self.cfg.power.height)
+  health:SetWidth(self.cfg.width)
+  health:SetPoint("TOP")
+  health:SetStatusBarTexture(m.textures.status_texture)
+  health:SetStatusBarColor(unpack(cfg.colors.health))
+  health:GetStatusBarTexture():SetHorizTile(false)
+
+  health.bg = health:CreateTexture(nil, "BACKGROUND")
+  health.bg:SetAllPoints(health)
+  health.bg:SetAlpha(0.05)
+  health.bg:SetTexture(m.textures.bg_texture)
+
+  health.Smooth = self.cfg.health.smooth
+  health.PostUpdate = PostUpdateHealth
+
+  if self.cfg.health.classColored then
+    health.colorClass = true
+  end
+  if self.cfg.health.reactionColored then
+    health.colorReaction = true
+  end
+  health.colorDisconnected = true
+  health.colorTapping = true
+
+  self.Health = health
+  return self.Health
+end
+
+-- -----------------------------------
+-- > Power bar
+-- -----------------------------------
+
+function lum:CreatePowerBar(self, frameType)
+  if not self.cfg.power.show then
+    return
+  end
+
+  local power = CreateFrame("StatusBar", nil, self)
+  power:SetHeight(self.cfg.power.height)
+  power:SetWidth(self.cfg.width)
+  power:SetStatusBarTexture(m.textures.status_texture)
+  power:GetStatusBarTexture():SetHorizTile(false)
+  power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames[frameType].health.margin)
+
+  power.bg = power:CreateTexture(nil, "BACKGROUND")
+  power.bg:SetAllPoints(power)
+  power.bg:SetTexture(m.textures.bg_texture)
+  power.bg:SetAlpha(0.15)
+
+  power.Smooth = self.cfg.power.smooth
+  power.frequentUpdates = self.cfg.power.frequentUpdates
+
+  power.colorTapping = true
+  power.colorDisconnected = false
+  if self.cfg.power.classColored then
+    power.colorClass = true
+  else
+    power.colorPower = true
+  end
+
+  self.Power = power
+  return self.Power
+end
+
+-- -----------------------------------
 -- > Auras
 -- -----------------------------------
 
-function lum:SetBuffAuras(self, frame, numAuras, numRows, height, width, anchor, parent, parentAnchor, posX, posY, initialAnchor, growthX, growthY, showStealableBuffs)
+function lum:SetBuffAuras(self, frame, numAuras, numRows, size, spacing, anchor, parent, parentAnchor, posX, posY, initialAnchor, growthX, growthY, showStealableBuffs)
   if not cfg.units[frame].auras.buffs.show then
     return
   end
 
-  local buffs = lum:CreateAura(self, numAuras, numRows, height, width)
+  local buffs = lum:CreateAura(self, numAuras, numRows, size, spacing)
   buffs:SetPoint(anchor, parent, parentAnchor, posX, posY)
   buffs.initialAnchor = initialAnchor
   buffs["growth-y"] = growthY or "DOWN"
@@ -26,22 +115,28 @@ function lum:SetBuffAuras(self, frame, numAuras, numRows, height, width, anchor,
   return buffs
 end
 
-function lum:SetDebuffAuras(self, frame, numAuras, numRows, height, width, anchor, parent, parentAnchor, posX, posY, initialAnchor, growthX, growthY, showDebuffType, onlyShowPlayer)
+function lum:SetDebuffAuras(self, frame, numAuras, numRows, size, spacing, anchor, parent, parentAnchor, posX, posY, initialAnchor, growthX, growthY, showDebuffType, onlyShowPlayer)
   if not cfg.units[frame].auras.debuffs.show then
     return
   end
 
   -- Debuffs filter (Blacklist)
   local CustomFilter = function(element, unit, button, name, _, _, _, duration, _, _, _, _, spellID)
-    if spellID then
-      if debuffs.list[frame][spellID] or duration == 0 then
-        return false
-      end
+    if onlyShowPlayer and not button.isPlayer then
+      return false
+    end
+
+    if not debuffs.list[frame] or not spellID then
+      return true
+    end
+
+    if debuffs.list[frame][spellID] or duration == 0 then
+      return false
     end
     return true
   end
 
-  local debuffs = lum:CreateAura(self, numAuras, numRows, height, width)
+  local debuffs = lum:CreateAura(self, numAuras, numRows, size, spacing)
   debuffs:SetPoint(anchor, parent, parentAnchor, posX, posY)
   debuffs.initialAnchor = initialAnchor
   debuffs["growth-y"] = growthY or "DOWN"
@@ -91,6 +186,13 @@ function lum:SetBarTimerAuras(self, frame, numAuras, numRows, size, spacing, anc
   end
 
   return barTimers
+end
+
+-- -----------------------------------
+-- > Spell Watchers (Player Plate)
+-- -----------------------------------
+
+function lum:CreateSpellWatchers(self)
 end
 
 -- -----------------------------------
@@ -161,6 +263,50 @@ function lum:SetGlowBorder(self)
 end
 
 -- -----------------------------------
+-- > Frame Highlight
+-- -----------------------------------
+
+local OnFrameEnter = function(self)
+  if not self.Highlight then
+    return
+  end
+
+  self:SetAlpha(1) -- Player frame fading
+  self.Highlight:Show() -- Mouseover highlight Show
+  UnitFrame_OnEnter(self)
+end
+
+local OnFrameLeave = function(self)
+  if not self.Highlight then
+    return
+  end
+
+  if cfg.units.player.fader.enable then -- Player frame fading
+    self:SetAlpha(cfg.units.player.fader.alpha)
+  end
+
+  self.Highlight:Hide() -- Mouseover highlight Hide
+  UnitFrame_OnLeave(self)
+end
+
+function lum:CreateMouseoverHighlight(self)
+  if not self.Health then
+    return
+  end
+
+  local highlight = self.Health:CreateTexture(nil, "OVERLAY")
+  highlight:SetAllPoints(self)
+  highlight:SetTexture(m.textures.white_square)
+  highlight:SetVertexColor(1, 1, 1, .05)
+  highlight:SetBlendMode("ADD")
+  highlight:Hide()
+  self.Highlight = highlight
+
+  self:SetScript("OnEnter", OnFrameEnter)
+  self:SetScript("OnLeave", OnFrameLeave)
+end
+
+-- -----------------------------------
 -- > Class Power
 -- -----------------------------------
 
@@ -188,8 +334,10 @@ end
 
 -- Post Update ClassPower
 local function PostUpdateClassPower(element, cur, max, diff, powerType)
+  local frame = element.__owner.mystyle
+
   if (diff) then
-    local maxWidth, gap = cfg.frames.main.width, 6
+    local maxWidth, gap = cfg.units[frame].width, 6
 
     for i = 1, max do
       local Bar = element[i]
@@ -207,18 +355,29 @@ end
 
 -- Create Class Power Bars (Combo Points...)
 local function CreateClassPower(self)
+  local frame = self.mystyle
+
+  if not self.unit or not frame then
+    return
+  end
+
+  if not cfg.units[frame].classpower.show then
+    return
+  end
+
   local ClassPower = {}
 
   for i = 1, 10 do
-    local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower", self, "BackdropTemplate")
-    Bar:SetHeight(cfg.frames.main.classPower.height)
+    local Bar = CreateFrame("StatusBar", "oUF_LumenClassPower" .. self.unit, self, "BackdropTemplate")
+    Bar:SetHeight(cfg.units[frame].classpower.height)
     Bar:SetStatusBarTexture(m.textures.status_texture)
     api:SetBackdrop(Bar, 1.5, 1.5, 1.5, 1.5)
 
     if (i > 1) then
       Bar:SetPoint("LEFT", ClassPower[i - 1], "RIGHT", 6, 0)
     else
-      Bar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
+      local pos = cfg.units[frame].classpower.pos
+      Bar:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y)
     end
 
     if (i > 5) then
@@ -240,18 +399,19 @@ end
 
 -- Death Knight Runebar
 local function CreateRuneBar(self)
+  local frame = element.__owner.mystyle
   local Runes = {}
   Runes.sortOrder = "asc"
   Runes.colorSpec = true
 
   for i = 1, 6 do
     local Rune = CreateFrame("StatusBar", nil, self)
-    local numRunes, maxWidth, gap = 6, cfg.frames.main.width, 6
+    local numRunes, maxWidth, gap = 6, cfg.units[frame].width, 6
     local width = ((maxWidth / numRunes) - (((numRunes - 1) * gap) / numRunes))
 
-    Rune:SetSize(width, 2)
+    Rune:SetSize(width, cfg.units[frame].classpower.height)
     Rune:SetStatusBarTexture(m.textures.status_texture)
-    api:SetBackdrop(Rune, 2, 2, 2, 2)
+    api:SetBackdrop(Rune, 1.5, 1.5, 1.5, 1.5)
 
     if (i == 1) then
       Rune:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
@@ -285,6 +445,10 @@ end
 -- -----------------------------------
 
 function lum:CreateHealPrediction(self)
+  if not self.Health then
+    return
+  end
+
   local myBar = CreateFrame("StatusBar", nil, self.Health)
   myBar:SetPoint("TOP")
   myBar:SetPoint("BOTTOM")
@@ -385,6 +549,10 @@ end
 -- -----------------------------------
 
 function lum:CreatePowerPrediction(self)
+  if not self.Power then
+    return
+  end
+
   local mainBar = CreateFrame("StatusBar", nil, self.Power)
   mainBar:SetStatusBarTexture(m.textures.status_texture)
   mainBar:SetStatusBarColor(0.4, 0.8, 1, 0.7)
@@ -398,12 +566,14 @@ function lum:CreatePowerPrediction(self)
   altBar:SetStatusBarTexture(m.textures.status_texture)
   altBar:SetStatusBarColor(1, 1, 1, 0.5)
   altBar:SetReverseFill(true)
-  altBar:SetPoint("TOP")
-  altBar:SetPoint("BOTTOM")
-  altBar:SetPoint("RIGHT", self.AdditionalPower:GetStatusBarTexture(), "RIGHT")
-  altBar:SetWidth(self.cfg.width)
 
-  -- Register with oUF
+  if self.AdditionalPower then
+    altBar:SetPoint("TOP")
+    altBar:SetPoint("BOTTOM")
+    altBar:SetPoint("RIGHT", self.AdditionalPower:GetStatusBarTexture(), "RIGHT")
+    altBar:SetWidth(self.cfg.width)
+  end
+
   self.PowerPrediction = {
     mainBar = mainBar,
     altBar = altBar
@@ -493,6 +663,10 @@ end
 -- ------------------------------------------
 
 function lum:CreatePlayerIconIndicators(self)
+  if not self.Health then
+    return
+  end
+
   -- Combat indicator
   local Combat = api:CreateFontstring(self, m.fonts.symbols, 18, "THINOUTLINE")
   Combat:SetPoint("RIGHT", self, "LEFT", -10, 0)
@@ -563,47 +737,70 @@ end
 
 -- Name
 function lum:CreateNameString(self, font, size, outline, x, y, point, width)
-  self.Name = api:CreateFontstring(self.Health, font, size, outline)
-  self.Name:SetPoint(point, self.Health, x, y)
-  self.Name:SetJustifyH(point)
-  self.Name:SetWidth(width)
-  self.Name:SetHeight(size)
-  self:Tag(self.Name, "[lum:level] [lum:name]")
+  if not self.Health or not self.cfg.name.show then
+    return
+  end
+
+  local name = api:CreateFontstring(self.Health, font, size, outline)
+  name:SetPoint(point, self.Health, x, y)
+  name:SetJustifyH(point)
+  name:SetWidth(width)
+  name:SetHeight(size)
+  self:Tag(name, "[lum:level] [lum:name]")
+  self.Name = name
 end
 
 -- Party Name
 function lum:CreatePartyNameString(self, font, size)
-  self.Name = api:CreateFontstring(self.Health, font, size, "THINOUTLINE")
-  self.Name:SetPoint("TOPRIGHT", self, "TOPRIGHT", -4, -5)
-  self.Name:SetJustifyH("RIGHT")
-  self:Tag(self.Name, "[lum:playerstatus] [lum:leader] [lum:name]")
+  local name = api:CreateFontstring(self.Health, font, size, "THINOUTLINE")
+  name:SetPoint("TOPRIGHT", self, "TOPRIGHT", -4, -5)
+  name:SetJustifyH("RIGHT")
+  self:Tag(name, "[lum:playerstatus] [lum:leader] [lum:name]")
+  self.Name = name
 end
 
 -- Health Value
 function lum:CreateHealthValueString(self, font, size, outline, x, y, point)
-  self.Health.value = api:CreateFontstring(self.Health, font, size, outline)
-  self.Health.value:SetPoint(point, self.Health, x, y)
-  self.Health.value:SetJustifyH(point)
-  self.Health.value:SetTextColor(1, 1, 1)
-  self:Tag(self.Health.value, "[lum:hpvalue]")
+  if not self.Health then
+    return
+  end
+
+  local health = self.Health
+  health.value = api:CreateFontstring(health, font, size, outline)
+  health.value:SetPoint(point, health, x, y)
+  health.value:SetJustifyH(point)
+  health.value:SetTextColor(1, 1, 1)
+  self:Tag(health.value, "[lum:hpvalue]")
 end
 
 -- Health Percent
 function lum:CreateHealthPercentString(self, font, size, outline, x, y, point, layer)
-  self.Health.percent = api:CreateFontstring(self.Health, font, size, outline, layer)
-  self.Health.percent:SetPoint(point, self.Health.value, x, y)
-  self.Health.percent:SetJustifyH("RIGHT")
-  self.Health.percent:SetTextColor(0.5, 0.5, 0.5, 0.5)
-  self.Health.percent:SetShadowColor(0, 0, 0, 0)
-  self:Tag(self.Health.percent, "[lum:hpperc]")
+  if not self.Health then
+    return
+  end
+
+  local health = self.Health
+  health.percent = api:CreateFontstring(health, font, size, outline, layer)
+  health.percent:SetPoint(point, health.value, x, y)
+  health.percent:SetJustifyH("RIGHT")
+  health.percent:SetTextColor(0.5, 0.5, 0.5, 0.5)
+  health.percent:SetShadowColor(0, 0, 0, 0)
+  self:Tag(health.percent, "[lum:hpperc]")
 end
 
 -- Power Value
 function lum:CreatePowerValueString(self, font, size, outline, x, y, point)
-  self.Power.value = api:CreateFontstring(self.Power, font, size, outline)
-  self.Power.value:SetPoint(point, self.Power, x, y)
-  self.Power.value:SetJustifyH(point)
-  self:Tag(self.Power.value, "[lum:powervalue]")
+  local style = self.mystyle
+
+  if not self.Power or not cfg.units[style].power.text.show then
+    return
+  end
+
+  local power = self.Power
+  power.value = api:CreateFontstring(power, font, size, outline)
+  power.value:SetPoint(point, power, x, y)
+  power.value:SetJustifyH(point)
+  self:Tag(power.value, "[lum:powervalue]")
 end
 
 -- Classification

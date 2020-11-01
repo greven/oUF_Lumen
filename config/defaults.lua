@@ -84,9 +84,6 @@ cfg.frames = {
       text = {
         hideMax = true
       }
-    },
-    classPower = {
-      height = 2
     }
   },
   secondary = {
@@ -99,6 +96,22 @@ cfg.frames = {
     power = {
       height = 1.5 -- Height of the Power Bar
     }
+  },
+  nameplate = {
+    width = 120,
+    height = 6,
+    margin = 10,
+    health = {
+      margin = 0
+    },
+    power = {
+      height = 1.5
+    }
+  },
+  playerplate = {
+    show = true,
+    width = 182,
+    height = 2
   },
   shadow = {
     show = true, -- Use frame drop shadows
@@ -158,8 +171,9 @@ cfg.units = {
     show = true,
     width = cfg.frames.main.width,
     height = cfg.frames.main.height,
-    pos = {a1 = "LEFT", a2 = "CENTER", af = "UIParent", x = -322, y = -322},
+    pos = {a1 = "LEFT", a2 = "CENTER", af = "UIParent", x = -322, y = -372},
     health = {
+      show = true,
       classColored = false,
       gradientColored = true,
       classColoredText = false,
@@ -167,20 +181,29 @@ cfg.units = {
       smooth = true
     },
     power = {
+      show = true,
       height = cfg.frames.main.power.height,
       classColored = false,
       frequentUpdates = true,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
     },
     name = {
       show = true
+    },
+    classpower = {
+      show = not cfg.frames.playerplate.show,
+      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", x = 0, y = -8},
+      height = 2
     },
     altpower = {
       height = 3
     },
     castbar = {
       enable = true,
-      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "oUF_LumenPlayer", x = cfg.frames.main.height + 2, y = -135},
+      pos = {a1 = "TOPLEFT", a2 = "TOPLEFT", af = "MultiBarBottomLeft", x = cfg.frames.main.height + 2, y = cfg.frames.main.height - 4},
       color = {5 / 255, 107 / 255, 246 / 255},
       width = cfg.frames.main.width * 2 + cfg.frames.main.margin - cfg.frames.main.height / 2 + 6,
       height = cfg.frames.main.height,
@@ -202,7 +225,7 @@ cfg.units = {
         show = true
       }
     },
-    visibility = "[combat][mod] show; [indoors,resting][flying] hide; show",
+    visibility = "[mod][combat][harm,nodead] show; [indoors,resting][flying] hide; show",
     fader = {
       fadeInAlpha = 1,
       fadeInDuration = 0.3,
@@ -216,6 +239,7 @@ cfg.units = {
     height = cfg.frames.main.height,
     pos = {a1 = "BOTTOMLEFT", a2 = "BOTTOMRIGHT", af = "oUF_LumenPlayer", x = cfg.frames.main.margin, y = 0},
     health = {
+      show = true,
       classColored = true,
       gradientColored = false,
       classColoredText = false,
@@ -223,10 +247,14 @@ cfg.units = {
       smooth = true
     },
     power = {
+      show = true,
       height = cfg.frames.main.power.height,
       classColored = false,
       frequentUpdates = true,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
     },
     name = {
       show = true
@@ -263,6 +291,7 @@ cfg.units = {
     height = cfg.frames.secondary.height,
     pos = {a1 = "BOTTOMRIGHT", a2 = "TOPRIGHT", af = "oUF_LumenTarget", x = 0, y = cfg.frames.secondary.margin},
     health = {
+      show = true,
       classColored = true,
       gradientColored = false,
       classColoredText = false,
@@ -270,10 +299,17 @@ cfg.units = {
       smooth = true
     },
     power = {
+      show = true,
       height = cfg.frames.secondary.power.height,
       classColored = false,
       frequentUpdates = false,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
+    },
+    name = {
+      show = true
     },
     auras = {
       buffs = {
@@ -304,6 +340,7 @@ cfg.units = {
       y = cfg.frames.secondary.margin
     },
     health = {
+      show = true,
       classColored = true,
       gradientColored = false,
       classColoredText = false,
@@ -311,10 +348,17 @@ cfg.units = {
       smooth = true
     },
     power = {
+      show = true,
       height = cfg.frames.secondary.power.height,
       classColored = false,
       frequentUpdates = false,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
+    },
+    name = {
+      show = true
     },
     castbar = {
       enable = true,
@@ -345,6 +389,7 @@ cfg.units = {
     height = cfg.frames.secondary.height,
     pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", af = "oUF_LumenPlayer", x = 0, y = cfg.frames.secondary.margin},
     health = {
+      show = true,
       classColored = false,
       gradientColored = false,
       classColoredText = false,
@@ -352,10 +397,17 @@ cfg.units = {
       smooth = true
     },
     power = {
+      show = true,
       height = cfg.frames.secondary.power.height,
       classColored = false,
       frequentUpdates = true,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
+    },
+    name = {
+      show = true
     },
     auras = {
       buffs = {
@@ -381,11 +433,13 @@ cfg.units = {
     height = 28,
     pos = {a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 700, y = 200},
     health = {
+      show = true,
       gradientColored = false,
       reactionColored = true,
       smooth = true
     },
     power = {
+      show = true,
       height = cfg.frames.secondary.power.height,
       classColored = false,
       frequentUpdates = false,
@@ -393,6 +447,9 @@ cfg.units = {
       text = {
         show = false
       }
+    },
+    name = {
+      show = true
     },
     castbar = {
       enable = true,
@@ -417,6 +474,7 @@ cfg.units = {
     height = 32,
     pos = {a1 = "RIGHT", a2 = "CENTER", af = "UIParent", x = 700, y = 200},
     health = {
+      show = true,
       classColored = true,
       gradientColored = false,
       classColoredText = false,
@@ -424,10 +482,17 @@ cfg.units = {
       smooth = true
     },
     power = {
+      show = true,
       height = cfg.frames.secondary.power.height,
       classColored = false,
       frequentUpdates = false,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
+    },
+    name = {
+      show = true
     },
     auras = {
       buffs = {
@@ -446,6 +511,7 @@ cfg.units = {
     height = 40,
     pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = -550, y = -102},
     health = {
+      show = true,
       classColored = true,
       gradientColored = false,
       reactionColored = false,
@@ -454,10 +520,17 @@ cfg.units = {
       smooth = true
     },
     power = {
+      show = true,
       height = 2,
       classColored = true,
       frequentUpdates = false,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
+    },
+    name = {
+      show = true
     },
     auras = {
       buffs = {
@@ -473,21 +546,47 @@ cfg.units = {
     forceRole = false
   },
   raid = {
-    show = true
+    show = false
   },
   nameplate = {
     show = true,
-    width = 120,
-    height = 6,
-    pos = {a1 = "CENTER", a2 = "CENTER", af = "UIParent", x = 0, y = 0},
+    width = cfg.frames.nameplate.width,
+    height = cfg.frames.nameplate.height,
+    pos = {a1 = "CENTER", x = 0, y = -10},
+    health = {
+      show = true,
+      classColored = false,
+      gradientColored = false,
+      classColoredText = false,
+      reactionColored = true,
+      smooth = true
+    },
     power = {
+      show = false,
       height = 4,
       classColored = false,
       frequentUpdates = true,
-      smooth = true
+      smooth = true,
+      text = {
+        show = true
+      }
     },
-    classpower = true,
-    debuffs = true,
+    name = {
+      show = true
+    },
+    classpower = {
+      show = true
+    },
+    auras = {
+      buffs = {
+        show = false,
+        filter = false
+      },
+      debuffs = {
+        show = true,
+        spellName = false
+      }
+    },
     castbar = {
       enable = true,
       color = {5 / 255, 107 / 255, 246 / 255},
@@ -498,5 +597,54 @@ cfg.units = {
     showTargetArrow = false,
     showGlow = true,
     showHighlight = false
+  },
+  playerplate = {
+    show = cfg.frames.playerplate.show,
+    width = cfg.frames.playerplate.width,
+    height = cfg.frames.playerplate.height,
+    pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 356},
+    health = {
+      show = true,
+      classColored = false,
+      gradientColored = false,
+      classColoredText = false,
+      reactionColored = true,
+      smooth = true
+    },
+    power = {
+      show = true,
+      height = cfg.frames.playerplate.height,
+      classColored = false,
+      frequentUpdates = true,
+      smooth = true,
+      text = {
+        show = true
+      }
+    },
+    name = {
+      show = true
+    },
+    classpower = {
+      show = true,
+      pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", x = 0, y = 6},
+      height = 2
+    },
+    auras = {
+      buffs = {
+        show = false,
+        filter = false
+      },
+      debuffs = {
+        show = true,
+        spellName = false
+      }
+    },
+    visibility = "[mod][combat] show; hide;",
+    fader = {
+      fadeInAlpha = 1,
+      fadeInDuration = 0.3,
+      fadeOutAlpha = 0,
+      fadeOutDuration = 0.3
+    }
   }
 }

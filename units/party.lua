@@ -7,9 +7,9 @@ local font = m.fonts.font
 
 local frame = "party"
 
--- ------------------------------------------------------------------------
+-- -----------------------------------
 -- > PARTY UNIT SPECIFIC FUNCTiONS
--- ------------------------------------------------------------------------
+-- -----------------------------------
 
 -- Post Health Update
 local PostUpdateHealth = function(health, unit, min, max)
@@ -87,7 +87,7 @@ end
 -- > PARTY STYLE
 -- -----------------------------------
 
-local createStyle = function(self)
+local function CreateParty(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
@@ -100,7 +100,6 @@ local createStyle = function(self)
 
   -- Texts
   lum:CreateHealthValueString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4, 8, "LEFT")
-
   lum:CreatePartyNameString(self, font, cfg.fontsize)
 
   if self.cfg.health.classColoredText then
@@ -122,23 +121,7 @@ local createStyle = function(self)
   end
 
   -- Debuffs
-  lum:SetDebuffAuras(
-    self,
-    frame,
-    12,
-    2,
-    self.cfg.height / 2 + 2,
-    3,
-    "TOPRIGHT",
-    self,
-    "TOPLEFT",
-    -6,
-    2,
-    "TOPRIGHT",
-    "LEFT",
-    "DOWN",
-    true
-  )
+  lum:SetDebuffAuras(self, frame, 12, 2, self.cfg.height / 2 + 2, 3, "TOPRIGHT", self, "TOPLEFT", -6, 2, "TOPRIGHT", "LEFT", "DOWN", true)
 
   -- Group Role Icon
   local GroupRoleIndicator = lum:CreateGroupRoleIndicator(self)
@@ -178,7 +161,7 @@ end
 -- > SPAWN UNIT
 -- -----------------------------------
 if cfg.units[frame].show then
-  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
+  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), CreateParty)
   oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
 
   local party =
@@ -203,11 +186,5 @@ if cfg.units[frame].show then
   		self:SetHeight(%d)
   		self:SetWidth(%d)
   	]]):format(cfg.units[frame].height, cfg.units[frame].width)
-  ):SetPoint(
-    cfg.units[frame].pos.a1,
-    cfg.units[frame].pos.af,
-    cfg.units[frame].pos.a2,
-    cfg.units[frame].pos.x,
-    cfg.units[frame].pos.y
-  )
+  ):SetPoint(cfg.units[frame].pos.a1, cfg.units[frame].pos.af, cfg.units[frame].pos.a2, cfg.units[frame].pos.x, cfg.units[frame].pos.y)
 end

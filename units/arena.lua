@@ -10,7 +10,7 @@ local frame = "arena"
 -- > Arena Style
 -- -----------------------------------
 
-local createStyle = function(self)
+local function CreateArena(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
@@ -37,7 +37,7 @@ end
 -- > SPAWN UNIT
 -- -----------------------------------
 -- if cfg.units[frame].show then
---   oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), createStyle)
+--   oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), CreateArena)
 --   oUF:SetActiveStyle(A..frame:gsub("^%l", string.upper))
 --
 --   for index = 1, MAX_BOSS_FRAMES or 5 do

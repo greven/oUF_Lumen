@@ -21,7 +21,7 @@ end
 -- > TARGET STYLE
 -- -----------------------------------
 
-local createStyle = function(self)
+local function CreatePet(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
@@ -46,14 +46,16 @@ end
 -- > SPAWN UNIT
 -- -----------------------------------
 if cfg.units[frame].show then
-  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
+  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), CreatePet)
   oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
   local f = oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+
   -- Frame Visibility
   if cfg.units[frame].visibility then
     f:Disable()
     RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
   end
+
   -- Fader
   if cfg.units[frame].fader then
     api:CreateFrameFader(f, cfg.units[frame].fader)

@@ -22,5 +22,6 @@ debuffs.list = {
     [95809 or "Insanity"] = true,
     [57724 or "Sated"] = true,
     [80354 or "Temporal Displacement"] = true
-  }
+  },
+  nameplate = {}
 }

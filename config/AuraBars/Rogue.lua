@@ -19,7 +19,8 @@ filters.ROGUE = {
     [114018 or "Shroud of Concealment"] = true,
     [199603 or "Skull and Crossbones"] = true, -- Roll the Bones
     [315496 or "Slice and Dice"] = true,
-    [48594 or "Sprint"] = true,
+    [2983 or "Sprint"] = true,
+    [212283 or "Symbols of Death"] = true,
     [193359 or "True Bearing"] = true, -- Roll the Bones
     [11327 or "Vanish"] = true
   },

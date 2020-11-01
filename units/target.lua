@@ -11,17 +11,14 @@ local frame = "target"
 -- > TARGET STYLE
 -- -----------------------------------
 
-local createStyle = function(self)
+local function CreateTarget(self)
   self.mystyle = frame
   self.cfg = cfg.units[frame]
 
   lum:SharedStyle(self, "main")
 
   -- Texts
-  if self.cfg.name.show then
-    lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
-  end
-
+  lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 56)
   lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
   lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   lum:CreatePowerValueString(self, font, cfg.fontsize - 3, "THINOUTLINE", 0, 0, "CENTER")
@@ -32,53 +29,25 @@ local createStyle = function(self)
   lum:CreateTargetIconIndicators(self)
 
   -- Auras
-  lum:SetBuffAuras(
-    self,
-    frame,
-    8,
-    1,
-    cfg.frames.secondary.height + 4,
-    2,
-    "TOPLEFT",
-    self,
-    "BOTTOMLEFT",
-    0,
-    2,
-    "BOTTOMLEFT",
-    "RIGHT",
-    "DOWN",
-    true
-  )
+  lum:SetBuffAuras(self, frame, 8, 1, cfg.frames.secondary.height + 4, 2, "TOPLEFT", self, "BOTTOMLEFT", 0, 0, "BOTTOMLEFT", "RIGHT", "DOWN", true)
 
-  lum:SetBarTimerAuras(
-    self,
-    frame,
-    12,
-    12,
-    24,
-    2,
-    "BOTTOMLEFT",
-    self,
-    "TOPLEFT",
-    -2,
-    cfg.frames.secondary.height + 16,
-    "BOTTOMLEFT",
-    "UP"
-  )
+  lum:SetBarTimerAuras(self, frame, 12, 12, 24, 2, "BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16, "BOTTOMLEFT", "UP")
 end
 
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
 if cfg.units[frame].show then
-  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), createStyle)
+  oUF:RegisterStyle(A .. frame:gsub("^%l", string.upper), CreateTarget)
   oUF:SetActiveStyle(A .. frame:gsub("^%l", string.upper))
   local f = oUF:Spawn(frame, A .. frame:gsub("^%l", string.upper))
+
   -- Frame Visibility
   if cfg.units[frame].visibility then
     f:Disable()
     RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
   end
+
   -- Fader
   if cfg.units[frame].fader then
     api:CreateFrameFader(f, cfg.units[frame].fader)

@@ -113,6 +113,10 @@ end
 
 -- Create a Frame Shadow
 function api:CreateDropShadow(frame, point, edge, color)
+  if not cfg.frames.shadow.show then
+    return
+  end
+
   local shadow = CreateFrame("Frame", nil, frame, "BackdropTemplate")
   shadow:SetFrameLevel(0)
   shadow:SetPoint("TOPLEFT", frame, "TOPLEFT", -point, point)
@@ -177,7 +181,7 @@ function api:StartFadeOut(frame)
   frame.fader.anim:SetToAlpha(frame.faderConfig.fadeOutAlpha or 0)
   frame.fader.anim:SetDuration(frame.faderConfig.fadeOutDuration or 0.3)
   frame.fader.anim:SetSmoothing(frame.faderConfig.fadeOutSmooth or "OUT")
-  -- wait for some time before starting the fadeout
+  -- wait some time before starting the fadeout
   frame.fader.anim:SetStartDelay(frame.faderConfig.fadeOutDelay or 0)
   frame.fader.finAlpha = frame.faderConfig.fadeOutAlpha
   frame.fader.direction = "out"
