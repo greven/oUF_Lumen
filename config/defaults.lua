@@ -141,6 +141,12 @@ cfg.elements = {
       fadeOutDelay = 0.5
     }
   },
+  spellwatchers = {
+    show = true
+  },
+  altpowerbar = {
+    show = true
+  },
   experiencebar = {
     show = true,
     height = 3,
@@ -152,9 +158,6 @@ cfg.elements = {
     height = 3,
     width = Minimap:GetWidth() + 4,
     pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24}
-  },
-  altpowerbar = {
-    show = true
   },
   mirrorTimers = {
     width = 220,
