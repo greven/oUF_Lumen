@@ -73,11 +73,11 @@ cfg.scale = 1 -- The elements Scale
 
 cfg.frames = {
   main = {
-    width = 208, -- Width of the Player and Target Frames
-    height = 26, -- Height of the Player and Target Frames
+    width = 204, -- Width of the Player and Target Frames
+    height = 24, -- Height of the Player and Target Frames
     margin = 226, -- Margin between Player and Target Frames
     health = {
-      margin = 1 -- Spacing between HP and Power Bars
+      margin = 2 -- Spacing between HP and Power Bars
     },
     power = {
       height = 2, -- Height of the Power Bar
@@ -209,9 +209,9 @@ cfg.units = {
     },
     castbar = {
       enable = true,
-      pos = {a1 = "TOPLEFT", a2 = "TOPLEFT", af = "MultiBarBottomLeft", x = cfg.frames.main.height + 2, y = cfg.frames.main.height - 4},
+      pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", af = "MultiBarBottomLeft", x = cfg.frames.main.height + 4, y = -4},
       color = {5 / 255, 107 / 255, 246 / 255},
-      width = cfg.frames.main.width * 2 + cfg.frames.main.margin - cfg.frames.main.height / 2 + 6,
+      width = (cfg.frames.main.width + 2) * 2 + cfg.frames.main.margin - 5,
       height = cfg.frames.main.height,
       latency = {
         show = true,
