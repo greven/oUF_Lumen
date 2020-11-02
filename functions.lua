@@ -357,14 +357,6 @@ end
 local function CreateClassPower(self)
   local frame = self.mystyle
 
-  if not self.unit or not frame then
-    return
-  end
-
-  if not cfg.units[frame].classpower.show then
-    return
-  end
-
   local ClassPower = {}
 
   for i = 1, 10 do
@@ -399,13 +391,14 @@ end
 
 -- Death Knight Runebar
 local function CreateRuneBar(self)
-  local frame = element.__owner.mystyle
+  local frame = self.mystyle
+
   local Runes = {}
   Runes.sortOrder = "asc"
   Runes.colorSpec = true
 
   for i = 1, 6 do
-    local Rune = CreateFrame("StatusBar", nil, self)
+    local Rune = CreateFrame("StatusBar", "oUF_LumenRuneBar" .. self.unit, self, "BackdropTemplate")
     local numRunes, maxWidth, gap = 6, cfg.units[frame].width, 6
     local width = ((maxWidth / numRunes) - (((numRunes - 1) * gap) / numRunes))
 
@@ -414,7 +407,8 @@ local function CreateRuneBar(self)
     api:SetBackdrop(Rune, 1.5, 1.5, 1.5, 1.5)
 
     if (i == 1) then
-      Rune:SetPoint("TOPLEFT", self, "BOTTOMLEFT", 0, -8)
+      local pos = cfg.units[frame].classpower.pos
+      Rune:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y)
     else
       Rune:SetPoint("LEFT", Runes[i - 1], "RIGHT", gap, 0)
     end
@@ -433,6 +427,16 @@ end
 
 -- Class Power (Combo Points, Runes, etc...)
 function lum:CreateClassPower(self)
+  local frame = self.mystyle
+
+  if not self.unit or not frame then
+    return
+  end
+
+  if not cfg.units[frame].classpower.show then
+    return
+  end
+
   if G.playerClass == "DEATHKNIGHT" then
     CreateRuneBar(self)
   else

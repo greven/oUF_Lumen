@@ -159,6 +159,9 @@ cfg.elements = {
     width = Minimap:GetWidth() + 4,
     pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24}
   },
+  barTimers = {
+    theme = "thin" -- Theme can be `thin` or `normal`
+  },
   mirrorTimers = {
     width = 220,
     height = cfg.frames.main.height + 2
@@ -198,7 +201,7 @@ cfg.units = {
     },
     classpower = {
       show = not cfg.frames.playerplate.show,
-      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", x = 0, y = -8},
+      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", x = 0, y = -7},
       height = 2
     },
     altpower = {
@@ -629,7 +632,7 @@ cfg.units = {
     },
     classpower = {
       show = true,
-      pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", x = 0, y = 6},
+      pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", x = 0, y = -7},
       height = 2
     },
     auras = {

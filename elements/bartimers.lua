@@ -17,14 +17,14 @@ local function OnUpdate(self, elapsed)
 		if self.timeLeft > 0 and self.timeLeft < 60 then
 			self.time:SetFormattedText(core:FormatTime(self.timeLeft))
 			if self.timeLeft < 6 then
-				self.time:SetTextColor(1, 0.25, 0.25)
-			elseif self.timeLeft < 10 then
-				self.time:SetTextColor(1, 0.9, 0.5)
+				self.time:SetTextColor(1, 0.2, 0.2)
+			elseif self.timeLeft < 11 then
+				self.time:SetTextColor(1, 0.75, 0.25)
 			else
 				self.time:SetTextColor(1, 1, 1)
 			end
 		elseif self.timeLeft > 60 and self.timeLeft < 60 * 5 then
-			self.time:SetTextColor(1, 1, 1)
+			self.time:SetTextColor(0, 0.6, 1)
 			self.time:SetFormattedText(core:FormatTime(self.timeLeft))
 		else
 			self.time:SetText()
@@ -79,10 +79,7 @@ local function PostCreateBar(self, button)
 
 	button.bar = CreateFrame("StatusBar", nil, button)
 	button.bar:SetStatusBarTexture(m.textures.status_texture)
-	button.bar:SetPoint("TOPLEFT", button, "TOPRIGHT", 4, -2)
-	button.bar:SetHeight(self.size - 4)
 	button.bar:SetWidth(cfg.frames.main.width - self.size - 2)
-	api:SetBackdrop(button.bar, 2, 2, 2, 2)
 
 	button.bar.bg = button.bar:CreateTexture(nil, "BORDER")
 	button.bar.bg:SetAllPoints()
@@ -91,8 +88,7 @@ local function PostCreateBar(self, button)
 	button.bar.bg:SetColorTexture(1 / 3, 1 / 3, 1 / 3)
 
 	button.spell = button.bar:CreateFontString(nil, "OVERLAY")
-	button.spell:SetPoint("LEFT", button.bar, "LEFT", 4, 0)
-	button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
+
 	button.spell:SetWidth(button.bar:GetWidth() - 25)
 	button.spell:SetTextColor(1, 1, 1)
 	button.spell:SetShadowOffset(1, -1)
@@ -101,8 +97,6 @@ local function PostCreateBar(self, button)
 	button.spell:SetWordWrap(false)
 
 	button.time = button.bar:CreateFontString(nil, "OVERLAY")
-	button.time:SetPoint("RIGHT", button.bar, "RIGHT", -4, 0)
-	button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
 	button.time:SetTextColor(1, 1, 1)
 	button.time:SetShadowOffset(1, -1)
 	button.time:SetShadowColor(0, 0, 0, 1)
@@ -111,6 +105,24 @@ local function PostCreateBar(self, button)
 	button.count:ClearAllPoints()
 	button.count:SetFont(m.fonts.font, 12, "OUTLINE")
 	button.count:SetPoint("TOPRIGHT", button, 3, 3)
+
+	if cfg.elements.barTimers.theme == "thin" then
+		button.bar:SetPoint("BOTTOMLEFT", button, "BOTTOMRIGHT", 4, 1)
+		button.bar:SetHeight(2)
+		button.spell:SetPoint("LEFT", button.bar, "LEFT", 0, 12)
+		button.spell:SetFont(m.fonts.font, 14, "THINOUTLINE")
+		button.time:SetPoint("RIGHT", button.bar, "RIGHT", 0, 12)
+		button.time:SetFont(m.fonts.font, 14, "THINOUTLINE")
+		api:SetBackdrop(button.bar, 1.5, 1.5, 1.5, 1.5)
+	else
+		button.bar:SetPoint("TOPLEFT", button, "TOPRIGHT", 4, -2)
+		button.bar:SetHeight(self.size - 4)
+		button.spell:SetPoint("LEFT", button.bar, "LEFT", 4, 0)
+		button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
+		button.time:SetPoint("RIGHT", button.bar, "RIGHT", -4, 0)
+		button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
+		api:SetBackdrop(button.bar, 2, 2, 2, 2)
+	end
 end
 
 function lum:CreateBarTimer(self, num, rows, size, spacing)
