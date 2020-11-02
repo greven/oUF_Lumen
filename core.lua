@@ -41,7 +41,13 @@ function core:FormatTime(s)
   elseif s >= minute then
     return format("%dm", floor(s / minute + 0.5))
   end
-  return format("%d", mod(s, minute))
+
+  -- Seconds
+  local t = mod(s, minute)
+  if t > 1 then
+    return format("%d", t)
+  end
+  return format("%.1f", t)
 end
 
 -- ------------------------------------------------------------------------
