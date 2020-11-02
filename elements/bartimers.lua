@@ -119,7 +119,7 @@ local function PostCreateBar(self, button)
 		button.bar:SetHeight(self.size - 4)
 		button.spell:SetPoint("LEFT", button.bar, "LEFT", 4, 0)
 		button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")
-		button.time:SetPoint("RIGHT", button.bar, "RIGHT", -4, 0)
+		button.time:SetPoint("RIGHT", button.bar, "RIGHT", -4, 1)
 		button.time:SetFont(m.fonts.font, 12, "THINOUTLINE")
 		api:SetBackdrop(button.bar, 2, 2, 2, 2)
 	end

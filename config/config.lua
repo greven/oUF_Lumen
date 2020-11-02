@@ -31,6 +31,9 @@ local cfg, filters = ns.cfg, ns.filters
 --   y = 0
 -- }
 
+-- Show BarTimers with the normal theme
+-- cfg.elements.barTimers.theme = "normal"
+
 -- AuraBars Filters
 -- If you want to add spells not on the AuraBars filters, copy the relevant class filters table and add or remove what you want. Example for Warrior
 
