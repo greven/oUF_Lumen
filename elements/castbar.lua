@@ -33,8 +33,11 @@ end
 
 -- Castbar Custom Cast TimeText
 local CustomCastTimeText = function(self, duration)
+  local unit = self.__owner.mystyle
+
   self.Time:SetText(("%.1f"):format(self.channeling and duration or self.max - duration))
-  if self.Max then
+
+  if self.Max and unit ~= "nameplate" then
     self.Max:SetText(("%.1f "):format(self.max))
     self.Max:Show()
   end
@@ -201,11 +204,14 @@ function lum:CreateCastbar(self)
     Castbar:SetWidth(cfg.units.nameplate.width)
     Castbar:SetHeight(cfg.units.nameplate.castbar.height)
     Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -5)
-    Castbar:SetPoint("TOPRIGHT", self, 0, 0)
 
     Text:SetFont(font, cfg.fontsize - 5, "THINOUTLINE")
     Text:SetWidth(cfg.units.nameplate.width - 4)
-    Text:SetPoint("CENTER", Castbar, 0, -10)
+    Text:SetPoint("CENTER", Castbar, -2, -10)
+
+    Time:SetFont(font, cfg.fontsize - 6, "THINOUTLINE")
+    Time:SetPoint("RIGHT", Castbar, 2, -10)
+    Time:SetTextColor(.7, .7, .7)
 
     Icon:SetHeight(16)
     Icon:SetWidth(16)
