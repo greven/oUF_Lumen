@@ -80,7 +80,7 @@ cfg.frames = {
       margin = 2 -- Spacing between HP and Power Bars
     },
     power = {
-      height = 2, -- Height of the Power Bar
+      height = 1.5, -- Height of the Power Bar
       text = {
         hideMax = true
       }
