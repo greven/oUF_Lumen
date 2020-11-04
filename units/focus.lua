@@ -47,7 +47,6 @@ local function CreateFocus(self)
     lum:CreateCastbar(self)
   end
 
-  -- Heal Prediction
   lum:CreateHealPrediction(self)
 end
 

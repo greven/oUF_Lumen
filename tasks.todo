@@ -3,6 +3,7 @@ general:
   ✔ Add scale back to frames (player, party, target, etc) @done(20-10-25 20:12)
 
 party:
+  ☐ Refactor code like player frames
   ✔ Health is showing as depleted when 100% @bug @done(20-10-22 22:01)
   ☐ Finish the party frames
     ✔ Add debuffs @done(20-10-25 20:12)

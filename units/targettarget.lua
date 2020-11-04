@@ -42,7 +42,6 @@ local function CreateTargetTarget(self)
   -- Health & Power Updates
   self.Health.PostUpdate = PostUpdateHealth
 
-  -- Heal Prediction
   lum:CreateHealPrediction(self)
 end
 

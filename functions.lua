@@ -193,6 +193,30 @@ end
 -- -----------------------------------
 
 function lum:CreateSpellWatchers(self)
+  local frame = self.mystyle
+  local SpellWatchers = {}
+
+  local max = 5
+
+  for i = 1, max do
+    local SpellButton = CreateFrame("Button", nil, self)
+    local maxWidth, gap = cfg.units[frame].width, 6
+
+    SpellButton:SetWidth(((maxWidth / max) - (((max - 1) * gap) / max)))
+    SpellButton:SetHeight(((maxWidth / max) - (((max - 1) * gap) / max)))
+    api:SetBackdrop(SpellButton, 2, 2, 2, 2)
+
+    if (i > 1) then
+      SpellButton:SetPoint("LEFT", SpellWatchers[i - 1], "RIGHT", 6, 0)
+    else
+      local pos = cfg.units[frame].classpower.pos
+      SpellButton:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - 10)
+    end
+
+    SpellWatchers[i] = SpellButton
+  end
+
+  self.SpellWatchers = SpellWatchers
 end
 
 -- -----------------------------------
@@ -500,11 +524,15 @@ end
 -- Power bar for specs like Feral Druid
 -- ----------------------------------------
 
--- AdditionalPower post update callback
 local function onAdditionalPowerPostUpdate(self, cur, max)
+  local frame = self.__owner.mystyle
   local powertype = UnitPowerType("player")
 
   if powertype == 0 then
+    return
+  end
+
+  if not cfg.units[frame].additionalpower.hideOnFull then
     return
   end
 
@@ -517,16 +545,26 @@ local function onAdditionalPowerPostUpdate(self, cur, max)
 end
 
 function lum:CreateAdditionalPower(self)
-  local height = -18
+  if not self.cfg.additionalpower.show then
+    return
+  end
+
+  local gap = -18
   local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
 
   local AdditionalPower = CreateFrame("StatusBar", nil, self, "BackdropTemplate")
   AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
   AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
-  AdditionalPower:SetSize(self.cfg.width, self.cfg.altpower.height)
-  AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
+  AdditionalPower:SetSize(self.cfg.width, self.cfg.additionalpower.height)
   AdditionalPower:SetStatusBarColor(r, g, b)
   AdditionalPower.frequentUpdates = true
+
+  -- If power is not showing position the additional power below health
+  if not cfg.units.player.power.show then
+    AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
+  else
+    AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
+  end
 
   -- Add a background
   local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")
@@ -535,9 +573,9 @@ function lum:CreateAdditionalPower(self)
   bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
 
   -- Value
-  local PowerValue = api:CreateFontstring(AdditionalPower, font, cfg.fontsize - 4, "THINOUTLINE")
-  PowerValue:SetPoint("RIGHT", AdditionalPower, -8, 0)
-  PowerValue:SetJustifyH("RIGHT")
+  local PowerValue = api:CreateFontstring(AdditionalPower, font, cfg.fontsize - 3, "THINOUTLINE")
+  PowerValue:SetPoint("CENTER", AdditionalPower, 0, 0)
+  PowerValue:SetJustifyH("CENTER")
   self:Tag(PowerValue, "[lum:altpower]")
 
   -- Backdrop
@@ -589,7 +627,6 @@ end
 -- Quest or boss special power
 -- -----------------------------------
 
--- AltPower PostUpdate
 local function AltPowerPostUpdate(self, unit, cur, min, max)
   if self.unit ~= unit then
     return

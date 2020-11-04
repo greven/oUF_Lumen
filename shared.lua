@@ -30,6 +30,5 @@ function lum:SharedStyle(self, frameType)
 
 	lum:CreateHealthBar(self, frameType)
 	lum:CreatePowerBar(self, frameType)
-
 	lum:CreateMouseoverHighlight(self)
 end

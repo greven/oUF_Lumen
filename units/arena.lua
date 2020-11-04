@@ -26,10 +26,7 @@ local function CreateArena(self)
   lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   lum:CreatePowerValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
 
-  -- Castbar
   lum:CreateCastbar(self)
-
-  -- Heal Prediction
   lum:CreateHealPrediction(self)
 end
 

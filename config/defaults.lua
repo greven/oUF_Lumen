@@ -75,7 +75,7 @@ cfg.frames = {
   main = {
     width = 204, -- Width of the Player and Target Frames
     height = 24, -- Height of the Player and Target Frames
-    margin = 226, -- Margin between Player and Target Frames
+    margin = 236, -- Margin between Player and Target Frames
     health = {
       margin = 2 -- Spacing between HP and Power Bars
     },
@@ -187,7 +187,7 @@ cfg.units = {
       smooth = true
     },
     power = {
-      show = true,
+      show = not cfg.frames.playerplate.show,
       height = cfg.frames.main.power.height,
       classColored = false,
       frequentUpdates = true,
@@ -204,14 +204,16 @@ cfg.units = {
       pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", x = 0, y = -7},
       height = 2
     },
-    altpower = {
-      height = 3
+    additionalpower = {
+      show = true,
+      height = cfg.frames.main.power.height,
+      hideOnFull = false
     },
     castbar = {
       enable = true,
       pos = {a1 = "BOTTOMLEFT", a2 = "TOPLEFT", af = "MultiBarBottomLeft", x = cfg.frames.main.height + 4, y = -4},
       color = {5 / 255, 107 / 255, 246 / 255},
-      width = (cfg.frames.main.width + 2) * 2 + cfg.frames.main.margin - 5,
+      width = (cfg.frames.main.width + 2) * 2 + cfg.frames.main.margin - cfg.frames.main.height + 8,
       height = cfg.frames.main.height,
       latency = {
         show = true,
@@ -608,7 +610,8 @@ cfg.units = {
     show = cfg.frames.playerplate.show,
     width = cfg.frames.playerplate.width,
     height = cfg.frames.playerplate.height,
-    pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 356},
+    -- pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 356},
+    pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 264},
     health = {
       show = true,
       classColored = false,
