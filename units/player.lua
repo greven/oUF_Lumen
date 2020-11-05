@@ -23,12 +23,11 @@ local function CreatePlayer(self)
   lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, -0.5, "LEFT", "BACKGROUND")
   lum:CreatePowerValueString(self, font, cfg.fontsize - 3, "THINOUTLINE", 0, 0, "CENTER")
 
-  -- lum:CreatePowerBar(self, "main")
   lum:CreateCastbar(self)
   lum:CreateAdditionalPower(self)
+  lum:CreateHealPrediction(self)
   lum:CreatePowerPrediction(self)
   lum:CreateAlternativePower(self)
-  lum:CreateHealPrediction(self)
   lum:CreatePlayerIconIndicators(self)
   lum:MirrorBars()
 

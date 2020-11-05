@@ -1,6 +1,7 @@
 general:
   ✔ Refactor @done(20-10-26 00:20)
   ✔ Add scale back to frames (player, party, target, etc) @done(20-10-25 20:12)
+  ☐ Shift player plate spell watchers when player has no Class power?
 
 party:
   ☐ Refactor code like player frames

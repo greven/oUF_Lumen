@@ -177,7 +177,8 @@ cfg.units = {
     show = true,
     width = cfg.frames.main.width,
     height = cfg.frames.main.height,
-    pos = {a1 = "LEFT", a2 = "CENTER", af = "UIParent", x = -322, y = -372},
+    -- pos = {a1 = "LEFT", a2 = "CENTER", af = "UIParent", x = -322, y = -372},
+    pos = {a1 = "LEFT", a2 = "BOTTOM", af = "UIParent", x = -322, y = 252},
     health = {
       show = true,
       classColored = false,
@@ -610,8 +611,7 @@ cfg.units = {
     show = cfg.frames.playerplate.show,
     width = cfg.frames.playerplate.width,
     height = cfg.frames.playerplate.height,
-    -- pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 356},
-    pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 264},
+    pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 352},
     health = {
       show = true,
       classColored = false,
@@ -648,7 +648,7 @@ cfg.units = {
         spellName = false
       }
     },
-    visibility = "[mod][combat] show; hide;",
+    visibility = "[mod][harm][combat][group] show; hide;",
     fader = {
       fadeInAlpha = 1,
       fadeInDuration = 0.3,

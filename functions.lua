@@ -1,7 +1,7 @@
 local _, ns = ...
 
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
-local filters, debuffs = ns.filters, ns.debuffs
+local filters, debuffs, watchers = ns.filters, ns.debuffs, ns.watchers
 
 local UnitAura, UnitPowerType = UnitAura, UnitPowerType
 
@@ -94,6 +94,153 @@ function lum:CreatePowerBar(self, frameType)
 
   self.Power = power
   return self.Power
+end
+
+-- ----------------------------------------
+-- > Additional Power
+-- Power bar for specs like Balance Druid
+-- ----------------------------------------
+
+local function onAdditionalPowerPostUpdate(self, cur, max)
+  local frame = self.__owner.mystyle
+  local powertype = UnitPowerType("player")
+
+  if powertype == 0 then
+    return
+  end
+
+  if not cfg.units[frame].additionalpower.hideOnFull then
+    return
+  end
+
+  -- Hide bar if full
+  if cur == max or powertype == 0 then
+    self:Hide()
+  else
+    self:Show()
+  end
+end
+
+function lum:CreateAdditionalPower(self)
+  if not self.cfg.additionalpower.show then
+    return
+  end
+
+  local gap = -18
+  local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
+
+  local AdditionalPower = CreateFrame("StatusBar", nil, self, "BackdropTemplate")
+  api:SetBackdrop(AdditionalPower, 1, 1, 1, 1)
+  AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
+  AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
+  AdditionalPower:SetSize(self.cfg.width, self.cfg.additionalpower.height)
+  AdditionalPower:SetStatusBarColor(r, g, b)
+  AdditionalPower.frequentUpdates = true
+
+  -- If power is not showing position the additional power below health
+  if not cfg.units.player.power.show then
+    AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
+  else
+    AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
+  end
+
+  local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")
+  bg:SetAllPoints(AdditionalPower)
+  bg:SetTexture(m.textures.bg_texture)
+  bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
+
+  local PowerValue = api:CreateFontstring(AdditionalPower, font, cfg.fontsize - 3, "THINOUTLINE")
+  PowerValue:SetPoint("CENTER", AdditionalPower, 0, 0)
+  PowerValue:SetJustifyH("CENTER")
+  self:Tag(PowerValue, "[lum:altpower]")
+
+  AdditionalPower.bg = bg
+  AdditionalPower.PostUpdate = onAdditionalPowerPostUpdate
+  self.AdditionalPower = AdditionalPower
+end
+
+-- -----------------------------------
+-- > Heal Prediction
+-- -----------------------------------
+
+function lum:CreateHealPrediction(self)
+  if not self.Health then
+    return
+  end
+
+  local myBar = CreateFrame("StatusBar", nil, self.Health)
+  myBar:SetPoint("TOP")
+  myBar:SetPoint("BOTTOM")
+  myBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  myBar:SetWidth(self.cfg.width)
+  myBar:SetStatusBarTexture(m.textures.status_texture)
+  myBar:SetStatusBarColor(125 / 255, 255 / 255, 50 / 255, .4)
+
+  local otherBar = CreateFrame("StatusBar", nil, self.Health)
+  otherBar:SetPoint("TOP")
+  otherBar:SetPoint("BOTTOM")
+  otherBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  otherBar:SetWidth(self.cfg.width)
+  otherBar:SetStatusBarTexture(m.textures.status_texture)
+  otherBar:SetStatusBarColor(100 / 255, 235 / 255, 200 / 255, .4)
+
+  local absorbBar = CreateFrame("StatusBar", nil, self.Health)
+  absorbBar:SetPoint("TOP")
+  absorbBar:SetPoint("BOTTOM")
+  absorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  absorbBar:SetWidth(self.cfg.width)
+  absorbBar:SetStatusBarTexture(m.textures.status_texture)
+  absorbBar:SetStatusBarColor(18053 / 255, 255 / 255, 205 / 255, .35)
+
+  local healAbsorbBar = CreateFrame("StatusBar", nil, self.Health)
+  healAbsorbBar:SetPoint("TOP")
+  healAbsorbBar:SetPoint("BOTTOM")
+  healAbsorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
+  healAbsorbBar:SetWidth(self.cfg.width)
+  healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
+  healAbsorbBar:SetStatusBarColor(183 / 255, 244 / 255, 255 / 255, .35)
+
+  -- Register with oUF
+  self.HealthPrediction = {
+    myBar = myBar,
+    otherBar = otherBar,
+    absorbBar = absorbBar,
+    healAbsorbBar = healAbsorbBar,
+    maxOverflow = 1
+  }
+end
+
+-- -----------------------------------
+-- > Power Prediction
+-- -----------------------------------
+
+function lum:CreatePowerPrediction(self)
+  local mainBar = CreateFrame("StatusBar", nil, self.Power)
+  mainBar:SetStatusBarTexture(m.textures.status_texture)
+  mainBar:SetStatusBarColor(0.4, 0.8, 1, 0.7)
+  mainBar:SetReverseFill(true)
+  mainBar:SetWidth(self.cfg.width)
+  if self.Power then
+    mainBar:SetPoint("TOP")
+    mainBar:SetPoint("BOTTOM")
+    mainBar:SetPoint("RIGHT", self.Power:GetStatusBarTexture(), "RIGHT")
+  end
+
+  local altBar = CreateFrame("StatusBar", nil, self.AdditionalPower)
+  altBar:SetStatusBarTexture(m.textures.status_texture)
+  altBar:SetStatusBarColor(1, 1, 1, 0.5)
+  altBar:SetReverseFill(true)
+  altBar:SetWidth(self.cfg.width)
+  if self.AdditionalPower then
+    altBar:SetPoint("TOP")
+    altBar:SetPoint("BOTTOM")
+    altBar:SetPoint("RIGHT", self.AdditionalPower:GetStatusBarTexture(), "RIGHT")
+  end
+
+  self.PowerPrediction = {
+    mainBar = mainBar and mainBar,
+    altBar = altBar and altBar
+  }
 end
 
 -- -----------------------------------
@@ -192,11 +339,16 @@ end
 -- > Spell Watchers (Player Plate)
 -- -----------------------------------
 
+-- local function UpdateSpellWatchersPosition(self, event)
+--   print(event)
+-- end
+
 function lum:CreateSpellWatchers(self)
   local frame = self.mystyle
   local SpellWatchers = {}
 
   local max = 5
+  local margin = 10
 
   for i = 1, max do
     local SpellButton = CreateFrame("Button", nil, self)
@@ -210,124 +362,16 @@ function lum:CreateSpellWatchers(self)
       SpellButton:SetPoint("LEFT", SpellWatchers[i - 1], "RIGHT", 6, 0)
     else
       local pos = cfg.units[frame].classpower.pos
-      SpellButton:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - 10)
+      SpellButton:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - margin)
     end
 
     SpellWatchers[i] = SpellButton
   end
 
+  -- TODO: Adjust the margin on Visilibity change?
+
+  SpellWatchers.spells = watchers
   self.SpellWatchers = SpellWatchers
-end
-
--- -----------------------------------
--- > Borders
--- -----------------------------------
-
--- Create Target Border
--- function lum:CreateTargetBorder(self)
---   self.TargetBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
---   api:CreateBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
---   self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
---   self:RegisterEvent("RAID_ROSTER_UPDATE", ChangedTarget)
--- end
-
--- Create Party / Raid health warning status border
-function lum:CreateHealthBorder(self)
-  self.HPborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  api:CreateBorder(self, self.HPborder, 1, 4)
-  self.HPborder:SetBackdropBorderColor(180 / 255, 255 / 255, 0 / 255, 1)
-end
-
-local function UpdateThreat(self, event, unit)
-  if (self.unit ~= unit) then
-    return
-  end
-
-  local status = UnitThreatSituation(unit)
-  unit = unit or self.unit
-
-  if status and status > 1 then
-    local r, g, b = GetThreatStatusColor(status)
-    self.ThreatBorder:Show()
-    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 1)
-  else
-    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 0)
-    self.ThreatBorder:Hide()
-  end
-end
-
--- Create Party / Raid Threat Status Border
-function lum:CreateThreatBorder(self)
-  self.ThreatBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  api:CreateBorder(self, self.ThreatBorder, 1, 3)
-  self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
-  self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
-end
-
--- Create Glow Border
-function lum:SetGlowBorder(self)
-  local glow = CreateFrame("Frame", nil, self, "BackdropTemplate")
-  glow:SetFrameLevel(0)
-  glow:SetPoint("TOPLEFT", self, "TOPLEFT", -6, 6)
-  glow:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 6, -6)
-  glow:SetBackdrop(
-    {
-      bgFile = m.textures.white_square,
-      edgeFile = m.textures.glow_texture,
-      tile = false,
-      tileSize = 16,
-      edgeSize = 4,
-      insets = {left = -4, right = -4, top = -4, bottom = -4}
-    }
-  )
-  glow:SetBackdropColor(0, 0, 0, 0)
-  glow:SetBackdropBorderColor(0, 0, 0, 1)
-
-  self.Glowborder = glow
-end
-
--- -----------------------------------
--- > Frame Highlight
--- -----------------------------------
-
-local OnFrameEnter = function(self)
-  if not self.Highlight then
-    return
-  end
-
-  self:SetAlpha(1) -- Player frame fading
-  self.Highlight:Show() -- Mouseover highlight Show
-  UnitFrame_OnEnter(self)
-end
-
-local OnFrameLeave = function(self)
-  if not self.Highlight then
-    return
-  end
-
-  if cfg.units.player.fader.enable then -- Player frame fading
-    self:SetAlpha(cfg.units.player.fader.alpha)
-  end
-
-  self.Highlight:Hide() -- Mouseover highlight Hide
-  UnitFrame_OnLeave(self)
-end
-
-function lum:CreateMouseoverHighlight(self)
-  if not self.Health then
-    return
-  end
-
-  local highlight = self.Health:CreateTexture(nil, "OVERLAY")
-  highlight:SetAllPoints(self)
-  highlight:SetTexture(m.textures.white_square)
-  highlight:SetVertexColor(1, 1, 1, .05)
-  highlight:SetBlendMode("ADD")
-  highlight:Hide()
-  self.Highlight = highlight
-
-  self:SetScript("OnEnter", OnFrameEnter)
-  self:SetScript("OnLeave", OnFrameLeave)
 end
 
 -- -----------------------------------
@@ -466,160 +510,6 @@ function lum:CreateClassPower(self)
   else
     CreateClassPower(self)
   end
-end
-
--- -----------------------------------
--- > Heal Prediction
--- -----------------------------------
-
-function lum:CreateHealPrediction(self)
-  if not self.Health then
-    return
-  end
-
-  local myBar = CreateFrame("StatusBar", nil, self.Health)
-  myBar:SetPoint("TOP")
-  myBar:SetPoint("BOTTOM")
-  myBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  myBar:SetWidth(self.cfg.width)
-  myBar:SetStatusBarTexture(m.textures.status_texture)
-  myBar:SetStatusBarColor(125 / 255, 255 / 255, 50 / 255, .4)
-
-  local otherBar = CreateFrame("StatusBar", nil, self.Health)
-  otherBar:SetPoint("TOP")
-  otherBar:SetPoint("BOTTOM")
-  otherBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  otherBar:SetWidth(self.cfg.width)
-  otherBar:SetStatusBarTexture(m.textures.status_texture)
-  otherBar:SetStatusBarColor(100 / 255, 235 / 255, 200 / 255, .4)
-
-  local absorbBar = CreateFrame("StatusBar", nil, self.Health)
-  absorbBar:SetPoint("TOP")
-  absorbBar:SetPoint("BOTTOM")
-  absorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  absorbBar:SetWidth(self.cfg.width)
-  absorbBar:SetStatusBarTexture(m.textures.status_texture)
-  absorbBar:SetStatusBarColor(18053 / 255, 255 / 255, 205 / 255, .35)
-
-  local healAbsorbBar = CreateFrame("StatusBar", nil, self.Health)
-  healAbsorbBar:SetPoint("TOP")
-  healAbsorbBar:SetPoint("BOTTOM")
-  healAbsorbBar:SetPoint("LEFT", self.Health:GetStatusBarTexture(), "RIGHT")
-  healAbsorbBar:SetWidth(self.cfg.width)
-  healAbsorbBar:SetStatusBarTexture(m.textures.status_texture)
-  healAbsorbBar:SetStatusBarColor(183 / 255, 244 / 255, 255 / 255, .35)
-
-  -- Register with oUF
-  self.HealthPrediction = {
-    myBar = myBar,
-    otherBar = otherBar,
-    absorbBar = absorbBar,
-    healAbsorbBar = healAbsorbBar,
-    maxOverflow = 1
-  }
-end
-
--- ----------------------------------------
--- > Additional Power
--- Power bar for specs like Feral Druid
--- ----------------------------------------
-
-local function onAdditionalPowerPostUpdate(self, cur, max)
-  local frame = self.__owner.mystyle
-  local powertype = UnitPowerType("player")
-
-  if powertype == 0 then
-    return
-  end
-
-  if not cfg.units[frame].additionalpower.hideOnFull then
-    return
-  end
-
-  -- Hide bar if full
-  if cur == max or powertype == 0 then
-    self:Hide()
-  else
-    self:Show()
-  end
-end
-
-function lum:CreateAdditionalPower(self)
-  if not self.cfg.additionalpower.show then
-    return
-  end
-
-  local gap = -18
-  local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
-
-  local AdditionalPower = CreateFrame("StatusBar", nil, self, "BackdropTemplate")
-  AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
-  AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
-  AdditionalPower:SetSize(self.cfg.width, self.cfg.additionalpower.height)
-  AdditionalPower:SetStatusBarColor(r, g, b)
-  AdditionalPower.frequentUpdates = true
-
-  -- If power is not showing position the additional power below health
-  if not cfg.units.player.power.show then
-    AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
-  else
-    AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
-  end
-
-  -- Add a background
-  local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")
-  bg:SetAllPoints(AdditionalPower)
-  bg:SetTexture(m.textures.bg_texture)
-  bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
-
-  -- Value
-  local PowerValue = api:CreateFontstring(AdditionalPower, font, cfg.fontsize - 3, "THINOUTLINE")
-  PowerValue:SetPoint("CENTER", AdditionalPower, 0, 0)
-  PowerValue:SetJustifyH("CENTER")
-  self:Tag(PowerValue, "[lum:altpower]")
-
-  -- Backdrop
-  api:SetBackdrop(AdditionalPower, 1, 1, 1, 1)
-
-  AdditionalPower.bg = bg
-  AdditionalPower.PostUpdate = onAdditionalPowerPostUpdate
-  self.AdditionalPower = AdditionalPower
-end
-
--- -----------------------------------
--- > Power Prediction
--- -----------------------------------
-
-function lum:CreatePowerPrediction(self)
-  if not self.Power then
-    return
-  end
-
-  local mainBar = CreateFrame("StatusBar", nil, self.Power)
-  mainBar:SetStatusBarTexture(m.textures.status_texture)
-  mainBar:SetStatusBarColor(0.4, 0.8, 1, 0.7)
-  mainBar:SetReverseFill(true)
-  mainBar:SetPoint("TOP")
-  mainBar:SetPoint("BOTTOM")
-  mainBar:SetPoint("RIGHT", self.Power:GetStatusBarTexture(), "RIGHT")
-  mainBar:SetWidth(self.cfg.width)
-
-  local altBar = CreateFrame("StatusBar", nil, self.AdditionalPower)
-  altBar:SetStatusBarTexture(m.textures.status_texture)
-  altBar:SetStatusBarColor(1, 1, 1, 0.5)
-  altBar:SetReverseFill(true)
-
-  if self.AdditionalPower then
-    altBar:SetPoint("TOP")
-    altBar:SetPoint("BOTTOM")
-    altBar:SetPoint("RIGHT", self.AdditionalPower:GetStatusBarTexture(), "RIGHT")
-    altBar:SetWidth(self.cfg.width)
-  end
-
-  self.PowerPrediction = {
-    mainBar = mainBar,
-    altBar = altBar
-  }
 end
 
 -- -----------------------------------
@@ -1016,4 +906,115 @@ function lum:CreateArtifactPowerBar(self)
     ArtifactPowerBG:SetTexture(m.textures.bg_texture)
     ArtifactPowerBG:SetColorTexture(1 / 3, 1 / 3, 1 / 3)
   end
+end
+
+-- -----------------------------------
+-- > Borders
+-- -----------------------------------
+
+-- Create Target Border
+-- function lum:CreateTargetBorder(self)
+--   self.TargetBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+--   api:CreateBorder(self, self.TargetBorder, 1, 3, "Interface\\ChatFrame\\ChatFrameBackground")
+--   self:RegisterEvent("PLAYER_TARGET_CHANGED", ChangedTarget)
+--   self:RegisterEvent("RAID_ROSTER_UPDATE", ChangedTarget)
+-- end
+
+-- Create Party / Raid health warning status border
+function lum:CreateHealthBorder(self)
+  self.HPborder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  api:CreateBorder(self, self.HPborder, 1, 4)
+  self.HPborder:SetBackdropBorderColor(180 / 255, 255 / 255, 0 / 255, 1)
+end
+
+local function UpdateThreat(self, event, unit)
+  if (self.unit ~= unit) then
+    return
+  end
+
+  local status = UnitThreatSituation(unit)
+  unit = unit or self.unit
+
+  if status and status > 1 then
+    local r, g, b = GetThreatStatusColor(status)
+    self.ThreatBorder:Show()
+    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 1)
+  else
+    self.ThreatBorder:SetBackdropBorderColor(r, g, b, 0)
+    self.ThreatBorder:Hide()
+  end
+end
+
+-- Create Party / Raid Threat Status Border
+function lum:CreateThreatBorder(self)
+  self.ThreatBorder = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  api:CreateBorder(self, self.ThreatBorder, 1, 3)
+  self:RegisterEvent("UNIT_THREAT_LIST_UPDATE", UpdateThreat)
+  self:RegisterEvent("UNIT_THREAT_SITUATION_UPDATE", UpdateThreat)
+end
+
+-- Create Glow Border
+function lum:SetGlowBorder(self)
+  local glow = CreateFrame("Frame", nil, self, "BackdropTemplate")
+  glow:SetFrameLevel(0)
+  glow:SetPoint("TOPLEFT", self, "TOPLEFT", -6, 6)
+  glow:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 6, -6)
+  glow:SetBackdrop(
+    {
+      bgFile = m.textures.white_square,
+      edgeFile = m.textures.glow_texture,
+      tile = false,
+      tileSize = 16,
+      edgeSize = 4,
+      insets = {left = -4, right = -4, top = -4, bottom = -4}
+    }
+  )
+  glow:SetBackdropColor(0, 0, 0, 0)
+  glow:SetBackdropBorderColor(0, 0, 0, 1)
+
+  self.Glowborder = glow
+end
+
+-- -----------------------------------
+-- > Frame Highlight
+-- -----------------------------------
+
+local OnFrameEnter = function(self)
+  if not self.Highlight then
+    return
+  end
+
+  self:SetAlpha(1) -- Player frame fading
+  self.Highlight:Show() -- Mouseover highlight Show
+  UnitFrame_OnEnter(self)
+end
+
+local OnFrameLeave = function(self)
+  if not self.Highlight then
+    return
+  end
+
+  if cfg.units.player.fader.enable then -- Player frame fading
+    self:SetAlpha(cfg.units.player.fader.alpha)
+  end
+
+  self.Highlight:Hide() -- Mouseover highlight Hide
+  UnitFrame_OnLeave(self)
+end
+
+function lum:CreateMouseoverHighlight(self)
+  if not self.Health then
+    return
+  end
+
+  local highlight = self.Health:CreateTexture(nil, "OVERLAY")
+  highlight:SetAllPoints(self)
+  highlight:SetTexture(m.textures.white_square)
+  highlight:SetVertexColor(1, 1, 1, .05)
+  highlight:SetBlendMode("ADD")
+  highlight:Hide()
+  self.Highlight = highlight
+
+  self:SetScript("OnEnter", OnFrameEnter)
+  self:SetScript("OnLeave", OnFrameLeave)
 end

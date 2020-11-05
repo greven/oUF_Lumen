@@ -110,7 +110,7 @@ function lum:CreateCastbar(self)
   Shield:SetPoint("CENTER", Castbar)
 
   -- Spell casting time
-  Castbar.Max = Castbar:CreateFontString(nil, "OVERLAY")
+  Castbar.Max = Castbar:CreateFontString(nil, "BACKGROUND")
   Castbar.Max:SetTextColor(100 / 255, 100 / 255, 100 / 255)
   Castbar.Max:SetJustifyH("RIGHT")
   Castbar.Max:SetFont(font, cfg.fontsize - 2, "THINOUTLINE")
