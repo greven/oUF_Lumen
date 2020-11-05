@@ -34,7 +34,7 @@ local function SetPosition(element, index)
   end
 
   local max = element.__max
-  local gap = element.gap or 6
+  local gap = element.gap or 4
 
   if index > 1 then
     button:SetPoint("LEFT", element[index - 1], "RIGHT", gap, 0)
@@ -92,7 +92,7 @@ local function UpdateSpellButton(element, index)
 
   if spellID then
     local _, _, texture = GetSpellInfo(spellID)
-    -- local start, duration = GetSpellCooldown(spellID)
+    local start, duration = GetSpellCooldown(spellID)
     local button = element[index]
 
     if not button then
@@ -100,22 +100,35 @@ local function UpdateSpellButton(element, index)
       table.insert(element, button)
     end
 
-    -- if (button.cd and not element.disableCooldown) then
-    --   if (duration and duration > 0) then
-    --     button.cd:SetCooldown(expiration - duration, duration)
-    --     button.cd:Show()
-    --   else
-    --     button.cd:Hide()
-    --   end
-    -- end
+    if (button.cd and not element.disableCooldown) then
+      if (duration and duration > 0) then
+        local remaining = start + duration - GetTime()
+        button.cd:SetCooldown(remaining, duration)
+        button.cd:Show()
+      else
+        button.cd:Hide()
+      end
+    end
+
+    if button.overlay then
+      button.overlay:SetTexCoord(0, 1, 0, 1)
+      button.overlay:SetVertexColor(0.1, 0.1, 0.1)
+      button.overlay:Show()
+    else
+      button.overlay:Hide()
+    end
 
     if (button.icon) then
       button.icon:SetTexture(texture)
     end
 
+    -- if (button.count) then
+    --   button.count:SetText(count > 1 and count)
+    -- end
+
     local max, width = element.__max, element:GetWidth()
 
-    local maxSize = ((width / 5) - (((5 - 1) * (element.gap or 6)) / 5))
+    local maxSize = ((width / 5) - (((5 - 1) * (element.gap or 4)) / 5))
     local size = element.size or maxSize
     button:SetSize(size, size)
 

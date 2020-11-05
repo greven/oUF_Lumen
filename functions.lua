@@ -364,8 +364,6 @@ local function onPostCreateButton(self, button)
   count:SetPoint("TOPRIGHT", button, 3, 3)
 
   button.overlay:SetTexture(m.textures.border)
-  button.overlay:SetTexCoord(0, 1, 0, 1)
-  button.overlay:SetVertexColor(0.1, 0.1, 0.1)
 end
 
 function lum:CreateSpellWatchers(self)
