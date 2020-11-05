@@ -345,31 +345,32 @@ end
 
 function lum:CreateSpellWatchers(self)
   local frame = self.mystyle
-  local SpellWatchers = {}
+  -- local SpellWatchers = {}
 
-  local max = 5
-  local margin = 10
+  -- local max = 5
+  -- local margin = 10
 
-  for i = 1, max do
-    local SpellButton = CreateFrame("Button", nil, self)
-    local maxWidth, gap = cfg.units[frame].width, 6
+  -- for i = 1, max do
+  --   local SpellButton = CreateFrame("Frame", "SpellWatchers" .. i, self)
+  --   local maxWidth, gap = cfg.units[frame].width, 6
 
-    SpellButton:SetWidth(((maxWidth / max) - (((max - 1) * gap) / max)))
-    SpellButton:SetHeight(((maxWidth / max) - (((max - 1) * gap) / max)))
-    api:SetBackdrop(SpellButton, 2, 2, 2, 2)
+  --   SpellButton:SetWidth(((maxWidth / max) - (((max - 1) * gap) / max)))
+  --   SpellButton:SetHeight(((maxWidth / max) - (((max - 1) * gap) / max)))
+  --   api:SetBackdrop(SpellButton, 2, 2, 2, 2)
 
-    if (i > 1) then
-      SpellButton:SetPoint("LEFT", SpellWatchers[i - 1], "RIGHT", 6, 0)
-    else
-      local pos = cfg.units[frame].classpower.pos
-      SpellButton:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - margin)
-    end
+  --   if (i > 1) then
+  --     SpellButton:SetPoint("LEFT", SpellWatchers[i - 1], "RIGHT", 6, 0)
+  --   else
+  --     local pos = cfg.units[frame].classpower.pos
+  --     SpellButton:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - margin)
+  --   end
 
-    SpellWatchers[i] = SpellButton
-  end
+  --   SpellWatchers[i] = SpellButton
+  -- end
 
   -- TODO: Adjust the margin on Visilibity change?
 
+  local SpellWatchers = CreateFrame("Frame", nil, self)
   SpellWatchers.spells = watchers
   self.SpellWatchers = SpellWatchers
 end

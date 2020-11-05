@@ -27,12 +27,55 @@ local function GetTotalElements(elements)
 end
 
 local function CreateSpellButton(element, index)
+  -- local button = CreateFrame("Button", "SpellWatchersButton" .. index, element, "SecureHandlerClickTemplate")
+  -- button:RegisterForClicks("AnyUp")
+
+  -- local cd = CreateFrame("Cooldown", "$parentCooldown", button, "CooldownFrameTemplate")
+  -- cd:SetAllPoints()
+
+  -- local icon = button:CreateTexture(nil, "BORDER")
+  -- icon:SetAllPoints()
+
+  -- local countFrame = CreateFrame("Frame", nil, button)
+  -- countFrame:SetAllPoints(button)
+  -- countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
+
+  -- local count = countFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+  -- count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", -1, 0)
+
+  -- button.UpdateTooltip = UpdateTooltip
+  -- button:SetScript('OnEnter', onEnter)
+  -- button:SetScript('OnLeave', onLeave)
+
+  -- button.icon = icon
+  -- button.count = count
+  -- button.cd = cd
+
+  --[[ Callback: SpellWatchers:PostCreateButton(button)
+	Called after a new spell button has been created.
+
+	* self   - the widget holding the spell buttons
+	* button - the newly created spell button
+	--]]
+  if (element.PostCreateButton) then
+    element:PostCreateButton(button)
+  end
+
+  -- return button
 end
 
 local function UpdateSpellButton(element, index)
   local spellID = element.__spells[index]
-  local start, duration = GetSpellCooldown(spellID)
-  print(spellID, duration)
+
+  if spellID then
+    local _, _, icon_texture = GetSpellInfo(spellID)
+  -- local start, duration = GetSpellCooldown(spellID)
+  -- local button = element[index].button
+
+  -- if not button then
+  --   button = (element.CreateButton or CreateSpellButton)(element, index)
+  -- end
+  end
 end
 
 local function UpdateSpells(self, event, unit)
@@ -149,12 +192,7 @@ do
 
     PlayerSpec = GetCurrentSpec()
 
-    local max = GetTotalElements(element.__spells)
-    for i = 1, max do
-      element[i]:Show()
-    end
-
-    element.__max = max
+    element.__max = GetTotalElements(element.__spells)
 
     self.SpellWatchers.__isEnabled = true
   end
@@ -183,9 +221,9 @@ local function Enable(self, unit)
     element.__max = #element
     element.ForceUpdate = ForceUpdate
 
-    for i = 1, #element do
-      element[i]:Hide()
-    end
+    -- for i = 1, #element do
+    --   element[i]:Hide()
+    -- end
 
     self:RegisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath, true)
     self:RegisterEvent("SPELLS_CHANGED", VisibilityPath, true)
