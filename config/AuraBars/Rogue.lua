@@ -6,6 +6,7 @@ filters.ROGUE = {
   buffs = {
     [13750 or "Adrenaline Rush"] = true,
     [13877 or "Blade Flurry"] = true,
+    [121153 or "Blindside"] = true,
     [193356 or "Broadside"] = true, -- Roll the Bones
     [199600 or "Buried Treasure"] = true, -- Roll the Bones
     [31224 or "Cloak of Shadows"] = true,

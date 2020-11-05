@@ -26,30 +26,53 @@ local function GetTotalElements(elements)
   return count
 end
 
+local function SetPosition(element, index)
+  local button = element[index]
+
+  if not button then
+    return
+  end
+
+  local max = element.__max
+  local gap = element.gap or 6
+
+  if index > 1 then
+    button:SetPoint("LEFT", element[index - 1], "RIGHT", gap, 0)
+  else
+    button:SetPoint("TOPLEFT", element, 0, 0)
+  end
+end
+
 local function CreateSpellButton(element, index)
-  -- local button = CreateFrame("Button", "SpellWatchersButton" .. index, element, "SecureHandlerClickTemplate")
-  -- button:RegisterForClicks("AnyUp")
+  local button = CreateFrame("Button", element:GetDebugName() .. "Button" .. index, element)
+  button:RegisterForClicks("AnyUp")
 
-  -- local cd = CreateFrame("Cooldown", "$parentCooldown", button, "CooldownFrameTemplate")
-  -- cd:SetAllPoints()
+  local cd = CreateFrame("Cooldown", "$parentCooldown", button, "CooldownFrameTemplate")
+  cd:SetAllPoints()
 
-  -- local icon = button:CreateTexture(nil, "BORDER")
-  -- icon:SetAllPoints()
+  local icon = button:CreateTexture(nil, "BORDER")
+  icon:SetAllPoints()
 
-  -- local countFrame = CreateFrame("Frame", nil, button)
-  -- countFrame:SetAllPoints(button)
-  -- countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
+  local countFrame = CreateFrame("Frame", nil, button)
+  countFrame:SetAllPoints(button)
+  countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
 
-  -- local count = countFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-  -- count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", -1, 0)
+  local count = countFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+  count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", -1, 0)
+
+  local overlay = button:CreateTexture(nil, "OVERLAY")
+  overlay:SetTexture([[Interface\Buttons\UI-Debuff-Overlays]])
+  overlay:SetAllPoints()
+  overlay:SetTexCoord(.296875, .5703125, 0, .515625)
+  button.overlay = overlay
 
   -- button.UpdateTooltip = UpdateTooltip
-  -- button:SetScript('OnEnter', onEnter)
-  -- button:SetScript('OnLeave', onLeave)
+  -- button:SetScript("OnEnter", onEnter)
+  -- button:SetScript("OnLeave", onLeave)
 
-  -- button.icon = icon
-  -- button.count = count
-  -- button.cd = cd
+  button.icon = icon
+  button.count = count
+  button.cd = cd
 
   --[[ Callback: SpellWatchers:PostCreateButton(button)
 	Called after a new spell button has been created.
@@ -61,40 +84,84 @@ local function CreateSpellButton(element, index)
     element:PostCreateButton(button)
   end
 
-  -- return button
+  return button
 end
 
 local function UpdateSpellButton(element, index)
   local spellID = element.__spells[index]
 
   if spellID then
-    local _, _, icon_texture = GetSpellInfo(spellID)
-  -- local start, duration = GetSpellCooldown(spellID)
-  -- local button = element[index].button
+    local _, _, texture = GetSpellInfo(spellID)
+    -- local start, duration = GetSpellCooldown(spellID)
+    local button = element[index]
 
-  -- if not button then
-  --   button = (element.CreateButton or CreateSpellButton)(element, index)
-  -- end
+    if not button then
+      button = (element.CreateButton or CreateSpellButton)(element, index)
+      table.insert(element, button)
+    end
+
+    -- if (button.cd and not element.disableCooldown) then
+    --   if (duration and duration > 0) then
+    --     button.cd:SetCooldown(expiration - duration, duration)
+    --     button.cd:Show()
+    --   else
+    --     button.cd:Hide()
+    --   end
+    -- end
+
+    if (button.icon) then
+      button.icon:SetTexture(texture)
+    end
+
+    local max, width = element.__max, element:GetWidth()
+
+    local maxSize = ((width / 5) - (((5 - 1) * (element.gap or 6)) / 5))
+    local size = element.size or maxSize
+    button:SetSize(size, size)
+
+    button:EnableMouse(not element.disableMouse)
+    button:SetID(index)
+    button:Show()
   end
 end
 
 local function UpdateSpells(self, event, unit)
-  local element = self.SpellWatchers
-  if element and element.__max > 0 then
+  local watchers = self.SpellWatchers
+  if watchers and watchers.__max > 0 then
     --[[ Callback: SpellWatchers:PreUpdate(unit)
 		Called before the element has been updated.
 
 		* self - the widget holding the spell buttons
 		* unit - the unit for which the update has been triggered (string)
 		--]]
-    if (element.PreUpdate) then
-      element:PreUpdate(unit)
+    if (watchers.PreUpdate) then
+      watchers:PreUpdate(unit)
     end
 
-    local spells = element.__spells
+    local spells = watchers.__spells
 
-    for index = 1, element.__max do
-      UpdateSpellButton(element, index)
+    for index = 1, watchers.__max do
+      local button = watchers[index]
+      if (not button) then
+        button = (watchers.CreateButton or CreateSpellButton)(watchers, index)
+        table.insert(watchers, button)
+      end
+
+      if (button.cd) then
+        button.cd:Hide()
+      end
+      if (button.icon) then
+        button.icon:SetTexture()
+      end
+      if (button.count) then
+        button.count:SetText()
+      end
+
+      button:EnableMouse(false)
+      button:Show()
+
+      UpdateSpellButton(watchers, index)
+      SetPosition(watchers, index)
     end
   end
 end
@@ -180,9 +247,9 @@ local function VisibilityPath(self, ...)
   return (self.SpellWatchers.OverrideVisibility or Visibility)(self, ...)
 end
 
-local function ForceUpdate(element)
-  return Update(element.__owner, "ForceUpdate")
-end
+-- local function ForceUpdate(element)
+--   return Update(element.__owner, "ForceUpdate")
+-- end
 
 do
   function SpellWatchersEnable(self)

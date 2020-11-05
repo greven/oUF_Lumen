@@ -35,6 +35,9 @@ local function CreatePlayerPlate(self, unit)
   lum:CreateClassPower(self)
   lum:CreatePowerPrediction(self)
   lum:CreateSpellWatchers(self)
+
+  -- Auras
+  lum:SetBuffAuras(self, frame, 7, 1, cfg.frames.secondary.height + 4, 2, "BOTTOMLEFT", self, "TOPLEFT", 0, 0, "TOPLEFT", "RIGHT", "UP", true)
 end
 
 -- -----------------------------------

@@ -641,10 +641,10 @@ cfg.units = {
     auras = {
       buffs = {
         show = false,
-        filter = false
+        spellName = false
       },
       debuffs = {
-        show = true,
+        show = false,
         spellName = false
       }
     },

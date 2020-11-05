@@ -10,6 +10,7 @@ local max = max
 
 local function PostCreateIcon(self, button)
 	local unit = self.__owner.unit
+	local frame = self.__owner.mystyle
 
 	if unit == "vehicle" then
 		unit = "player"
@@ -37,7 +38,7 @@ local function PostCreateIcon(self, button)
 	button.time:SetJustifyH("CENTER")
 
 	-- For player debuffs show the spell name
-	if unit == "player" and cfg.units.player.auras.debuffs.spellName then
+	if unit == "player" and cfg.units[frame].auras.debuffs.spellName then
 		button.spell = button:CreateFontString(nil, "OVERLAY")
 		button.spell:SetPoint("RIGHT", button, "LEFT", -4, 0)
 		button.spell:SetFont(m.fonts.font, 16, "THINOUTLINE")

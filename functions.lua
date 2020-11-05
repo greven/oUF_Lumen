@@ -252,12 +252,26 @@ function lum:SetBuffAuras(self, frame, numAuras, numRows, size, spacing, anchor,
     return
   end
 
+  local PlayerCustomFilter = function(...)
+    local spellID = select(13, ...)
+    if spellID then
+      if filters["ALL"].buffs[spellID] or filters[G.playerClass].buffs[spellID] then
+        return true
+      end
+    end
+  end
+
   local buffs = lum:CreateAura(self, numAuras, numRows, size, spacing)
   buffs:SetPoint(anchor, parent, parentAnchor, posX, posY)
   buffs.initialAnchor = initialAnchor
   buffs["growth-y"] = growthY or "DOWN"
   buffs["growth-x"] = growthX or "RIGHT"
   buffs.showStealableBuffs = showStealableBuffs
+
+  if frame == "playerplate" then
+    buffs.CustomFilter = PlayerCustomFilter
+  end
+
   self.Buffs = buffs
   return buffs
 end
@@ -343,35 +357,29 @@ end
 --   print(event)
 -- end
 
+local function onPostCreateButton(self, button)
+  local count = button.count
+  count:ClearAllPoints()
+  count:SetFont(m.fonts.font, 12, "OUTLINE")
+  count:SetPoint("TOPRIGHT", button, 3, 3)
+
+  button.overlay:SetTexture(m.textures.border)
+  button.overlay:SetTexCoord(0, 1, 0, 1)
+  button.overlay:SetVertexColor(0.1, 0.1, 0.1)
+end
+
 function lum:CreateSpellWatchers(self)
   local frame = self.mystyle
-  -- local SpellWatchers = {}
-
-  -- local max = 5
-  -- local margin = 10
-
-  -- for i = 1, max do
-  --   local SpellButton = CreateFrame("Frame", "SpellWatchers" .. i, self)
-  --   local maxWidth, gap = cfg.units[frame].width, 6
-
-  --   SpellButton:SetWidth(((maxWidth / max) - (((max - 1) * gap) / max)))
-  --   SpellButton:SetHeight(((maxWidth / max) - (((max - 1) * gap) / max)))
-  --   api:SetBackdrop(SpellButton, 2, 2, 2, 2)
-
-  --   if (i > 1) then
-  --     SpellButton:SetPoint("LEFT", SpellWatchers[i - 1], "RIGHT", 6, 0)
-  --   else
-  --     local pos = cfg.units[frame].classpower.pos
-  --     SpellButton:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - margin)
-  --   end
-
-  --   SpellWatchers[i] = SpellButton
-  -- end
 
   -- TODO: Adjust the margin on Visilibity change?
-
   local SpellWatchers = CreateFrame("Frame", nil, self)
+  local pos = cfg.units[frame].classpower.pos
+
+  SpellWatchers:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - 10)
+  SpellWatchers:SetSize(cfg.units[frame].width, 1)
+  SpellWatchers.gap = 4
   SpellWatchers.spells = watchers
+  SpellWatchers.PostCreateButton = onPostCreateButton
   self.SpellWatchers = SpellWatchers
 end
 
