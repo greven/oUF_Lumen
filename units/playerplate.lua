@@ -37,7 +37,7 @@ local function CreatePlayerPlate(self, unit)
   lum:CreateSpellWatchers(self)
 
   -- Auras
-  lum:SetBuffAuras(self, frame, 7, 1, cfg.frames.secondary.height + 4, 2, "BOTTOMLEFT", self, "TOPLEFT", 0, 0, "TOPLEFT", "RIGHT", "UP", true)
+  lum:SetBuffAuras(self, frame, 7, 1, cfg.frames.secondary.height + 4, 2, "TOPLEFT", self, "BOTTOMLEFT", 0, -8, "BOTTOMLEFT", "RIGHT", "DOWN", true)
 end
 
 -- -----------------------------------
