@@ -29,7 +29,7 @@ local function CreateTarget(self)
   lum:CreateTargetIconIndicators(self)
 
   -- Auras
-  lum:SetBuffAuras(self, frame, 8, 1, cfg.frames.secondary.height + 4, 2, "TOPLEFT", self, "BOTTOMLEFT", 0, 0, "BOTTOMLEFT", "RIGHT", "DOWN", true)
+  lum:SetBuffAuras(self, frame, 8, 1, cfg.frames.secondary.height + 4, 2, "TOPLEFT", self, "BOTTOMLEFT", -2, 0, "BOTTOMLEFT", "RIGHT", "DOWN", true)
 
   lum:SetBarTimerAuras(self, frame, 12, 12, 24, 2, "BOTTOMLEFT", self, "TOPLEFT", -2, cfg.frames.secondary.height + 16, "BOTTOMLEFT", "UP")
 end

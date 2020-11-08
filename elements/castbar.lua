@@ -3,12 +3,25 @@ local _, ns = ...
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
 local font = m.fonts.font
+local format = string.format
 
 -- ------------------------------------------------------------------------
 -- > CASTBARS
 -- ------------------------------------------------------------------------
 
-local CheckForSpellInterrupt = function(self, unit)
+-- Set the hearthstone bind location when casting hearthstone spells
+local function SetHearthstoneBindingLocation(self, unit)
+  if unit ~= "player" then
+    return
+  end
+
+  if core:HasValue(G.hearthstones, self.spellID) then
+    local bindLocation = GetBindLocation()
+    self.Text:SetText(format("%s - |cff888888%s|r", self.Text:GetText(), bindLocation))
+  end
+end
+
+local function CheckForSpellInterrupt(self, unit)
   if unit == "vehicle" then
     unit = "player"
   end
@@ -32,7 +45,7 @@ local CheckForSpellInterrupt = function(self, unit)
 end
 
 -- Castbar Custom Cast TimeText
-local CustomCastTimeText = function(self, duration)
+local function CustomCastTimeText(self, duration)
   local unit = self.__owner.mystyle
 
   self.Time:SetText(("%.1f"):format(self.channeling and duration or self.max - duration))
@@ -43,7 +56,7 @@ local CustomCastTimeText = function(self, duration)
   end
 end
 
-local onPostCastStart = function(self, unit)
+local function onPostCastStart(self, unit)
   if unit == "vehicle" then
     unit = "player"
   else
@@ -52,13 +65,15 @@ local onPostCastStart = function(self, unit)
 
   -- Set the castbar unit's initial color
   self:SetStatusBarColor(unpack(cfg.units[unit].castbar.color))
+
   CheckForSpellInterrupt(self, unit)
+  SetHearthstoneBindingLocation(self, unit)
+
   api:StartFadeIn(self)
 end
 
-local OnPostCastFail = function(self, unit)
-  -- Color castbar red when cast fails
-  self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255)
+local function OnPostCastFail(self, unit)
+  self:SetStatusBarColor(235 / 255, 25 / 255, 25 / 255, 0.8)
   api:StartFadeOut(self)
 
   if self.Max then
@@ -66,7 +81,7 @@ local OnPostCastFail = function(self, unit)
   end
 end
 
-local OnPostCastInterruptible = function(self, unit)
+local function OnPostCastInterruptible(self, unit)
   CheckForSpellInterrupt(self, unit)
 end
 
@@ -110,11 +125,12 @@ function lum:CreateCastbar(self)
   Shield:SetPoint("CENTER", Castbar)
 
   -- Spell casting time
-  Castbar.Max = Castbar:CreateFontString(nil, "BACKGROUND")
-  Castbar.Max:SetTextColor(100 / 255, 100 / 255, 100 / 255)
-  Castbar.Max:SetJustifyH("RIGHT")
-  Castbar.Max:SetFont(font, cfg.fontsize - 2, "THINOUTLINE")
-  Castbar.Max:SetPoint("RIGHT", Time, "LEFT", 0, 0)
+  local Max = Castbar:CreateFontString(nil, "BACKGROUND")
+  Max:SetTextColor(100 / 255, 100 / 255, 100 / 255)
+  Max:SetJustifyH("RIGHT")
+  Max:SetFont(font, cfg.fontsize - 2, "THINOUTLINE")
+  Max:SetPoint("RIGHT", Time, "LEFT", 0, 0)
+  Castbar.Max = Max
 
   if (unit == "player") then
     api:SetBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2, backdropColor)
@@ -142,22 +158,25 @@ function lum:CreateCastbar(self)
 
     -- Add safezone
     if (cfg.units.player.castbar.latency.show) then
-      local SafeZone = Castbar:CreateTexture(nil, "OVERLAY")
-      SafeZone:SetTexture(m.textures.status_texture)
-      SafeZone:SetVertexColor(unpack(cfg.units.player.castbar.latency.color))
+      local Safe = Castbar:CreateTexture(nil, "OVERLAY")
+      Safe:SetTexture(m.textures.status_texture)
+      Safe:SetVertexColor(unpack(cfg.units.player.castbar.latency.color))
+      Safe:SetPoint("TOPRIGHT")
+      Safe:SetPoint("BOTTOMRIGHT")
+      Castbar:SetFrameLevel(10)
     end
   elseif (unit == "target") then
     api:SetBackdrop(Castbar, cfg.units.target.castbar.height + 4, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.target.castbar.color))
     Castbar:SetWidth(cfg.units.target.castbar.width - cfg.units.target.castbar.height + 6)
     Castbar:SetHeight(cfg.units.target.castbar.height)
-    Castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 350)
+    Castbar:SetPoint("TOPLEFT", self, "BOTTOMLEFT", self:GetHeight() - 2, -8)
 
-    Text:SetFont(font, cfg.fontsize + 2, "THINOUTLINE")
+    Text:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
     Text:SetWidth(cfg.units.target.castbar.width - 60)
     Text:SetPoint("LEFT", Castbar, 6, 0)
 
-    Time:SetFont(font, cfg.fontsize + 2, "THINOUTLINE")
+    Time:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
     Time:SetPoint("RIGHT", Castbar, -6, 0)
 
     Icon:SetHeight(cfg.units.target.castbar.height)
@@ -241,7 +260,7 @@ function lum:CreateCastbar(self)
   Castbar.Time = Time
   Castbar.Icon = Icon
   -- Castbar.Shield = Shield
-  Castbar.SafeZone = SafeZone
+  Castbar.SafeZone = Safe
   Castbar.bg = Background
   self.Castbar = Castbar -- register with oUF
 end

@@ -54,7 +54,7 @@ end
 -- > UTILITY FUNCTIONS
 -- ------------------------------------------------------------------------
 
--- Check if table has the argument value
+-- Check if the array contains a specific value
 function core:HasValue(tab, val)
   for index, value in ipairs(tab) do
     if value == val then

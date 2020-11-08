@@ -29,6 +29,7 @@ local function CreatePlayer(self)
   lum:CreatePowerPrediction(self)
   lum:CreateAlternativePower(self)
   lum:CreatePlayerIconIndicators(self)
+  lum:CreateSwing(self)
   lum:MirrorBars()
 
   -- Addons
