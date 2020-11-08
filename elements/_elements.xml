@@ -3,5 +3,6 @@
 	<Script file='bartimers.lua' />
 	<Script file='castbar.lua' />
 	<Script file='spellwatchers.lua' />
+	<Script file='swing.lua' />
 	<Script file='blizzard.lua' />
 </Ui>

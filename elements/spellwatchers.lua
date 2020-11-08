@@ -48,6 +48,7 @@ local function CreateSpellButton(element, index)
   button:RegisterForClicks("AnyUp")
 
   local cd = CreateFrame("Cooldown", "$parentCooldown", button, "CooldownFrameTemplate")
+  cd:SetFrameLevel(cd:GetParent():GetFrameLevel())
   cd:SetAllPoints()
 
   local icon = button:CreateTexture(nil, "BORDER")

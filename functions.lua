@@ -217,10 +217,11 @@ end
 function lum:CreatePowerPrediction(self)
   local mainBar = CreateFrame("StatusBar", nil, self.Power)
   mainBar:SetStatusBarTexture(m.textures.status_texture)
-  mainBar:SetStatusBarColor(0.4, 0.8, 1, 0.7)
   mainBar:SetReverseFill(true)
   mainBar:SetWidth(self.cfg.width)
   if self.Power then
+    local r, g, b = self.Power:GetStatusBarColor()
+    mainBar:SetStatusBarColor(r, g, b, 0.4)
     mainBar:SetPoint("TOP")
     mainBar:SetPoint("BOTTOM")
     mainBar:SetPoint("RIGHT", self.Power:GetStatusBarTexture(), "RIGHT")
@@ -228,10 +229,11 @@ function lum:CreatePowerPrediction(self)
 
   local altBar = CreateFrame("StatusBar", nil, self.AdditionalPower)
   altBar:SetStatusBarTexture(m.textures.status_texture)
-  altBar:SetStatusBarColor(1, 1, 1, 0.5)
   altBar:SetReverseFill(true)
   altBar:SetWidth(self.cfg.width)
   if self.AdditionalPower then
+    local r, g, b = self.AdditionalPower:GetStatusBarColor()
+    altBar:SetStatusBarColor(r, g, b, 0.4)
     altBar:SetPoint("TOP")
     altBar:SetPoint("BOTTOM")
     altBar:SetPoint("RIGHT", self.AdditionalPower:GetStatusBarTexture(), "RIGHT")
@@ -241,6 +243,60 @@ function lum:CreatePowerPrediction(self)
     mainBar = mainBar and mainBar,
     altBar = altBar and altBar
   }
+end
+
+-- -----------------------------------
+-- > Attack Swing Bar
+-- -----------------------------------
+
+function lum:CreateSwing(self)
+  if not cfg.elements.swing.show then
+    return
+  end
+
+  local frame = self.mystyle
+
+  if not cfg.units.player.castbar.enable or not self.Castbar then
+    return
+  end
+
+  if frame ~= "player" then
+    return
+  end
+
+  local color = {0.5, 0.9, 1, 1}
+
+  local bar = CreateFrame("StatusBar", nil, self)
+  bar:SetSize(self.Castbar:GetWidth() + self.Castbar:GetHeight() + 2, 2)
+  bar:SetPoint("TOPLEFT", self.Castbar, "BOTTOMLEFT", -(self.Castbar:GetHeight() + 2), -2)
+
+  local two = CreateFrame("StatusBar", nil, bar)
+  two:Hide()
+  two:SetAllPoints()
+  two:SetStatusBarTexture(m.textures.status_texture)
+  two:SetStatusBarColor(unpack(color))
+  api:SetBackdrop(two, 2, 2, 2, 2, {0, 0, 0, 0.8})
+
+  local main = CreateFrame("StatusBar", nil, bar)
+  main:Hide()
+  main:SetAllPoints()
+  main:SetStatusBarTexture(m.textures.status_texture)
+  main:SetStatusBarColor(unpack(color))
+  api:SetBackdrop(main, 2, 2, 2, 2, {0, 0, 0, 0.8})
+
+  local off = CreateFrame("StatusBar", nil, bar)
+  off:Hide()
+  off:SetPoint("TOPLEFT", bar, "BOTTOMLEFT", 0, -3)
+  off:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 0, -6)
+  off:SetStatusBarTexture(m.textures.status_texture)
+  off:SetStatusBarColor(unpack(color))
+  api:SetBackdrop(off, 2, 2, 2, 2, {0, 0, 0, 0.8})
+
+  self.Swing = bar
+  self.Swing.Twohand = two
+  self.Swing.Mainhand = main
+  self.Swing.Offhand = off
+  self.Swing.hideOoc = true
 end
 
 -- -----------------------------------
@@ -376,6 +432,7 @@ function lum:CreateSpellWatchers(self)
   SpellWatchers:SetPoint(pos.a1, self, pos.a2, pos.x, pos.y - 10)
   SpellWatchers:SetSize(cfg.units[frame].width, 1)
   SpellWatchers.gap = 4
+  SpellWatchers.max = 6
   SpellWatchers.spells = watchers
   SpellWatchers.PostCreateButton = onPostCreateButton
   self.SpellWatchers = SpellWatchers

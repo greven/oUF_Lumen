@@ -76,6 +76,10 @@ cfg.frames = {
     width = 204, -- Width of the Player and Target Frames
     height = 24, -- Height of the Player and Target Frames
     margin = 236, -- Margin between Player and Target Frames
+    pos = {
+      x = -322,
+      y = 252
+    },
     health = {
       margin = 2 -- Spacing between HP and Power Bars
     },
@@ -162,6 +166,9 @@ cfg.elements = {
   barTimers = {
     theme = "thin" -- Theme can be `thin` or `normal`
   },
+  swing = {
+    show = true
+  },
   mirrorTimers = {
     width = 220,
     height = cfg.frames.main.height + 2
@@ -177,8 +184,7 @@ cfg.units = {
     show = true,
     width = cfg.frames.main.width,
     height = cfg.frames.main.height,
-    -- pos = {a1 = "LEFT", a2 = "CENTER", af = "UIParent", x = -322, y = -372},
-    pos = {a1 = "LEFT", a2 = "BOTTOM", af = "UIParent", x = -322, y = 252},
+    pos = {a1 = "LEFT", a2 = "BOTTOM", af = "UIParent", x = cfg.frames.main.pos.x, y = cfg.frames.main.pos.y},
     health = {
       show = true,
       classColored = false,
@@ -218,7 +224,7 @@ cfg.units = {
       height = cfg.frames.main.height,
       latency = {
         show = true,
-        color = {1, 0, 0, 0.5}
+        color = {1, 0, 0, 0.4}
       }
     },
     auras = {
@@ -271,8 +277,8 @@ cfg.units = {
     castbar = {
       enable = true,
       color = {235 / 255, 25 / 255, 25 / 255},
-      width = cfg.frames.main.width * 1.75,
-      height = cfg.frames.main.height
+      width = cfg.frames.main.width - 8,
+      height = cfg.frames.main.height - 4
     },
     auras = {
       buffs = {
@@ -611,7 +617,7 @@ cfg.units = {
     show = cfg.frames.playerplate.show,
     width = cfg.frames.playerplate.width,
     height = cfg.frames.playerplate.height,
-    pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = 352},
+    pos = {a1 = "BOTTOM", a2 = "BOTTOM", af = "UIParent", x = 0, y = cfg.frames.main.pos.y + 4},
     health = {
       show = true,
       classColored = false,
