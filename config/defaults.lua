@@ -277,8 +277,8 @@ cfg.units = {
     castbar = {
       enable = true,
       color = {235 / 255, 25 / 255, 25 / 255},
-      width = cfg.frames.main.width - 8,
-      height = cfg.frames.main.height - 4
+      width = cfg.frames.main.width * 1.75,
+      height = cfg.frames.main.height * 1.1
     },
     auras = {
       buffs = {

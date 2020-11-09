@@ -429,7 +429,7 @@ function lum:CreateSpellWatchers(self)
   -- TODO: Adjust the margin on Visilibity change?
   local SpellWatchers = CreateFrame("Frame", nil, self)
   SpellWatchers:SetSize(cfg.width, cfg.width / 5 + 4)
-  SpellWatchers:SetPoint("BOTTOM", self, "TOP", 0, 4)
+  SpellWatchers:SetPoint("BOTTOM", self, "TOP", 0, 0)
   SpellWatchers.gap = 4
   SpellWatchers.spells = watchers
   SpellWatchers.PostCreateButton = onPostCreateButton
