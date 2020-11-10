@@ -11,7 +11,7 @@ local font = m.fonts.font
 -- > Health bar
 -- -----------------------------------
 
-local PostUpdateHealth = function(health, unit, min, max)
+local onPostUpdateHealth = function(health, unit, min, max)
   local self = health.__owner
   local frame = self.mystyle
 
@@ -45,7 +45,7 @@ function lum:CreateHealthBar(self, frameType)
   health.bg:SetTexture(m.textures.bg_texture)
 
   health.Smooth = self.cfg.health.smooth
-  health.PostUpdate = PostUpdateHealth
+  health.PostUpdate = onPostUpdateHealth
 
   if self.cfg.health.classColored then
     health.colorClass = true
@@ -63,6 +63,53 @@ end
 -- -----------------------------------
 -- > Power bar
 -- -----------------------------------
+
+local LUNAR_COLOR = oUF.colors.power["LUNAR_POWER"]
+local SOLAR_COLOR = {255 / 255, 224 / 255, 93 / 255}
+local ECLIPSE_LUNAR_ID = 48518
+local ECLIPSE_SOLAR_ID = 48517
+
+local isLunarEclipse = false
+local isSolarEclipse = false
+
+-- Color the Druid Moonkin Power bar acording to Eclipse state
+local SetDruidSolarPowerColor = function(self)
+  local frame = self.mystyle
+
+  if frame ~= "playerplate" then
+    return
+  end
+
+  local onUpdateAuras = function(self, event, unit)
+    if unit ~= "player" then
+      return
+    end
+
+    for i = 1, 40 do
+      local _, _, _, _, _, _, _, _, _, spellID = UnitAura("player", i, "HELPFUL|PLAYER")
+
+      if spellID == ECLIPSE_SOLAR_ID then
+        isLunarEclipse = false
+        isSolarEclipse = true
+        self.Power:SetStatusBarColor(unpack(SOLAR_COLOR))
+      elseif spellID == ECLIPSE_LUNAR_ID then
+        isLunarEclipse = true
+        isSolarEclipse = false
+        self.Power:SetStatusBarColor(unpack(LUNAR_COLOR))
+      end
+    end
+  end
+
+  self:RegisterEvent("UNIT_AURA", onUpdateAuras)
+end
+
+local onPostUpdatePowerColor = function(self, unit)
+  if isLunarEclipse then
+    self:SetStatusBarColor(unpack(LUNAR_COLOR))
+  elseif isSolarEclipse then
+    self:SetStatusBarColor(unpack(SOLAR_COLOR))
+  end
+end
 
 function lum:CreatePowerBar(self, frameType)
   if not self.cfg.power.show then
@@ -92,7 +139,11 @@ function lum:CreatePowerBar(self, frameType)
     power.colorPower = true
   end
 
+  power.PostUpdateColor = onPostUpdatePowerColor
   self.Power = power
+
+  SetDruidSolarPowerColor(self)
+
   return self.Power
 end
 
@@ -436,9 +487,9 @@ function lum:CreateSpellWatchers(self)
   self.SpellWatchers = SpellWatchers
 end
 
--- -----------------------------------
--- > Class Power
--- -----------------------------------
+-- --------------------------------------------------
+-- > Class Power (Combo Points, Holy Power, etc...)
+-- --------------------------------------------------
 
 -- Colorize the last power color element
 local function SetMaxClassPowerColor(element, max, powerType)
@@ -483,7 +534,6 @@ local function PostUpdateClassPower(element, cur, max, diff, powerType)
   SetMaxClassPowerColor(element, max, powerType)
 end
 
--- Create Class Power Bars (Combo Points...)
 local function CreateClassPower(self)
   local frame = self.mystyle
 
