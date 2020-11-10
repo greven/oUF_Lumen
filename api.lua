@@ -16,11 +16,23 @@ function api:GetXP(unit)
   end
 end
 
+function api:GetUnitAura(unit, spell, filter)
+  for index = 1, 40 do
+    local name, _, count, _, duration, expire, caster, _, _, spellID, _, _, _, _, _, value = UnitAura(unit, index, filter)
+    if not name then
+      break
+    end
+    if name and spellID == spell then
+      return name, count, duration, expire, caster, spellID, value
+    end
+  end
+end
+
 -- Unit has a Debuff
-function api:HasUnitDebuff(unit, name, myspell)
+function api:HasUnitDebuff(unit, name, spell)
   local _, _, _, count, _, _, _, caster = UnitDebuff(unit, name)
-  if myspell then
-    if (count and caster == "player") then
+  if spell then
+    if count and caster == "player" then
       return count
     end
   else

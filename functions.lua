@@ -64,15 +64,16 @@ end
 -- > Power bar
 -- -----------------------------------
 
-local LUNAR_COLOR = oUF.colors.power["LUNAR_POWER"]
-local SOLAR_COLOR = {255 / 255, 224 / 255, 93 / 255}
-local ECLIPSE_LUNAR_ID = 48518
-local ECLIPSE_SOLAR_ID = 48517
-
-local isLunarEclipse = false
-local isSolarEclipse = false
-
 -- Color the Druid Moonkin Power bar acording to Eclipse state
+local LUNAR_POWER_COLOR = oUF.colors.power["LUNAR_POWER"]
+local SOLAR_COLOR = {255 / 255, 224 / 255, 93 / 255}
+local LUNAR_COLOR = {66 / 255, 82 / 255, 244 / 255}
+local WRATH_SPELL_ID = 190984
+local STARFIRE_SPELL_ID = 194153
+local shouldCastWrath = false
+local shouldCastStarfire = false
+local eclipse = 0 -- 1 = Solar, 2 = Lunar
+
 local SetDruidSolarPowerColor = function(self)
   local frame = self.mystyle
 
@@ -80,34 +81,74 @@ local SetDruidSolarPowerColor = function(self)
     return
   end
 
-  local onUpdateAuras = function(self, event, unit)
-    if unit ~= "player" then
-      return
-    end
+  -- local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
 
-    for i = 1, 40 do
-      local _, _, _, _, _, _, _, _, _, spellID = UnitAura("player", i, "HELPFUL|PLAYER")
+  local onUpdateAuras = function(self, ...)
+    local wrathCount = GetSpellCount(WRATH_SPELL_ID)
+    local starfireCount = GetSpellCount(STARFIRE_SPELL_ID)
 
-      if spellID == ECLIPSE_SOLAR_ID then
-        isLunarEclipse = false
-        isSolarEclipse = true
+    -- We have charges on both spells
+    if wrathCount > 0 and starfireCount > 0 then
+      if wrathCount < starfireCount then
+        shouldCastWrath = true
+        shouldCastStarfire = false
+        eclipse = 2
         self.Power:SetStatusBarColor(unpack(SOLAR_COLOR))
-      elseif spellID == ECLIPSE_LUNAR_ID then
-        isLunarEclipse = true
-        isSolarEclipse = false
+      elseif starfireCount < wrathCount then
+        shouldCastWrath = false
+        shouldCastStarfire = true
+        eclipse = 1
+        self.Power:SetStatusBarColor(unpack(LUNAR_COLOR))
+      else -- they have the same count so we are are not in eclipse (un-empowered)
+        shouldCastWrath = false
+        shouldCastStarfire = false
+        eclipse = 0
+        self.Power:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+      end
+    elseif wrathCount == 0 and starfireCount == 0 then -- Eclipse State
+      shouldCastWrath = false
+      shouldCastStarfire = false
+      if eclipse == 1 then
+        self.Power:SetStatusBarColor(unpack(SOLAR_COLOR))
+      elseif eclipse == 2 then
+        self.Power:SetStatusBarColor(unpack(LUNAR_COLOR))
+      else
+        self.Power:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+      end
+    else -- One spell has zero charges, cast the non zero one to eclipse
+      if wrathCount > 0 then
+        shouldCastWrath = true
+        shouldCastStarfire = false
+        eclipse = 2
+        self.Power:SetStatusBarColor(unpack(SOLAR_COLOR))
+      else
+        shouldCastWrath = false
+        shouldCastStarfire = true
+        eclipse = 1
         self.Power:SetStatusBarColor(unpack(LUNAR_COLOR))
       end
     end
   end
 
   self:RegisterEvent("UNIT_AURA", onUpdateAuras)
+  self:RegisterEvent("UNIT_POWER_UPDATE", onUpdateAuras)
+  self:RegisterEvent("PLAYER_TARGET_CHANGED", onUpdateAuras, true)
 end
 
 local onPostUpdatePowerColor = function(self, unit)
-  if isLunarEclipse then
-    self:SetStatusBarColor(unpack(LUNAR_COLOR))
-  elseif isSolarEclipse then
+  -- Moonkin Eclipse
+  if shouldCastWrath then
     self:SetStatusBarColor(unpack(SOLAR_COLOR))
+  elseif shouldCastStarfire then
+    self:SetStatusBarColor(unpack(LUNAR_COLOR))
+  else
+    if eclipse == 1 then
+      self:SetStatusBarColor(unpack(SOLAR_COLOR))
+    elseif eclipse == 2 then
+      self:SetStatusBarColor(unpack(LUNAR_COLOR))
+    else
+      self:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+    end
   end
 end
 
