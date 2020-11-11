@@ -654,7 +654,7 @@ cfg.units = {
         spellName = false
       }
     },
-    visibility = "[mod][harm][combat][group] show; hide;",
+    visibility = "[mod][harm][combat][group,noflying] show; hide;",
     fader = {
       fadeInAlpha = 1,
       fadeInDuration = 0.3,

@@ -45,7 +45,7 @@ if cfg.units[frame].show then
   -- Frame Visibility
   if cfg.units[frame].visibility then
     f:Disable()
-    RegisterStateDriver(f, "visibility", cfg.units[frame].visibility)
+    RegisterAttributeDriver(f, "state-visibility", cfg.units[frame].visibility)
   end
 
   -- Fader

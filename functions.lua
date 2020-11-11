@@ -83,7 +83,7 @@ local SetDruidSolarPowerColor = function(self)
 
   -- local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
 
-  local onUpdateAuras = function(self, ...)
+  local UpdatePower = function(self, ...)
     local wrathCount = GetSpellCount(WRATH_SPELL_ID)
     local starfireCount = GetSpellCount(STARFIRE_SPELL_ID)
 
@@ -130,24 +130,31 @@ local SetDruidSolarPowerColor = function(self)
     end
   end
 
-  self:RegisterEvent("UNIT_AURA", onUpdateAuras)
-  self:RegisterEvent("UNIT_POWER_UPDATE", onUpdateAuras)
-  self:RegisterEvent("PLAYER_TARGET_CHANGED", onUpdateAuras, true)
+  if G.playerClass == "DRUID" then
+    UpdatePower(self)
+
+    self:RegisterEvent("UNIT_POWER_UPDATE", UpdatePower)
+    self:RegisterEvent("SPELLS_CHANGED", UpdatePower, true)
+    self:RegisterEvent("PLAYER_LOGIN", UpdatePower, true)
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", UpdatePower, true)
+  end
 end
 
 local onPostUpdatePowerColor = function(self, unit)
-  -- Moonkin Eclipse
-  if shouldCastWrath then
-    self:SetStatusBarColor(unpack(SOLAR_COLOR))
-  elseif shouldCastStarfire then
-    self:SetStatusBarColor(unpack(LUNAR_COLOR))
-  else
-    if eclipse == 1 then
+  if G.playerClass == "DRUID" then
+    -- Moonkin Eclipse
+    if shouldCastWrath then
       self:SetStatusBarColor(unpack(SOLAR_COLOR))
-    elseif eclipse == 2 then
+    elseif shouldCastStarfire then
       self:SetStatusBarColor(unpack(LUNAR_COLOR))
     else
-      self:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+      if eclipse == 1 then
+        self:SetStatusBarColor(unpack(SOLAR_COLOR))
+      elseif eclipse == 2 then
+        self:SetStatusBarColor(unpack(LUNAR_COLOR))
+      else
+        self:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+      end
     end
   end
 end
