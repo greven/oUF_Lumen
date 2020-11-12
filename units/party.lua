@@ -75,8 +75,8 @@ local PostUpdatePower = function(power, unit, min, max)
 end
 
 local PostUpdatePortrait = function(element, unit)
-  element:SetModelAlpha(0.15)
-  element:SetDesaturation(1)
+  element:SetModelAlpha(0.2)
+  element:SetDesaturation(0.9)
 end
 
 -- local PartyUpdate = function(self)
@@ -113,9 +113,10 @@ local function CreateParty(self)
 
   -- Portrait
   if self.cfg.showPortraits then
-    local Portrait = CreateFrame("PlayerModel", nil, self.Health)
+    local Portrait = CreateFrame("PlayerModel", "PartyPortrait", self.Health)
+    Portrait:SetAllPoints()
     Portrait:SetFrameLevel(self.Health:GetFrameLevel())
-    Portrait:SetAllPoints(self.Health)
+    Portrait:SetAlpha(.2)
     Portrait.PostUpdate = PostUpdatePortrait
     self.Portrait = Portrait
   end
