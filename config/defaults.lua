@@ -78,7 +78,7 @@ cfg.frames = {
     margin = 236, -- Margin between Player and Target Frames
     pos = {
       x = -322,
-      y = 252
+      y = 282
     },
     health = {
       margin = 2 -- Spacing between HP and Power Bars
