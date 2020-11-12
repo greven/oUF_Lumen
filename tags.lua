@@ -60,13 +60,13 @@ local _tags = {
     local c = UnitClassification(unit)
 
     if c == "worldboss" or UnitLevel(unit) <= 0 then
-      return "|cfff5283cBOSS|r"
+      return "|cffF5283CBOSS|r"
     elseif c == "rare" then
-      return "|cff008ff7RARE|r"
+      return "|cffCFB53BRARE|r"
     elseif c == "rareelite" then
-      return "|cff008ff7RARE|r |cffffe453ELITE|r"
+      return "|cffCFB53BRARE|r |cffFFD700ELITE|r"
     elseif c == "elite" then
-      return "|cffffe453ELITE|r"
+      return "|cffFFD700ELITE|r"
     elseif c == "minus" then
       return ""
     end
@@ -76,13 +76,13 @@ local _tags = {
     local c = UnitClassification(unit)
 
     if c == "worldboss" or UnitLevel(unit) <= 0 then
-      return "|cfff5283cb|r"
+      return "|cffF5283Cb|r"
     elseif c == "rare" then
-      return "|cff008ff7r|r"
+      return "|cffCFB53Br|r"
     elseif c == "rareelite" then
-      return "|cff008ff7r+|r"
+      return "|cffCFB53Br+|r"
     elseif c == "elite" then
-      return "|cffffe453+|r"
+      return "|cffFFD700+|r"
     elseif c == "minus" then
       return ""
     end
