@@ -16,13 +16,13 @@ local onPostUpdateHealth = function(health, unit, min, max)
   local frame = self.mystyle
 
   if cfg.units[frame].health.gradientColored then
-    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:RaidColor(unit))))
     health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Class colored text
   if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
+    self.Name:SetTextColor(unpack(core:RaidColor(unit)))
   end
 end
 
@@ -140,20 +140,23 @@ local SetDruidSolarPowerColor = function(self)
   end
 end
 
+-- BUG: When max power coloring is not updating correctly
 local onPostUpdatePowerColor = function(self, unit)
-  if G.playerClass == "DRUID" then
-    -- Moonkin Eclipse
-    if shouldCastWrath then
-      self:SetStatusBarColor(unpack(SOLAR_COLOR))
-    elseif shouldCastStarfire then
-      self:SetStatusBarColor(unpack(LUNAR_COLOR))
-    else
-      if eclipse == 1 then
+  if unit == "player" then
+    if G.playerClass == "DRUID" then
+      -- Moonkin Eclipse
+      if shouldCastWrath then
         self:SetStatusBarColor(unpack(SOLAR_COLOR))
-      elseif eclipse == 2 then
+      elseif shouldCastStarfire then
         self:SetStatusBarColor(unpack(LUNAR_COLOR))
       else
-        self:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+        if eclipse == 1 then
+          self:SetStatusBarColor(unpack(SOLAR_COLOR))
+        elseif eclipse == 2 then
+          self:SetStatusBarColor(unpack(LUNAR_COLOR))
+        else
+          self:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+        end
       end
     end
   end
@@ -313,6 +316,7 @@ end
 -- > Power Prediction
 -- -----------------------------------
 
+-- Fix: Not working for altBar
 function lum:CreatePowerPrediction(self)
   local mainBar = CreateFrame("StatusBar", nil, self.Power)
   mainBar:SetStatusBarTexture(m.textures.status_texture)
@@ -515,8 +519,8 @@ end
 local function PostCreateSpellWatcher(self, button)
   local count = button.count
   count:ClearAllPoints()
-  count:SetPoint("BOTTOM", button, "TOP", 0, 4)
-  count:SetFont(m.fonts.font, 14, "OUTLINE")
+  count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 4)
+  count:SetFont(STANDARD_TEXT_FONT, 11, "THICKOUTLINE")
 
   button.overlay:SetTexture(m.textures.border)
 end
@@ -766,7 +770,7 @@ function lum:CreatePlayerIconIndicators(self)
   self.CombatIndicator = Combat
 
   -- Resting
-  if not api:IsPlayerMaxLevel() then
+  if not core:IsPlayerMaxLevel() then
     local Resting = api:CreateFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
     Resting:SetPoint("CENTER", self.Health, "TOP", 0, 1)
     Resting:SetText("zZz")

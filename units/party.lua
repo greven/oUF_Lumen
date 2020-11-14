@@ -20,7 +20,7 @@ local PostUpdateHealth = function(health, unit, min, max)
   -- Inverted colors
   if cfg.units[frame].health.invertedColors or cfg.units[frame].showPortraits then
     health:SetStatusBarColor(unpack(cfg.colors.inverted))
-    health.bg:SetVertexColor(unpack(api:RaidColor(unit)))
+    health.bg:SetVertexColor(unpack(core:RaidColor(unit)))
     health.bg:SetAlpha(1)
   end
 
@@ -80,7 +80,7 @@ local PostUpdatePortrait = function(element, unit)
 end
 
 -- local PartyUpdate = function(self)
---   print(api:IsPlayerHealer())
+--   print(core:IsPlayerHealer())
 -- end
 
 -- -----------------------------------

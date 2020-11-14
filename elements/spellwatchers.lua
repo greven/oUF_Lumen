@@ -26,9 +26,12 @@ local function GetTotalElements(elements)
   return count
 end
 
-local function UpdateCooldown(button, spellID, texture)
-  local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
+local function UpdateSpellState(button, spellID, texture)
+  local isSpellKnown = IsPlayerSpell(spellID)
+  local isUsable, notEnoughMana = IsUsableSpell(spellID)
   local start, duration = GetSpellCooldown(spellID)
+  local count = GetSpellCount(spellID)
+  local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
 
   if charges and maxCharges > 1 then
     button.count:SetText(charges)
@@ -36,10 +39,20 @@ local function UpdateCooldown(button, spellID, texture)
     button.count:SetText("")
   end
 
+  if not charges and count then
+    if count > 0 then
+      button.count:SetText(count)
+    else
+      button.count:SetText("")
+    end
+  end
+
   if charges and charges > 0 and charges < maxCharges then
     button.cd:SetCooldown(chargeStart, chargeDuration)
     button.cd:Show()
     button.icon:SetDesaturated(false)
+    button.count:SetTextColor(1, 1, 1)
+  elseif count and count > 0 then
     button.count:SetTextColor(1, 1, 1)
   elseif start and duration > 1.5 then
     button.cd:SetCooldown(start, duration)
@@ -56,6 +69,20 @@ local function UpdateCooldown(button, spellID, texture)
 
   if texture then
     button.icon:SetTexture(GetSpellTexture(spellID))
+  end
+
+  if not isSpellKnown then
+    button.icon:SetVertexColor(0.2, 0.2, 0.2)
+    return
+  end
+
+  if isUsable then
+    button.icon:SetVertexColor(1.0, 1.0, 1.0)
+  else
+    button.icon:SetVertexColor(0.2, 0.2, 0.2)
+    if notEnoughMana then
+      button.icon:SetVertexColor(0.2, 0.3, 1.0)
+    end
   end
 end
 
@@ -140,7 +167,7 @@ local function UpdateSpellButton(element, index)
       button.overlay:Hide()
     end
 
-    UpdateCooldown(button, spellID, true)
+    UpdateSpellState(button, spellID, true)
 
     local num, width = element.num, element:GetWidth()
 
@@ -193,8 +220,8 @@ local function UpdateSpells(self, event, unit)
       button:EnableMouse(false)
       button:Show()
 
-      UpdateSpellButton(watchers, index)
       SetPosition(watchers, index)
+      UpdateSpellButton(watchers, index)
     end
   end
 end
@@ -298,6 +325,8 @@ do
   end
 
   function SpellWatchersDisable(self)
+    self:UnregisterEvent("UNIT_AURA", Path)
+    self:UnregisterEvent("UNIT_POWER_UPDATE", Path)
     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN", Path)
 
     local element = self.SpellWatchers

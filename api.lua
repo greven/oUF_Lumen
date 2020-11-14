@@ -2,73 +2,28 @@ local _, ns = ...
 
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
--- Is Player max level?
-function api:IsPlayerMaxLevel()
-  return G.playerLevel == GetMaxPlayerLevel() and true or false
+function api:CreateFontstring(frame, font, size, outline, layer, sublayer, inheritsFrom)
+  local fs = frame:CreateFontString(nil, layer or "OVERLAY", sublayer or 0, inheritsFrom or nil)
+  fs:SetFont(font, size, outline)
+  fs:SetShadowColor(0, 0, 0, 1)
+  fs:SetShadowOffset(1, -1)
+  return fs
 end
 
--- Get Unit Experience
-function api:GetXP(unit)
-  if (unit == "pet") then
-    return GetPetExperience()
-  else
-    return UnitXP(unit), UnitXPMax(unit)
-  end
-end
-
-function api:GetUnitAura(unit, spell, filter)
-  for index = 1, 40 do
-    local name, _, count, _, duration, expire, caster, _, _, spellID, _, _, _, _, _, value = UnitAura(unit, index, filter)
-    if not name then
-      break
-    end
-    if name and spellID == spell then
-      return name, count, duration, expire, caster, spellID, value
-    end
-  end
-end
-
--- Unit has a Debuff
-function api:HasUnitDebuff(unit, name, spell)
-  local _, _, _, count, _, _, _, caster = UnitDebuff(unit, name)
-  if spell then
-    if count and caster == "player" then
-      return count
-    end
-  else
-    if count then
-      return count
-    end
-  end
-end
-
--- Is the player a healer? (healing spec)
-function api:IsPlayerHealer()
-  local currentSpec = api:GetCurrentSpec()
-  local isHealer = core:HasValue(cfg.healingSpecs, currentSpec)
-  return isHealer
-end
-
--- Get current specialization name
-function api:GetCurrentSpec()
-  local specID = GetSpecialization()
-
-  if (specID) then
-    local _, currentSpecName = GetSpecializationInfo(specID)
-    return currentSpecName
+function api:CreateBorder(self, borderFrame, edgeSize, frameLevel, texture)
+  if borderFrame:GetObjectType() == "Texture" then
+    borderFrame = self:GetParent()
   end
 
-  return nil
+  local backdrop = {edgeFile = texture or "Interface\\ChatFrame\\ChatFrameBackground", edgeSize = edgeSize}
+  borderFrame:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
+  borderFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
+  borderFrame:SetBackdrop(backdrop)
+  borderFrame:SetFrameLevel(frameLevel or borderFrame:GetFrameLevel() - 1)
+  borderFrame:SetBackdropBorderColor(0, 0, 0)
+  borderFrame:Hide()
 end
 
--- Class colors
-function api:RaidColor(unit)
-  local _, x = UnitClass(unit)
-  local color = RAID_CLASS_COLORS[x]
-  return color and {color.r, color.g, color.b} or {.5, .5, .5}
-end
-
--- Set the frame backdrop
 function api:SetBackdrop(self, insetLeft, insetRight, insetTop, insetBottom, color)
   local frame = self
 
@@ -99,31 +54,6 @@ function api:SetBackdrop(self, insetLeft, insetRight, insetTop, insetBottom, col
   end
 end
 
--- Create a backdrop border
-function api:CreateBorder(self, borderFrame, edgeSize, frameLevel, texture)
-  if borderFrame:GetObjectType() == "Texture" then
-    borderFrame = self:GetParent()
-  end
-
-  local backdrop = {edgeFile = texture or "Interface\\ChatFrame\\ChatFrameBackground", edgeSize = edgeSize}
-  borderFrame:SetPoint("TOPLEFT", self, "TOPLEFT", -2, 2)
-  borderFrame:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", 2, -2)
-  borderFrame:SetBackdrop(backdrop)
-  borderFrame:SetFrameLevel(frameLevel or borderFrame:GetFrameLevel() - 1)
-  borderFrame:SetBackdropBorderColor(0, 0, 0)
-  borderFrame:Hide()
-end
-
--- Fontstring Function
-function api:CreateFontstring(frame, font, size, outline, layer, sublayer, inheritsFrom)
-  local fs = frame:CreateFontString(nil, layer or "OVERLAY", sublayer or 0, inheritsFrom or nil)
-  fs:SetFont(font, size, outline)
-  fs:SetShadowColor(0, 0, 0, 1)
-  fs:SetShadowOffset(1, -1)
-  return fs
-end
-
--- Create a Frame Shadow
 function api:CreateDropShadow(frame, point, edge, color)
   if not cfg.frames.shadow.show then
     return
@@ -152,7 +82,10 @@ function api:CreateDropShadow(frame, point, edge, color)
   shadow:SetBackdropBorderColor(unpack(color or cfg.frames.shadow.color))
 end
 
--- Frame Fader
+-- ---------------
+-- > Frame Fader
+-- ---------------
+
 local function FaderOnFinished(self)
   self.__owner:SetAlpha(self.finAlpha)
 end
@@ -177,7 +110,6 @@ function api:StartFadeIn(frame)
   frame.fader.anim:SetToAlpha(frame.faderConfig.fadeInAlpha or 1)
   frame.fader.anim:SetDuration(frame.faderConfig.fadeInDuration or 0.3)
   frame.fader.anim:SetSmoothing(frame.faderConfig.fadeInSmooth or "OUT")
-  --start right away
   frame.fader.anim:SetStartDelay(frame.faderConfig.fadeInDelay or 0)
   frame.fader.finAlpha = frame.faderConfig.fadeInAlpha
   frame.fader.direction = "in"
@@ -193,7 +125,6 @@ function api:StartFadeOut(frame)
   frame.fader.anim:SetToAlpha(frame.faderConfig.fadeOutAlpha or 0)
   frame.fader.anim:SetDuration(frame.faderConfig.fadeOutDuration or 0.3)
   frame.fader.anim:SetSmoothing(frame.faderConfig.fadeOutSmooth or "OUT")
-  -- wait some time before starting the fadeout
   frame.fader.anim:SetStartDelay(frame.faderConfig.fadeOutDelay or 0)
   frame.fader.finAlpha = frame.faderConfig.fadeOutAlpha
   frame.fader.direction = "out"
@@ -233,3 +164,7 @@ function api:CreateFrameFader(frame, faderConfig)
   frame:HookScript("OnShow", fadeIn)
   frame:HookScript("OnHide", fadeOut)
 end
+
+-- ---------------
+-- > Button Glow
+-- ---------------
