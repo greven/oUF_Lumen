@@ -512,11 +512,11 @@ end
 --   print(event)
 -- end
 
-local function onPostCreateButton(self, button)
+local function PostCreateSpellWatcher(self, button)
   local count = button.count
   count:ClearAllPoints()
-  count:SetFont(m.fonts.font, 12, "OUTLINE")
-  count:SetPoint("TOPRIGHT", button, 3, 3)
+  count:SetPoint("BOTTOM", button, "TOP", 0, 4)
+  count:SetFont(m.fonts.font, 14, "OUTLINE")
 
   button.overlay:SetTexture(m.textures.border)
 end
@@ -531,7 +531,7 @@ function lum:CreateSpellWatchers(self)
   SpellWatchers:SetPoint("BOTTOM", self, "TOP", 0, 0)
   SpellWatchers.gap = 4
   SpellWatchers.spells = watchers
-  SpellWatchers.PostCreateButton = onPostCreateButton
+  SpellWatchers.PostCreateButton = PostCreateSpellWatcher
   self.SpellWatchers = SpellWatchers
 end
 

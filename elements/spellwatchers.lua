@@ -26,6 +26,39 @@ local function GetTotalElements(elements)
   return count
 end
 
+local function UpdateCooldown(button, spellID, texture)
+  local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
+  local start, duration = GetSpellCooldown(spellID)
+
+  if charges and maxCharges > 1 then
+    button.count:SetText(charges)
+  else
+    button.count:SetText("")
+  end
+
+  if charges and charges > 0 and charges < maxCharges then
+    button.cd:SetCooldown(chargeStart, chargeDuration)
+    button.cd:Show()
+    button.icon:SetDesaturated(false)
+    button.count:SetTextColor(1, 1, 1)
+  elseif start and duration > 1.5 then
+    button.cd:SetCooldown(start, duration)
+    button.cd:Show()
+    button.icon:SetDesaturated(true)
+    button.count:SetTextColor(1, 1, 1)
+  else
+    button.cd:Hide()
+    button.icon:SetDesaturated(false)
+    if charges == maxCharges then
+      button.count:SetTextColor(1, 0, 0)
+    end
+  end
+
+  if texture then
+    button.icon:SetTexture(GetSpellTexture(spellID))
+  end
+end
+
 local function SetPosition(element, index)
   local button = element[index]
 
@@ -33,7 +66,7 @@ local function SetPosition(element, index)
     return
   end
 
-  local max = element.__max
+  local max = element.num
   local gap = element.gap or 4
 
   if index > 1 then
@@ -59,7 +92,7 @@ local function CreateSpellButton(element, index)
   countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
 
   local count = countFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-  count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", -1, 0)
+  count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", 0, 0)
 
   local overlay = button:CreateTexture(nil, "OVERLAY")
   overlay:SetTexture([[Interface\Buttons\UI-Debuff-Overlays]])
@@ -92,23 +125,11 @@ local function UpdateSpellButton(element, index)
   local spellID = element.__spells[index]
 
   if spellID then
-    local _, _, texture = GetSpellInfo(spellID)
-    local start, duration = GetSpellCooldown(spellID)
     local button = element[index]
 
     if not button then
       button = (element.CreateButton or CreateSpellButton)(element, index)
       table.insert(element, button)
-    end
-
-    if (button.cd and not element.disableCooldown) then
-      if (duration and duration > 0) then
-        local remaining = start + duration - GetTime()
-        button.cd:SetCooldown(remaining, duration)
-        button.cd:Show()
-      else
-        button.cd:Hide()
-      end
     end
 
     if button.overlay then
@@ -119,29 +140,27 @@ local function UpdateSpellButton(element, index)
       button.overlay:Hide()
     end
 
-    if (button.icon) then
-      button.icon:SetTexture(texture)
-    end
+    UpdateCooldown(button, spellID, true)
 
-    -- if (button.count) then
-    --   button.count:SetText(count > 1 and count)
-    -- end
+    local num, width = element.num, element:GetWidth()
 
-    local max, width = element.__max, element:GetWidth()
-
-    local maxSize = ((width / 5) - (((5 - 1) * (element.gap or 4)) / 5))
+    local maxSize = ((width / num) - (((num - 1) * (element.gap or 4)) / num))
     local size = element.size or maxSize
     button:SetSize(size, size)
 
     button:EnableMouse(not element.disableMouse)
     button:SetID(index)
     button:Show()
+
+    if (element.PostUpdateButton) then
+      element:PostUpdateButton(button)
+    end
   end
 end
 
 local function UpdateSpells(self, event, unit)
   local watchers = self.SpellWatchers
-  if watchers and watchers.__max > 0 then
+  if watchers and watchers.num > 0 then
     --[[ Callback: SpellWatchers:PreUpdate(unit)
 		Called before the element has been updated.
 
@@ -154,7 +173,7 @@ local function UpdateSpells(self, event, unit)
 
     local spells = watchers.__spells
 
-    for index = 1, watchers.__max do
+    for index = 1, watchers.num do
       local button = watchers[index]
       if (not button) then
         button = (watchers.CreateButton or CreateSpellButton)(watchers, index)
@@ -190,7 +209,7 @@ local function Update(self, event, unit)
   UpdateSpells(self, event, unit)
 
   if (element.PostUpdate) then
-    return element:PostUpdate(max, oldMax ~= max)
+    return element:PostUpdate(event, unit)
   end
 end
 
@@ -269,11 +288,11 @@ do
   function SpellWatchersEnable(self)
     local element = self.SpellWatchers
 
+    self:RegisterEvent("UNIT_AURA", Path)
+    self:RegisterEvent("UNIT_POWER_UPDATE", Path)
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN", Path, true)
 
     PlayerSpec = GetCurrentSpec()
-
-    element.__max = GetTotalElements(element.__spells)
 
     self.SpellWatchers.__isEnabled = true
   end
@@ -299,12 +318,8 @@ local function Enable(self, unit)
     end
 
     element.__owner = self
-    element.__max = #element
+    element.num = self.num or 5
     element.ForceUpdate = ForceUpdate
-
-    -- for i = 1, #element do
-    --   element[i]:Hide()
-    -- end
 
     self:RegisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath, true)
     self:RegisterEvent("SPELLS_CHANGED", VisibilityPath, true)
@@ -315,6 +330,8 @@ end
 
 local function Disable(self)
   if (self.SpellWatchers) then
+    self:UnregisterEvent("UNIT_AURA", VisibilityPath)
+    self:UnregisterEvent("UNIT_POWER_UPDATE", VisibilityPath)
     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN", VisibilityPath)
     self:UnregisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath)
     self:UnregisterEvent("SPELLS_CHANGED", VisibilityPath)
