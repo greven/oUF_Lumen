@@ -74,3 +74,9 @@ oUF.colors.power.max = {
   ["CHI"] = {0 / 255, 143 / 255, 247 / 255},
   ["ARCANE_CHARGES"] = {5 / 255, 96 / 255, 250 / 255}
 }
+
+oUF.colors.debuff.Curse = {0.6, 0.2, 1.0}
+oUF.colors.debuff.Disease = {0.6, 0.4, 0.0}
+oUF.colors.debuff.Magic = {0.2, 0.5, 1.0}
+oUF.colors.debuff.Poison = {0.2, 0.8, 0.2}
+oUF.colors.debuff.none = {1.0, 0.1, 0.2} -- Physical, etc.
