@@ -18,8 +18,10 @@ local function OnUpdate(self, elapsed)
 			self.time:SetFormattedText(core:FormatTime(self.timeLeft))
 			if self.timeLeft < 6 then
 				self.time:SetTextColor(1, 0.2, 0.2)
+				self.bar:SetStatusBarColor(1, 0.2, 0.2)
 			elseif self.timeLeft < 11 then
 				self.time:SetTextColor(1, 0.75, 0.25)
+				self.bar:SetStatusBarColor(1, 0.75, 0.25)
 			else
 				self.time:SetTextColor(1, 1, 1)
 			end
@@ -40,10 +42,24 @@ local PostUpdateBar = function(element, unit, button, index)
 		button.bar:SetMinMaxValues(0, duration)
 		button.bar:SetValue(button.timeLeft)
 
-		if button.isDebuff then -- bar color
-			button.bar:SetStatusBarColor(1, 0.1, 0.2)
-		else
-			button.bar:SetStatusBarColor(0, 0.4, 1)
+		-- Bar color
+		if button.isDebuff then
+			if cfg.elements.barTimers.colorDebuffsByType then
+				if dtype then
+					local color = oUF.colors.debuff[dtype]
+					button.bar:SetStatusBarColor(color[1], color[2], color[3])
+				else
+					button.bar:SetStatusBarColor(unpack(oUF.colors.debuff.none))
+				end
+			else
+				button.bar:SetStatusBarColor(1, 0.1, 0.2)
+			end
+		else -- Buffs
+			if cfg.elements.barTimers.colorBuffsByClass then
+				button.bar:SetStatusBarColor(unpack(core:RaidColor(unit)))
+			else
+				button.bar:SetStatusBarColor(0, 0.4, 1)
+			end
 		end
 	else
 		-- Permanent buff / debuff
@@ -51,7 +67,7 @@ local PostUpdateBar = function(element, unit, button, index)
 		button.bar:SetStatusBarColor(0.6, 0, 0.8)
 	end
 
-	-- set spell name
+	-- Spell name
 	button.spell:SetText(name)
 
 	button:SetScript("OnUpdate", OnUpdate)
