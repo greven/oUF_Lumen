@@ -353,7 +353,7 @@ end
 -- -----------------------------------
 
 function lum:CreateSwing(self)
-  if not cfg.elements.swing.show then
+  if not cfg.elements.swing.show[G.playerClass] then
     return
   end
 
@@ -522,7 +522,42 @@ local function PostCreateSpellWatcher(self, button)
   count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 4)
   count:SetFont(STANDARD_TEXT_FONT, 11, "THICKOUTLINE")
 
+  button.time = button:CreateFontString(nil, "OVERLAY")
+  button.time:SetFont(m.fonts.font, 14, "THINOUTLINE")
+  button.time:SetPoint("CENTER", button, 0, 0)
+  button.time:SetTextColor(1, 1, 0.65)
+  button.time:SetShadowOffset(1, -1)
+  button.time:SetShadowColor(0, 0, 0, 1)
+  button.time:SetJustifyH("CENTER")
+
   button.overlay:SetTexture(m.textures.border)
+end
+
+local function OnUpdateSpellButton(button, elapsed)
+  if button.timeLeft then
+    button.timeLeft = max(button.timeLeft - elapsed, 0)
+
+    if button.timeLeft and button.timeLeft > 0 then
+      button.time:SetFormattedText(core:FormatTime(button.timeLeft))
+      if button.timeLeft < 6 then
+        button.time:SetTextColor(0.9, 0.05, 0.05)
+      elseif button.timeLeft < 60 then
+        button.time:SetTextColor(1, 1, 0.6)
+      else
+        button.time:SetTextColor(0.1, 0.6, 1.0)
+      end
+    else
+      button.time:SetText()
+    end
+  end
+end
+
+local function PostUpdateSpellWatcher(self, button, expirationTime)
+  if expirationTime and expirationTime > 0 then
+    button.timeLeft = expirationTime - GetTime()
+  end
+
+  button:SetScript("OnUpdate", OnUpdateSpellButton)
 end
 
 function lum:CreateSpellWatchers(self)
@@ -535,7 +570,9 @@ function lum:CreateSpellWatchers(self)
   SpellWatchers:SetPoint("BOTTOM", self, "TOP", 0, 0)
   SpellWatchers.gap = 4
   SpellWatchers.spells = watchers
+  SpellWatchers.disableCooldown = true
   SpellWatchers.PostCreateButton = PostCreateSpellWatcher
+  SpellWatchers.PostUpdateSpell = PostUpdateSpellWatcher
   self.SpellWatchers = SpellWatchers
 end
 
