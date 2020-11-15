@@ -12,6 +12,7 @@ filters.WARLOCK = {
   debuffs = {
     [980 or "Agony"] = true,
     [172 or "Corruption"] = true,
+    [1714 or "Curse of Tongues"] = true,
     [603 or "Doom"] = true,
     [1098 or "Enslave Demon"] = true,
     [5785 or "Fear"] = true,

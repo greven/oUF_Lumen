@@ -13,15 +13,15 @@ local function OnUpdate(self, elapsed)
 		self.timeLeft = max(self.timeLeft - elapsed, 0)
 		self.bar:SetValue(self.timeLeft) -- update the statusbar
 
-		-- text color
+		-- Colors
 		if self.timeLeft > 0 and self.timeLeft < 60 then
 			self.time:SetFormattedText(core:FormatTime(self.timeLeft))
 			if self.timeLeft < 6 then
-				self.time:SetTextColor(1, 0.2, 0.2)
 				self.bar:SetStatusBarColor(1, 0.2, 0.2)
+				self.time:SetTextColor(1, 0.2, 0.2)
 			elseif self.timeLeft < 11 then
-				self.time:SetTextColor(1, 0.75, 0.25)
-				self.bar:SetStatusBarColor(1, 0.75, 0.25)
+				self.bar:SetStatusBarColor(1, 0.8, 0.2)
+				self.time:SetTextColor(1, 0.8, 0.2)
 			else
 				self.time:SetTextColor(1, 1, 1)
 			end
@@ -31,6 +31,11 @@ local function OnUpdate(self, elapsed)
 		else
 			self.time:SetText()
 		end
+
+		if cfg.elements.barTimers.colorGradient then
+			local color = CreateColor(oUF:ColorGradient(self.timeLeft, self.duration, 1, 0.2, 0.2, 1, 0.75, 0.25, 0.2, 0.2, 0.2))
+			self.bar:SetStatusBarColor(color:GetRGB())
+		end
 	end
 end
 
@@ -39,6 +44,8 @@ local PostUpdateBar = function(element, unit, button, index)
 
 	if duration and duration > 0 then
 		button.timeLeft = expirationTime - GetTime()
+		button.duration = duration
+
 		button.bar:SetMinMaxValues(0, duration)
 		button.bar:SetValue(button.timeLeft)
 
@@ -52,19 +59,19 @@ local PostUpdateBar = function(element, unit, button, index)
 					button.bar:SetStatusBarColor(unpack(oUF.colors.debuff.none))
 				end
 			else
-				button.bar:SetStatusBarColor(1, 0.1, 0.2)
+				button.bar:SetStatusBarColor(unpack(cfg.elements.barTimers.defaultDebuffColor))
 			end
 		else -- Buffs
 			if cfg.elements.barTimers.colorBuffsByClass then
 				button.bar:SetStatusBarColor(unpack(core:RaidColor(unit)))
 			else
-				button.bar:SetStatusBarColor(0, 0.4, 1)
+				button.bar:SetStatusBarColor(unpack(cfg.elements.barTimers.defaultBuffColor))
 			end
 		end
 	else
 		-- Permanent buff / debuff
 		button.timeLeft = math.huge
-		button.bar:SetStatusBarColor(0.6, 0, 0.8)
+		button.bar:SetStatusBarColor(0.6, 0.2, 0.8)
 	end
 
 	-- Spell name

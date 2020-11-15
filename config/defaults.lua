@@ -165,11 +165,27 @@ cfg.elements = {
   },
   barTimers = {
     theme = "thin", -- Theme can be `thin` or `normal`,
-    colorBuffsByClass = true,
-    colorDebuffsByType = true
+    defaultBuffColor = {0.2, 0.2, 0.2},
+    defaultDebuffColor = {0.2, 0.2, 0.2},
+    colorGradient = false, -- Color bars using a gradient based on remaining time
+    colorBuffsByClass = false,
+    colorDebuffsByType = false
   },
   swing = {
-    show = true
+    show = {
+      ["DEATHKNIGHT"] = false,
+      ["DEMONHUNTER"] = false,
+      ["DRUID"] = false,
+      ["HUNTER"] = true,
+      ["MAGE"] = false,
+      ["MONK"] = false,
+      ["PALADIN"] = false,
+      ["PRIEST"] = false,
+      ["ROGUE"] = false,
+      ["SHAMAN"] = false,
+      ["WARLOCK"] = false,
+      ["WARRIOR"] = false
+    }
   },
   mirrorTimers = {
     width = 220,
