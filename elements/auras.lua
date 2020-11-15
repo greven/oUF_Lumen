@@ -69,7 +69,7 @@ local function OnUpdate(icon, elapsed)
 end
 
 local function PostUpdateIcon(icons, unit, icon, index)
-	local name, _, count, dtype, duration, expirationTime = UnitAura(unit, index, icon.filter)
+	local name, _, _, _, duration, expirationTime = UnitAura(unit, index, icon.filter)
 
 	if duration and duration > 0 then
 		icon.timeLeft = expirationTime - GetTime()
