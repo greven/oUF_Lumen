@@ -164,7 +164,9 @@ cfg.elements = {
     pos = {a1 = "TOPLEFT", a2 = "BOTTOMLEFT", af = "Minimap", x = -2, y = -24}
   },
   barTimers = {
-    theme = "thin" -- Theme can be `thin` or `normal`
+    theme = "thin", -- Theme can be `thin` or `normal`,
+    colorBuffsByClass = true,
+    colorDebuffsByType = true
   },
   swing = {
     show = true
