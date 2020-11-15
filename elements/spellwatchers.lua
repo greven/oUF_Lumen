@@ -27,18 +27,24 @@ local function GetTotalElements(elements)
 end
 
 local function UpdateSpellState(button, spellID, texture)
+  local element = button:GetParent()
+
   local isSpellKnown = IsPlayerSpell(spellID)
   local isUsable, notEnoughMana = IsUsableSpell(spellID)
   local start, duration = GetSpellCooldown(spellID)
   local count = GetSpellCount(spellID)
   local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
 
+  local expirationTime
+
+  -- Charges
   if charges and maxCharges > 1 then
     button.count:SetText(charges)
   else
     button.count:SetText("")
   end
 
+  -- Some spells have counters and not charges (Wrath, Eclipse...)
   if not charges and count then
     if count > 0 then
       button.count:SetText(count)
@@ -48,22 +54,36 @@ local function UpdateSpellState(button, spellID, texture)
   end
 
   if charges and charges > 0 and charges < maxCharges then
-    button.cd:SetCooldown(chargeStart, chargeDuration)
-    button.cd:Show()
     button.icon:SetDesaturated(false)
     button.count:SetTextColor(1, 1, 1)
   elseif count and count > 0 then
     button.count:SetTextColor(1, 1, 1)
   elseif start and duration > 1.5 then
-    button.cd:SetCooldown(start, duration)
-    button.cd:Show()
     button.icon:SetDesaturated(true)
     button.count:SetTextColor(1, 1, 1)
   else
-    button.cd:Hide()
     button.icon:SetDesaturated(false)
     if charges == maxCharges then
       button.count:SetTextColor(1, 0, 0)
+    end
+  end
+
+  -- Cooldown
+  if button.cd then
+    if charges and charges > 0 and charges < maxCharges then
+      expirationTime = chargeStart + chargeDuration
+      if not element.disableCooldown then
+        button.cd:SetCooldown(chargeStart, chargeDuration)
+        button.cd:Show()
+      end
+    elseif start and duration > 1.5 then
+      expirationTime = start + duration
+      if not element.disableCooldown then
+        button.cd:SetCooldown(start, duration)
+        button.cd:Show()
+      end
+    else
+      button.cd:Hide()
     end
   end
 
@@ -71,11 +91,13 @@ local function UpdateSpellState(button, spellID, texture)
     button.icon:SetTexture(GetSpellTexture(spellID))
   end
 
+  -- If spell is not learned, fade it
   if not isSpellKnown then
     button.icon:SetVertexColor(0.2, 0.2, 0.2)
     return
   end
 
+  -- Check if spell is usable (OOM, etc.)
   if isUsable then
     button.icon:SetVertexColor(1.0, 1.0, 1.0)
   else
@@ -83,6 +105,10 @@ local function UpdateSpellState(button, spellID, texture)
     if notEnoughMana then
       button.icon:SetVertexColor(0.2, 0.3, 1.0)
     end
+  end
+
+  if (element.PostUpdateSpell) then
+    element:PostUpdateSpell(button, expirationTime)
   end
 end
 
@@ -127,6 +153,9 @@ local function CreateSpellButton(element, index)
   overlay:SetTexCoord(.296875, .5703125, 0, .515625)
   button.overlay = overlay
 
+  local glow = CreateFrame("Frame", nil, button)
+  glow:SetPoint("CENTER")
+
   -- button.UpdateTooltip = UpdateTooltip
   -- button:SetScript("OnEnter", onEnter)
   -- button:SetScript("OnLeave", onLeave)
@@ -134,6 +163,7 @@ local function CreateSpellButton(element, index)
   button.icon = icon
   button.count = count
   button.cd = cd
+  button.glow = glow
 
   --[[ Callback: SpellWatchers:PostCreateButton(button)
 	Called after a new spell button has been created.
@@ -175,6 +205,11 @@ local function UpdateSpellButton(element, index)
     local size = element.size or maxSize
     button:SetSize(size, size)
 
+    -- TODO: Set the glow!
+    -- if button.glow then
+    --   button.glow:SetSize(button:GetSize() + 8)
+    -- end
+
     button:EnableMouse(not element.disableMouse)
     button:SetID(index)
     button:Show()
@@ -215,6 +250,9 @@ local function UpdateSpells(self, event, unit)
       end
       if (button.count) then
         button.count:SetText()
+      end
+      if (button.glow) then
+        button.glow:Hide()
       end
 
       button:EnableMouse(false)
