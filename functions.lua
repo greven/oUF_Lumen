@@ -554,8 +554,9 @@ end
 local function PostCreateSpellWatcher(self, button)
   local count = button.count
   count:ClearAllPoints()
-  count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 4)
-  count:SetFont(STANDARD_TEXT_FONT, 11, "THICKOUTLINE")
+  count:SetJustifyH("CENTER")
+  count:SetPoint("BOTTOM", button, "TOP", 2, -6)
+  count:SetFont(STANDARD_TEXT_FONT, 12, "THICKOUTLINE")
 
   button.time = button:CreateFontString(nil, "OVERLAY")
   button.time:SetFont(m.fonts.font, 14, "THINOUTLINE")
