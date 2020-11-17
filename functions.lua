@@ -187,13 +187,11 @@ local function PostUpdatePower(self, unit, cur, min, max)
   if self.glow and powertype ~= 0 then
     local playerIsInCombat = UnitAffectingCombat("player")
 
-    -- if cur == max and playerIsInCombat then
-    --   self.glow:Show()
-    -- else
-    --   self.glow:Hide()
-    -- end
-
-    self.glow:Show()
+    if cur == max and playerIsInCombat then
+      self.glow:Show()
+    else
+      self.glow:Hide()
+    end
   end
 end
 
