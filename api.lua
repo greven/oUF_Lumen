@@ -342,7 +342,7 @@ function api:ShowOverlayGlow()
     overlay:SetParent(self)
     overlay:SetFrameLevel(self:GetFrameLevel() + 5)
     overlay:ClearAllPoints()
-    --Make the height/width available before the next frame:
+    -- Make the height/width available before the next frame:
     overlay:SetSize(frameWidth * 1.4, frameHeight * 1.4)
     overlay:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .2, frameHeight * .2)
     overlay:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .2, -frameHeight * .2)

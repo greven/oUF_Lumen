@@ -54,6 +54,14 @@ end
 -- > UTILITY FUNCTIONS
 -- ------------------------------------------------------------------------
 
+function core:GetTotalElements(elements)
+  local count = 0
+  for _ in pairs(elements) do
+    count = count + 1
+  end
+  return count
+end
+
 -- Check if the array contains a specific value
 function core:HasValue(tab, val)
   for index, value in ipairs(tab) do
@@ -83,6 +91,32 @@ function core:RaidColor(unit)
   local _, x = UnitClass(unit)
   local color = RAID_CLASS_COLORS[x]
   return color and {color.r, color.g, color.b} or {.5, .5, .5}
+end
+
+-- Make color lighter (add white)
+function core:TintColor(r, g, b, factor)
+  if not r or not factor then
+    return
+  end
+
+  local R = r + (1 - r) * factor
+  local G = g + (1 - g) * factor
+  local B = b + (1 - b) * factor
+
+  return R, G, B
+end
+
+-- Make color darker (add black)
+function core:ShadeColor(r, g, b, factor)
+  if not r or not factor then
+    return
+  end
+
+  local R = r * (1 - factor)
+  local G = g * (1 - factor)
+  local B = b * (1 - factor)
+
+  return R, G, B
 end
 
 -- Is Player max level?

@@ -4,15 +4,15 @@ local watchers = ns.watchers
 
 watchers.ROGUE = {
   Assassination = {
-    [1] = 1329, -- Mutilate
-    [2] = 703 -- Garrote
+    [1] = {spellID = 1329}, -- Mutilate
+    [2] = {spellID = 703} -- Garrote
   },
   Outlaw = {},
   Subtlety = {
-    [1] = 212283, -- Symbols of Death
-    [2] = 185313, -- Shadow Dance
-    [3] = 121471, -- Shadow Blades
-    [4] = 280719, -- Secret Technique
-    [5] = 31224 -- Cloak of Shadows
+    [1] = {spellID = 212283}, -- Symbols of Death
+    [2] = {spellID = 185313}, -- Shadow Dance
+    [3] = {spellID = 121471}, -- Shadow Blades
+    [4] = {spellID = 280719}, -- Secret Technique
+    [5] = {spellID = 31224} -- Cloak of Shadows
   }
 }

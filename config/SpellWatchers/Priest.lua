@@ -6,10 +6,10 @@ watchers.PRIEST = {
   Discipline = {},
   Holy = {},
   Shadow = {
-    [1] = 8092, -- Mind Blast
-    [2] = 335467, -- Devouring Plague
-    [4] = 263165, -- Void Torrent
-    [3] = 228260, -- Void Eruption
-    [5] = 32379 -- Shadow Word: Death
+    [1] = {spellID = 8092, auraID = 341207}, -- Mind Blast / Dark Thought
+    [2] = {spellID = 335467}, -- Devouring Plague
+    [3] = {spellID = 32379}, -- Shadow Word: Death
+    [4] = {spellID = 263165}, -- Void Torrent
+    [5] = {spellID = 228260, auraID = 194249, altID = 205448} -- Void Eruption / Voidform / Void Bolt
   }
 }

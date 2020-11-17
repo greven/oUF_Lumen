@@ -8,8 +8,6 @@ local frame = "playerplate"
 local frameName = A .. "PlayerPlate"
 
 -- -----------------------------------
--- > PlayerPlate Specific
--- -----------------------------------
 
 -- -----------------------------------
 -- > PlayerPlate Style
@@ -34,6 +32,7 @@ local function CreatePlayerPlate(self, unit)
 
   lum:CreateClassPower(self)
   lum:CreatePowerPrediction(self)
+  lum:CreateMaxPowerWarningGlow(self)
   lum:CreateSpellWatchers(self)
 
   -- Auras

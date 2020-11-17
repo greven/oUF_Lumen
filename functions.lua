@@ -82,7 +82,6 @@ local SetDruidSolarPowerColor = function(self)
   end
 
   -- local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
-
   local UpdatePower = function(self, ...)
     local wrathCount = GetSpellCount(WRATH_SPELL_ID)
     local starfireCount = GetSpellCount(STARFIRE_SPELL_ID)
@@ -140,8 +139,27 @@ local SetDruidSolarPowerColor = function(self)
   end
 end
 
+function lum:CreateMaxPowerWarningGlow(self)
+  local frame = self.Backdrop or self
+
+  local glow = frame:CreateTexture(nil, "BACKGROUND", nil, -8)
+  glow:SetSize(frame:GetWidth() * 1.4, 24)
+  glow:SetTexture("Interface\\GLUES\\Models\\UI_Draenei\\GenericGlow64")
+  glow:SetBlendMode("BLEND")
+  glow:SetPoint("CENTER", frame, "CENTER", 0, 0)
+  glow:Hide()
+  self.Power.glow = glow
+end
+
 -- BUG: When max power coloring is not updating correctly
-local onPostUpdatePowerColor = function(self, unit)
+local function PostUpdatePowerColor(self, unit)
+  if self.glow then
+    local r, g, b = self:GetStatusBarColor()
+    r, g, b = core:TintColor(r, g, b, 0.3)
+    self.glow:SetVertexColor(r, g, b, 0.9)
+  end
+
+  -- Class Specific
   if unit == "player" then
     if G.playerClass == "DRUID" then
       -- Moonkin Eclipse
@@ -159,6 +177,23 @@ local onPostUpdatePowerColor = function(self, unit)
         end
       end
     end
+  end
+end
+
+local function PostUpdatePower(self, unit, cur, min, max)
+  local powertype = UnitPowerType("player")
+
+  -- Show the glow when power is at max (except for Mana)
+  if self.glow and powertype ~= 0 then
+    local playerIsInCombat = UnitAffectingCombat("player")
+
+    -- if cur == max and playerIsInCombat then
+    --   self.glow:Show()
+    -- else
+    --   self.glow:Hide()
+    -- end
+
+    self.glow:Show()
   end
 end
 
@@ -190,9 +225,11 @@ function lum:CreatePowerBar(self, frameType)
     power.colorPower = true
   end
 
-  power.PostUpdateColor = onPostUpdatePowerColor
+  power.PostUpdateColor = PostUpdatePowerColor
+  power.PostUpdate = PostUpdatePower
   self.Power = power
 
+  -- Class specific
   SetDruidSolarPowerColor(self)
 
   return self.Power
@@ -203,7 +240,7 @@ end
 -- Power bar for specs like Balance Druid
 -- ----------------------------------------
 
-local function onAdditionalPowerPostUpdate(self, cur, max)
+local function AdditionalPowerPostUpdate(self, cur, max)
   local frame = self.__owner.mystyle
   local powertype = UnitPowerType("player")
 
@@ -257,7 +294,7 @@ function lum:CreateAdditionalPower(self)
   self:Tag(PowerValue, "[lum:altpower]")
 
   AdditionalPower.bg = bg
-  AdditionalPower.PostUpdate = onAdditionalPowerPostUpdate
+  AdditionalPower.PostUpdate = AdditionalPowerPostUpdate
   self.AdditionalPower = AdditionalPower
 end
 

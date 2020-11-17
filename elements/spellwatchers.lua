@@ -4,29 +4,29 @@
 
 local _, ns = ...
 local oUF = ns.oUF
+local core, api = ns.core, ns.api
 
 local _, PlayerClass = UnitClass("player")
 local PlayerSpec
 
-local function GetCurrentSpec()
-  local specID = GetSpecialization()
-  if (specID) then
-    local _, currentSpecName = GetSpecializationInfo(specID)
-    return currentSpecName
+local function SetPosition(element, index)
+  local button = element[index]
+
+  if not button then
+    return
   end
 
-  return nil
-end
+  local max = element.num
+  local gap = element.gap or 4
 
-local function GetTotalElements(elements)
-  local count = 0
-  for _ in pairs(elements) do
-    count = count + 1
+  if index > 1 then
+    button:SetPoint("LEFT", element[index - 1], "RIGHT", gap, 0)
+  else
+    button:SetPoint("TOPLEFT", element, 0, 0)
   end
-  return count
 end
 
-local function UpdateSpellState(button, spellID, texture)
+local function UpdateSpellState(button, spellID, auraID, altID, texture)
   local element = button:GetParent()
 
   local isSpellKnown = IsPlayerSpell(spellID)
@@ -36,6 +36,30 @@ local function UpdateSpellState(button, spellID, texture)
   local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
 
   local expirationTime
+  local isAuraActive = false
+  local isAltSpellActive = false
+
+  -- Track spell procs by auraID and alt spell ID
+  if auraID then
+    local name, count, duration, expire, caster = core:GetUnitAura("player", auraID, "HELPFUL")
+
+    if name and caster == "player" then
+      isAuraActive = true
+
+      if altID then
+        isAltSpellActive = true
+      end
+    end
+  end
+
+  -- If Alt spell is active then track the alt spellID instead
+  if isAuraActive and isAltSpellActive then
+    isSpellKnown = IsPlayerSpell(altID)
+    isUsable, notEnoughMana = IsUsableSpell(altID)
+    start, duration = GetSpellCooldown(altID)
+    count = GetSpellCount(altID)
+    charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(altID)
+  end
 
   -- Charges
   if charges and maxCharges > 1 then
@@ -53,14 +77,15 @@ local function UpdateSpellState(button, spellID, texture)
     end
   end
 
+  -- Spell charges
   if charges and charges > 0 and charges < maxCharges then
-    button.icon:SetDesaturated(false)
     button.count:SetTextColor(1, 1, 1)
+    button.icon:SetDesaturated(false)
   elseif count and count > 0 then
     button.count:SetTextColor(1, 1, 1)
   elseif start and duration > 1.5 then
-    button.icon:SetDesaturated(true)
     button.count:SetTextColor(1, 1, 1)
+    button.icon:SetDesaturated(true)
   else
     button.icon:SetDesaturated(false)
     if charges == maxCharges then
@@ -91,8 +116,32 @@ local function UpdateSpellState(button, spellID, texture)
     button.icon:SetTexture(GetSpellTexture(spellID))
   end
 
+  -- TODO: Global Cooldown swipe
+  -- TODO: glow
+  -- if isAuraActive then
+
+  --   if isAltSpellActive then
+
+  --   end
+  -- end
+
+  -- if auraID then
+  --   local name, count, duration, expire, caster = core:GetUnitAura("player", auraID, "HELPFUL")
+  --   --
+  --   if name and caster == "player" then
+  --     api:ShowOverlayGlow(button.glow)
+
+  --     if altID then
+  --       print("SWITCH TO ALT BUTTON")
+  --       button.icon:SetDesaturated(false)
+  --     end
+  --   else
+  --     api:HideOverlayGlow(button.glow)
+  --   end
+  -- end
+
   -- If spell is not learned, fade it
-  if not isSpellKnown then
+  if not isSpellKnown and not isAltSpellActive then
     button.icon:SetVertexColor(0.2, 0.2, 0.2)
     return
   end
@@ -112,26 +161,14 @@ local function UpdateSpellState(button, spellID, texture)
   end
 end
 
-local function SetPosition(element, index)
-  local button = element[index]
-
-  if not button then
-    return
-  end
-
-  local max = element.num
-  local gap = element.gap or 4
-
-  if index > 1 then
-    button:SetPoint("LEFT", element[index - 1], "RIGHT", gap, 0)
-  else
-    button:SetPoint("TOPLEFT", element, 0, 0)
-  end
-end
-
 local function CreateSpellButton(element, index)
   local button = CreateFrame("Button", element:GetDebugName() .. "Button" .. index, element)
   button:RegisterForClicks("AnyUp")
+
+  local num, width = element.num, element:GetWidth()
+  local maxSize = ((width / num) - (((num - 1) * (element.gap or 4)) / num))
+  local size = element.size or maxSize
+  button:SetSize(size, size)
 
   local cd = CreateFrame("Cooldown", "$parentCooldown", button, "CooldownFrameTemplate")
   cd:SetFrameLevel(cd:GetParent():GetFrameLevel())
@@ -155,6 +192,7 @@ local function CreateSpellButton(element, index)
 
   local glow = CreateFrame("Frame", nil, button)
   glow:SetPoint("CENTER")
+  glow:SetSize(size + 8, size + 8)
 
   -- button.UpdateTooltip = UpdateTooltip
   -- button:SetScript("OnEnter", onEnter)
@@ -162,8 +200,8 @@ local function CreateSpellButton(element, index)
 
   button.icon = icon
   button.count = count
-  button.cd = cd
   button.glow = glow
+  button.cd = cd
 
   --[[ Callback: SpellWatchers:PostCreateButton(button)
 	Called after a new spell button has been created.
@@ -179,7 +217,15 @@ local function CreateSpellButton(element, index)
 end
 
 local function UpdateSpellButton(element, index)
-  local spellID = element.__spells[index]
+  local watcher = element.__spells[index]
+
+  if not watcher then
+    return
+  end
+
+  local spellID = watcher.spellID
+  local auraID = watcher.auraID
+  local altID = watcher.altID
 
   if spellID then
     local button = element[index]
@@ -197,22 +243,11 @@ local function UpdateSpellButton(element, index)
       button.overlay:Hide()
     end
 
-    UpdateSpellState(button, spellID, true)
-
-    local num, width = element.num, element:GetWidth()
-
-    local maxSize = ((width / num) - (((num - 1) * (element.gap or 4)) / num))
-    local size = element.size or maxSize
-    button:SetSize(size, size)
-
-    -- TODO: Set the glow!
-    -- if button.glow then
-    --   button.glow:SetSize(button:GetSize() + 8)
-    -- end
-
     button:EnableMouse(not element.disableMouse)
     button:SetID(index)
     button:Show()
+
+    UpdateSpellState(button, spellID, auraID, altID, true)
 
     if (element.PostUpdateButton) then
       element:PostUpdateButton(button)
@@ -235,8 +270,9 @@ local function UpdateSpells(self, event, unit)
 
     local spells = watchers.__spells
 
-    for index = 1, watchers.num do
+    for index = 1, core:GetTotalElements(spells) do
       local button = watchers[index]
+
       if (not button) then
         button = (watchers.CreateButton or CreateSpellButton)(watchers, index)
         table.insert(watchers, button)
@@ -250,9 +286,6 @@ local function UpdateSpells(self, event, unit)
       end
       if (button.count) then
         button.count:SetText()
-      end
-      if (button.glow) then
-        button.glow:Hide()
       end
 
       button:EnableMouse(false)
@@ -294,7 +327,7 @@ local function Visibility(self, event, unit)
   local element = self.SpellWatchers
   local shouldEnable
 
-  local PlayerSpec = GetCurrentSpec()
+  local PlayerSpec = core:GetCurrentSpec()
   element.__spells = element.spells[PlayerClass][PlayerSpec]
 
   if (UnitHasVehicleUI("player")) then
@@ -302,7 +335,7 @@ local function Visibility(self, event, unit)
   elseif not element.__spells then
     shouldEnable = false
   else
-    if GetTotalElements(element.__spells) > 0 then
+    if core:GetTotalElements(element.__spells) > 0 then
       shouldEnable = true
     else
       shouldEnable = false
@@ -357,7 +390,7 @@ do
     self:RegisterEvent("UNIT_POWER_UPDATE", Path)
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN", Path, true)
 
-    PlayerSpec = GetCurrentSpec()
+    PlayerSpec = core:GetCurrentSpec()
 
     self.SpellWatchers.__isEnabled = true
   end
