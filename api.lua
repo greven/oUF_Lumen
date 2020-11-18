@@ -330,7 +330,7 @@ local function getOverlayGlow()
   return overlay
 end
 
-function api:ShowOverlayGlow()
+function api:ShowOverlayGlow(self)
   if self.__overlay then
     if self.__overlay.animOut:IsPlaying() then
       self.__overlay.animOut:Stop()
@@ -351,7 +351,7 @@ function api:ShowOverlayGlow()
   end
 end
 
-function api:HideOverlayGlow()
+function api:HideOverlayGlow(self)
   if self.__overlay then
     if self.__overlay.animIn:IsPlaying() then
       self.__overlay.animIn:Stop()
@@ -360,6 +360,100 @@ function api:HideOverlayGlow()
       self.__overlay.animOut:Play()
     else
       overlayGlowAnimOutFinished(self.__overlay.animOut)
+    end
+  end
+end
+
+-- ---------------
+-- Ants animation
+-- ---------------
+
+local function antsGlowAnimOutFinished(animGroup)
+  local ants = animGroup:GetParent()
+  local button = overlay:GetParent()
+  ants:Hide()
+  tinsert(unusedOverlayGlows, ants)
+  button.__ants = nil
+end
+
+local function antsAnimIn_OnPlay(group)
+  local frame = group:GetParent()
+  local frameWidth, frameHeight = frame:GetSize()
+  frame.ants:SetSize(frameWidth * .85, frameHeight * .85)
+  frame.ants:SetAlpha(0)
+  frame:Show()
+end
+
+local function antsAnimIn_OnFinished(group)
+  local frame = group:GetParent()
+  local frameWidth, frameHeight = frame:GetSize()
+  frame.ants:SetAlpha(1)
+end
+
+local function createAntsGlow()
+  local antsFrame = CreateFrame("Frame", "ButtonAntsGlow", UIParent)
+
+  antsFrame.ants = antsFrame:CreateTexture("ButtonAntsGlow" .. "Ants", "OVERLAY")
+  antsFrame.ants:SetPoint("CENTER")
+  antsFrame.ants:SetAlpha(0)
+  antsFrame.ants:SetTexture(iconAlertAntsTexture)
+
+  -- setup antimations
+  antsFrame.animIn = antsFrame:CreateAnimationGroup()
+  createAlphaAnim(antsFrame.animIn, antsFrame.ants, 1, .2, 0, 1, .3)
+  antsFrame.animIn:SetScript("OnPlay", antsAnimIn_OnPlay)
+  antsFrame.animIn:SetScript("OnFinished", antsAnimIn_OnFinished)
+
+  antsFrame.animOut = antsFrame:CreateAnimationGroup()
+  createAlphaAnim(antsFrame.animOut, antsFrame.ants, 1, .2, 1, 0)
+  antsFrame.animOut:SetScript("OnFinished", antsGlowAnimOutFinished)
+
+  -- scripts
+  antsFrame:SetScript("OnUpdate", overlayGlow_OnUpdate)
+  antsFrame:SetScript("OnHide", overlayGlow_OnHide)
+
+  return antsFrame
+end
+
+local function getAntsGlow()
+  local ants = tremove(unusedOverlayGlows)
+  if not ants then
+    ants = createAntsGlow()
+  end
+  return ants
+end
+
+-- Show Ants Animation glow
+function api:ShowAntsGlow(self)
+  if self.__ants then
+    if self.__ants.animOut:IsPlaying() then
+      self.__ants.animOut:Stop()
+      self.__ants.animIn:Play()
+    end
+  else
+    local ants = getAntsGlow()
+    local frameWidth, frameHeight = self:GetSize()
+    ants:SetParent(self)
+    ants:SetFrameLevel(self:GetFrameLevel() + 5)
+    ants:ClearAllPoints()
+    -- Make the height/width available before the next frame:
+    ants:SetSize(frameWidth * 1.4, frameHeight * 1.4)
+    ants:SetPoint("TOPLEFT", self, "TOPLEFT", -frameWidth * .2, frameHeight * .2)
+    ants:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", frameWidth * .2, -frameHeight * .2)
+    ants.animIn:Play()
+    self.__ants = ants
+  end
+end
+
+function api:HideAntsGlow(self)
+  if self.__ants then
+    if self.__ants.animIn:IsPlaying() then
+      self.__ants.animIn:Stop()
+    end
+    if self:IsVisible() then
+      self.__ants.animOut:Play()
+    else
+      antsGlowAnimOutFinished(self.__ants.animOut)
     end
   end
 end

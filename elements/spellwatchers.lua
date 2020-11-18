@@ -26,7 +26,8 @@ local function SetPosition(element, index)
   end
 end
 
-local function UpdateSpellState(button, spellID, auraID, altID, texture)
+-- TODO: Global Cooldown swipe
+local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
   local element = button:GetParent()
 
   local isSpellKnown = IsPlayerSpell(spellID)
@@ -116,29 +117,14 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture)
     button.icon:SetTexture(GetSpellTexture(spellID))
   end
 
-  -- TODO: Global Cooldown swipe
-  -- TODO: glow
-  -- if isAuraActive then
-
-  --   if isAltSpellActive then
-
-  --   end
+  -- Glow
+  -- if isAuraActive and glow then
+  --   api:ShowOverlayGlow(button.glow)
+  -- else
+  --   api:HideOverlayGlow(button.glow)
   -- end
 
-  -- if auraID then
-  --   local name, count, duration, expire, caster = core:GetUnitAura("player", auraID, "HELPFUL")
-  --   --
-  --   if name and caster == "player" then
-  --     api:ShowOverlayGlow(button.glow)
-
-  --     if altID then
-  --       print("SWITCH TO ALT BUTTON")
-  --       button.icon:SetDesaturated(false)
-  --     end
-  --   else
-  --     api:HideOverlayGlow(button.glow)
-  --   end
-  -- end
+  api:ShowAntsGlow(button.glow)
 
   -- If spell is not learned, fade it
   if not isSpellKnown and not isAltSpellActive then
@@ -226,6 +212,7 @@ local function UpdateSpellButton(element, index)
   local spellID = watcher.spellID
   local auraID = watcher.auraID
   local altID = watcher.altID
+  local glow = watcher.glow
 
   if spellID then
     local button = element[index]
@@ -247,7 +234,7 @@ local function UpdateSpellButton(element, index)
     button:SetID(index)
     button:Show()
 
-    UpdateSpellState(button, spellID, auraID, altID, true)
+    UpdateSpellState(button, spellID, auraID, altID, true, glow)
 
     if (element.PostUpdateButton) then
       element:PostUpdateButton(button)
