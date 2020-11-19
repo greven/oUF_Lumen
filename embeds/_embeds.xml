@@ -1,4 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<Include file="LibCustomGlow\LibCustomGlow-1.0.xml" />
 	<Include file="oUF\oUF.xml" />
 	<Script file="oUF_MovableFrames\movable.lua" />
 	<Script file="oUF_Smooth.lua" />
