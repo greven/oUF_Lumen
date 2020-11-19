@@ -2,9 +2,14 @@
 -- > SpellWatchers: Watch class spells
 -- ------------------------------------------------------------------------
 
+-- TODO: Reset Spells on Spec Swap
+-- TODO: Global Cooldown swipe
+
 local _, ns = ...
 local oUF = ns.oUF
 local core, api = ns.core, ns.api
+
+local LCG = LibStub("LibCustomGlow-1.0")
 
 local _, PlayerClass = UnitClass("player")
 local PlayerSpec
@@ -26,7 +31,6 @@ local function SetPosition(element, index)
   end
 end
 
--- TODO: Global Cooldown swipe
 local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
   local element = button:GetParent()
 
@@ -109,6 +113,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
         button.cd:Show()
       end
     else
+      expirationTime = nil
       button.cd:Hide()
     end
   end
@@ -117,14 +122,12 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     button.icon:SetTexture(GetSpellTexture(spellID))
   end
 
-  -- Glow
-  -- if isAuraActive and glow then
-  --   api:ShowOverlayGlow(button.glow)
-  -- else
-  --   api:HideOverlayGlow(button.glow)
-  -- end
-
-  api:ShowAntsGlow(button.glow)
+  -- Button Overlay Glow for procs
+  if isAuraActive and (glow and glow.type == "button") then
+    LCG.ButtonGlow_Start(button.glow)
+  else
+    LCG.ButtonGlow_Stop(button.glow)
+  end
 
   -- If spell is not learned, fade it
   if not isSpellKnown and not isAltSpellActive then
@@ -135,8 +138,15 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
   -- Check if spell is usable (OOM, etc.)
   if isUsable then
     button.icon:SetVertexColor(1.0, 1.0, 1.0)
+    -- Pixel Glow
+    if not expirationTime and (glow and glow.type == "pixel") then
+      LCG.PixelGlow_Start(button.glow, core:RaidColor("player"), 10, 0.25, 6, 1, -6, -6)
+    else
+      LCG.PixelGlow_Stop(button.glow)
+    end
   else
     button.icon:SetVertexColor(0.2, 0.2, 0.2)
+    LCG.PixelGlow_Stop(button.glow)
     if notEnoughMana then
       button.icon:SetVertexColor(0.2, 0.3, 1.0)
     end
