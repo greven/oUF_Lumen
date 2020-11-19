@@ -20,15 +20,13 @@ local function CreateBoss(self)
   self:SetSize(self.cfg.width, self.cfg.height)
 
   -- Texts
-  lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
+  lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 60)
   lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
   lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
   lum:CreatePowerValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
 
   -- Auras
   lum:SetBuffAuras(self, frame, 4, 1, self.cfg.height + 4, 2, "TOPRIGHT", self, "LEFT", -6, self.cfg.height - 3, "BOTTOMRIGHT", "LEFT", "UP", true)
-
-  local debuffs = lum:SetDebuffAuras(self, frame, 4, 1, self.cfg.height + 4, 2, "TOPLEFT", self, "RIGHT", 6, self.cfg.height - 3, "BOTTOMLEFT", "RIGHT", "UP", true, true)
 
   -- Castbar
   if self.cfg.castbar.enable then
@@ -37,9 +35,9 @@ local function CreateBoss(self)
 
   -- Raid Icons
   local RaidIcon = self:CreateTexture(nil, "ARTWORK")
-  RaidIcon:SetPoint("RIGHT", self, "LEFT", -8, 0)
+  RaidIcon:SetPoint("RIGHT", self, "LEFT", -8, 2)
   RaidIcon:SetSize(20, 20)
-  self.RaidIcon = RaidIcon
+  self.RaidTargetIndicator = RaidIcon
 
   self.Range = cfg.frames.range
 end

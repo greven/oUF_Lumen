@@ -864,7 +864,7 @@ function lum:CreateTargetIconIndicators(self)
 
   -- Raid Icons
   local RaidIcon = self:CreateTexture(nil, "OVERLAY")
-  RaidIcon:SetPoint("LEFT", self, "RIGHT", 8, 0)
+  RaidIcon:SetPoint("LEFT", self, "RIGHT", 8, 1)
   RaidIcon:SetSize(20, 20)
   self.RaidTargetIndicator = RaidIcon
 end

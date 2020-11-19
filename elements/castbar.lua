@@ -48,7 +48,9 @@ end
 local function CustomCastTimeText(self, duration)
   local unit = self.__owner.mystyle
 
-  self.Time:SetText(("%.1f"):format(self.channeling and duration or self.max - duration))
+  if self.Time then
+    self.Time:SetText(("%.1f"):format(self.channeling and duration or self.max - duration))
+  end
 
   if self.Max and unit ~= "nameplate" then
     self.Max:SetText(("%.1f "):format(self.max))
@@ -200,12 +202,13 @@ function lum:CreateCastbar(self)
     Icon:SetWidth(cfg.units.focus.castbar.height)
     Icon:SetPoint("LEFT", Castbar, -(cfg.units.focus.castbar.height + 2), 0)
   elseif (unit == "boss") then
-    api:SetBackdrop(Castbar, 2, 2, 2, 2)
+    api:SetBackdrop(Castbar, cfg.units.boss.castbar.height + 8, 2, 2, 2)
     Castbar:SetStatusBarColor(unpack(cfg.units.boss.castbar.color))
     Castbar:SetWidth(cfg.units.boss.castbar.width - cfg.units.boss.castbar.height + 6)
     Castbar:SetHeight(cfg.units.boss.castbar.height)
-    Castbar:SetPoint("LEFT", self, cfg.units.boss.height + 2, 0)
-    Castbar:SetPoint("TOPRIGHT", self, 0, 0)
+    Castbar:SetPoint("TOPLEFT", self, 0, 0)
+    Castbar:SetPoint("BOTTOMRIGHT", self, 0, 0)
+
 
     Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
     Text:SetWidth(cfg.units.boss.width - 50)
@@ -216,7 +219,7 @@ function lum:CreateCastbar(self)
 
     Icon:SetHeight(cfg.units.boss.height)
     Icon:SetWidth(cfg.units.boss.height)
-    Icon:SetPoint("LEFT", Castbar, -(cfg.units.boss.castbar.height + 2), 0)
+    Icon:SetPoint("LEFT", Castbar, -(cfg.units.boss.castbar.height + 6), 0)
   elseif (unit == "nameplate") then
     api:SetBackdrop(Castbar, 1, 1, 1, 1)
     Castbar:SetStatusBarColor(unpack(cfg.units.nameplate.castbar.color))
