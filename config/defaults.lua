@@ -16,9 +16,9 @@ m.fonts = {
 
 m.textures = {
   status_texture = "Interface\\AddOns\\oUF_lumen\\media\\statusbar",
-  fill_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture",
   bg_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture_bg",
-  border = "Interface\\AddOns\\oUF_lumen\\media\\border",
+  aura_border = "Interface\\AddOns\\oUF_lumen\\media\\aura_border",
+  button_border = "Interface\\AddOns\\oUF_lumen\\media\\button_border",
   white_square = "Interface\\AddOns\\oUF_lumen\\media\\white",
   glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow",
   damager_texture = "Interface\\AddOns\\oUF_lumen\\media\\damager",

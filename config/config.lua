@@ -1,12 +1,25 @@
 local _, ns = ...
 
-local cfg, filters = ns.cfg, ns.filters
+local cfg, m, filters = ns.cfg, ns.m, ns.filters
 
 -- ------------------------------------------------------------------------
 -- > Your configuration here (will override the defaults.lua settings)
 -- ------------------------------------------------------------------------
 
 -- Important: Override each property individually or copy all the defaults
+
+-- Textures
+-- m.textures = {
+--   status_texture = "Interface\\AddOns\\oUF_lumen\\media\\statusbar",
+--   bg_texture = "Interface\\AddOns\\oUF_lumen\\media\\texture_bg",
+--   aura_border = "Interface\\AddOns\\oUF_lumen\\media\\aura_border",
+--   button_border = "Interface\\AddOns\\oUF_lumen\\media\\button_border",
+--   white_square = "Interface\\AddOns\\oUF_lumen\\media\\white",
+--   glow_texture = "Interface\\AddOns\\oUF_lumen\\media\\glow",
+--   damager_texture = "Interface\\AddOns\\oUF_lumen\\media\\damager",
+--   healer_texture = "Interface\\AddOns\\oUF_lumen\\media\\healer",
+--   tank_texture = "Interface\\AddOns\\oUF_lumen\\media\\tank"
+-- }
 
 -- Examples
 -- cfg.fontsize = 14 -- The Global Font Size

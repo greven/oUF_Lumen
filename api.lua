@@ -2,6 +2,72 @@ local _, ns = ...
 
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
 
+-- Class colors
+function api:RaidColor(unit)
+  local _, x = UnitClass(unit)
+  local color = RAID_CLASS_COLORS[x]
+  return color and {color.r, color.g, color.b} or {.5, .5, .5}
+end
+
+-- Get Unit Experience
+function api:GetXP(unit)
+  if (unit == "pet") then
+    return GetPetExperience()
+  else
+    return UnitXP(unit), UnitXPMax(unit)
+  end
+end
+
+function api:GetUnitAura(unit, spell, filter)
+  for index = 1, 40 do
+    local name, _, count, _, duration, expire, caster, _, _, spellID, _, _, _, _, _, value = UnitAura(unit, index, filter)
+    if not name then
+      break
+    end
+    if name and spellID == spell then
+      return name, count, duration, expire, caster, spellID, value
+    end
+  end
+end
+
+-- Unit has a Debuff
+function api:HasUnitDebuff(unit, name, spell)
+  local _, _, _, count, _, _, _, caster = UnitDebuff(unit, name)
+  if spell then
+    if count and caster == "player" then
+      return count
+    end
+  else
+    if count then
+      return count
+    end
+  end
+end
+
+-- Is the player a healer? (healing spec)
+function api:IsPlayerHealer()
+  local currentSpec = api:GetCurrentSpec()
+  local isHealer = core:HasValue(cfg.healingSpecs, currentSpec)
+  return isHealer
+end
+
+-- Get current specialization name
+function api:GetCurrentSpec()
+  local specID = GetSpecialization()
+
+  if (specID) then
+    local _, currentSpecName = GetSpecializationInfo(specID)
+    return currentSpecName
+  end
+
+  return nil
+end
+
+-- Is Player max level?
+function api:IsPlayerMaxLevel()
+  return G.playerLevel == GetMaxPlayerLevel() and true or false
+end
+
 function api:CreateFontstring(frame, font, size, outline, layer, sublayer, inheritsFrom)
   local fs = frame:CreateFontString(nil, layer or "OVERLAY", sublayer or 0, inheritsFrom or nil)
   fs:SetFont(font, size, outline)
@@ -80,6 +146,45 @@ function api:CreateDropShadow(frame, point, edge, color)
   )
   shadow:SetBackdropColor(0, 0, 0, 0)
   shadow:SetBackdropBorderColor(unpack(color or cfg.frames.shadow.color))
+end
+
+function api:DisablePixelSnap(frame)
+  if (frame and not frame:IsForbidden()) and not frame.PixelSnapDisabled then
+    if frame.SetSnapToPixelGrid then
+      frame:SetSnapToPixelGrid(false)
+      frame:SetTexelSnappingBias(0)
+    elseif frame.GetStatusBarTexture then
+      local texture = frame:GetStatusBarTexture()
+      if texture and texture.SetSnapToPixelGrid then
+        texture:SetSnapToPixelGrid(false)
+        texture:SetTexelSnappingBias(0)
+      end
+    end
+
+    frame.PixelSnapDisabled = true
+  end
+end
+
+function api:SetInside(frame, anchor, xOffset, yOffset, anchor2)
+  xOffset = xOffset or G.mult
+  yOffset = yOffset or G.mult
+  anchor = anchor or frame:GetParent()
+
+  api:DisablePixelSnap(frame)
+  frame:ClearAllPoints()
+  frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", xOffset, -yOffset)
+  frame:SetPoint("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", -xOffset, yOffset)
+end
+
+function api:SetOutside(frame, anchor, xOffset, yOffset, anchor2)
+  xOffset = xOffset or G.mult
+  yOffset = yOffset or G.mult
+  anchor = anchor or frame:GetParent()
+
+  api:DisablePixelSnap(frame)
+  frame:ClearAllPoints()
+  frame:SetPoint("TOPLEFT", anchor, "TOPLEFT", -xOffset, yOffset)
+  frame:SetPoint("BOTTOMRIGHT", anchor2 or anchor, "BOTTOMRIGHT", xOffset, -yOffset)
 end
 
 -- ---------------

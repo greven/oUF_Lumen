@@ -14,12 +14,13 @@ local LCG = LibStub("LibCustomGlow-1.0")
 local _, PlayerClass = UnitClass("player")
 local PlayerSpec
 
+-- Pixel Glow (color, number, frequency, length, thickness, xOffset, yOffset, border, key)
+local pixelGlowConfig = {api:RaidColor("player"), 10, 0.25, 6, 1, -5, -5}
+
 local function SetPosition(element, index)
   local button = element[index]
 
-  if not button then
-    return
-  end
+  if not button then return end
 
   local max = element.num
   local gap = element.gap or 4
@@ -46,7 +47,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
   -- Track spell procs by auraID and alt spell ID
   if auraID then
-    local name, count, duration, expire, caster = core:GetUnitAura("player", auraID, "HELPFUL")
+    local name, count, duration, expire, caster = api:GetUnitAura("player", auraID, "HELPFUL")
 
     if name and caster == "player" then
       isAuraActive = true
@@ -86,6 +87,9 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
   if charges and charges > 0 and charges < maxCharges then
     button.count:SetTextColor(1, 1, 1)
     button.icon:SetDesaturated(false)
+    if glow and glow.type == "pixel" then
+      LCG.PixelGlow_Stop(button.glow)
+    end
   elseif count and count > 0 then
     button.count:SetTextColor(1, 1, 1)
   elseif start and duration > 1.5 then
@@ -95,6 +99,9 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     button.icon:SetDesaturated(false)
     if charges == maxCharges then
       button.count:SetTextColor(1, 0, 0)
+      if glow and glow.type == "pixel" then
+        LCG.PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
+      end
     end
   end
 
@@ -140,7 +147,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     button.icon:SetVertexColor(1.0, 1.0, 1.0)
     -- Pixel Glow
     if not expirationTime and (glow and glow.type == "pixel") then
-      LCG.PixelGlow_Start(button.glow, core:RaidColor("player"), 10, 0.25, 6, 1, -6, -6)
+      LCG.PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
     else
       LCG.PixelGlow_Stop(button.glow)
     end
@@ -166,12 +173,13 @@ local function CreateSpellButton(element, index)
   local size = element.size or maxSize
   button:SetSize(size, size)
 
-  local cd = CreateFrame("Cooldown", "$parentCooldown", button, "CooldownFrameTemplate")
+  local cd = CreateFrame("Cooldown", nil, button, "CooldownFrameTemplate")
   cd:SetFrameLevel(cd:GetParent():GetFrameLevel())
   cd:SetAllPoints()
 
-  local icon = button:CreateTexture(nil, "BORDER")
-  icon:SetAllPoints()
+  local icon = button:CreateTexture(nil, "ARTWORK")
+  api:SetInside(icon)
+  icon:SetTexCoord(.08, .92, .08, .92)
 
   local countFrame = CreateFrame("Frame", nil, button)
   countFrame:SetAllPoints(button)
@@ -181,9 +189,8 @@ local function CreateSpellButton(element, index)
   count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", 0, 0)
 
   local overlay = button:CreateTexture(nil, "OVERLAY")
-  overlay:SetTexture([[Interface\Buttons\UI-Debuff-Overlays]])
   overlay:SetAllPoints()
-  overlay:SetTexCoord(.296875, .5703125, 0, .515625)
+  overlay:SetTexCoord(0, 1, 0, 1)
   button.overlay = overlay
 
   local glow = CreateFrame("Frame", nil, button)
@@ -297,9 +304,7 @@ end
 local function Update(self, event, unit)
   local element = self.SpellWatchers
 
-  if not element.__spells then
-    return
-  end
+  if not element.__spells then return end
 
   UpdateSpells(self, event, unit)
 
@@ -324,7 +329,7 @@ local function Visibility(self, event, unit)
   local element = self.SpellWatchers
   local shouldEnable
 
-  local PlayerSpec = core:GetCurrentSpec()
+  local PlayerSpec = api:GetCurrentSpec()
   element.__spells = element.spells[PlayerClass][PlayerSpec]
 
   if (UnitHasVehicleUI("player")) then
@@ -387,7 +392,7 @@ do
     self:RegisterEvent("UNIT_POWER_UPDATE", Path)
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN", Path, true)
 
-    PlayerSpec = core:GetCurrentSpec()
+    PlayerSpec = api:GetCurrentSpec()
 
     self.SpellWatchers.__isEnabled = true
   end

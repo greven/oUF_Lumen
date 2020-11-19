@@ -89,7 +89,7 @@ local _tags = {
   end,
   -- Current Spec
   spec = function()
-    return core:GetCurrentSpec()
+    return api:GetCurrentSpec()
   end,
   -- Health Value
   hpvalue = function(unit)

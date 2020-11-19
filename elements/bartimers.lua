@@ -63,7 +63,7 @@ local PostUpdateBar = function(element, unit, button, index)
 			end
 		else -- Buffs
 			if cfg.elements.barTimers.colorBuffsByClass then
-				button.bar:SetStatusBarColor(unpack(core:RaidColor(unit)))
+				button.bar:SetStatusBarColor(unpack(api:RaidColor(unit)))
 			else
 				button.bar:SetStatusBarColor(unpack(cfg.elements.barTimers.defaultBuffColor))
 			end
@@ -94,7 +94,7 @@ end
 local function PostCreateBar(self, button)
 	button.icon:SetTexCoord(0, 1, 0, 1)
 
-	button.overlay:SetTexture(m.textures.border)
+	button.overlay:SetTexture(m.textures.aura_border)
 	button.overlay:SetTexCoord(0, 1, 0, 1)
 	button.overlay.Hide = function(self)
 		self:SetVertexColor(0.15, 0.15, 0.15)

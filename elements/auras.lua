@@ -23,7 +23,7 @@ local function PostCreateIcon(self, button)
 
 	button.icon:SetTexCoord(.08, .92, .08, .92)
 
-	button.overlay:SetTexture(m.textures.border)
+	button.overlay:SetTexture(m.textures.aura_border)
 	button.overlay:SetTexCoord(0, 1, 0, 1)
 	button.overlay.Hide = function(self)
 		self:SetVertexColor(0.1, 0.1, 0.1)

@@ -16,13 +16,13 @@ local onPostUpdateHealth = function(health, unit, min, max)
   local frame = self.mystyle
 
   if cfg.units[frame].health.gradientColored then
-    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(core:RaidColor(unit))))
+    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
     health:SetStatusBarColor(color:GetRGB())
   end
 
   -- Class colored text
   if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(core:RaidColor(unit)))
+    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
   end
 end
 
@@ -552,21 +552,24 @@ end
 -- end
 
 local function PostCreateSpellWatcher(self, button)
+  api:CreateDropShadow(button, 4, 4)
+
   local count = button.count
   count:ClearAllPoints()
   count:SetJustifyH("RIGHT")
-  count:SetPoint("BOTTOMRIGHT", button, "BOTTOMRIGHT", -1, 4)
-  count:SetFont(STANDARD_TEXT_FONT, 11, "THICKOUTLINE")
+  count:SetPoint("BOTTOM", button, "TOP", 1, 2)
+  count:SetFont(STANDARD_TEXT_FONT, 14, "THICKOUTLINE")
 
   button.time = button:CreateFontString(nil, "OVERLAY")
-  button.time:SetFont(m.fonts.font, 14, "THINOUTLINE")
+  button.time:SetFont(m.fonts.font, 16, "THINOUTLINE")
   button.time:SetPoint("CENTER", button, 0, 0)
   button.time:SetTextColor(1, 1, 0.65)
   button.time:SetShadowOffset(1, -1)
   button.time:SetShadowColor(0, 0, 0, 1)
   button.time:SetJustifyH("CENTER")
 
-  button.overlay:SetTexture(m.textures.border)
+  button.overlay:SetTexture(m.textures.button_border)
+  -- button.overlay:SetVertexColor(0.05, 0.05, 0.05) -- FIX: Not setting the color...
 end
 
 local function OnUpdateSpellButton(button, elapsed)
@@ -592,7 +595,6 @@ local function PostUpdateSpellWatcher(self, button, expirationTime)
   if expirationTime and expirationTime > 0 then
     button.timeLeft = expirationTime - GetTime()
   end
-
   button:SetScript("OnUpdate", OnUpdateSpellButton)
 end
 
@@ -843,7 +845,7 @@ function lum:CreatePlayerIconIndicators(self)
   self.CombatIndicator = Combat
 
   -- Resting
-  if not core:IsPlayerMaxLevel() then
+  if not api:IsPlayerMaxLevel() then
     local Resting = api:CreateFontstring(self.Health, font, cfg.fontsize - 2, "THINOUTLINE")
     Resting:SetPoint("CENTER", self.Health, "TOP", 0, 1)
     Resting:SetText("zZz")

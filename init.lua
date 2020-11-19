@@ -1,19 +1,16 @@
 local _, ns = ...
 
-local oUF = ns.oUF or oUF
-local lum = CreateFrame("Frame", "oUF_lumen") -- Main Frame
-local core = CreateFrame("Frame") -- Core methods
+local core = ns.core -- Core methods
 local api = CreateFrame("Frame") -- API like methods
+local lum = CreateFrame("Frame", "oUF_lumen") -- Main Frame
+local oUF = ns.oUF or oUF
 local G = {} -- Globals
 
+ns.api = api
 ns.lum = lum
 ns.oUF = oUF
-ns.core = core
-ns.api = api
 ns.G = G
 
--- -----------------------------------
--- > PLAYER SPECIFIC
 -- -----------------------------------
 
 G.playerName = UnitName("player")
@@ -41,3 +38,15 @@ G.hearthstones = {
   285424, -- Peddlefeet's Lovely Hearthstone
   342122 -- Venthyr Sinstone
 }
+
+-- UI Scale (credits: NDui)
+G.ScreenWidth, G.ScreenHeight = GetPhysicalScreenSize()
+local function GetBestScale()
+	local scale = max(.4, min(1.15, 768 / G.ScreenHeight))
+	return core:Round(scale, 2)
+end
+
+local pixel = 1
+local scale = GetBestScale()
+local ratio = 768 / G.ScreenHeight
+G.mult = (pixel / scale) - ((pixel - ratio) / scale)
