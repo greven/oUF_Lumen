@@ -12,10 +12,14 @@ local core, api = ns.core, ns.api
 local LCG = LibStub("LibCustomGlow-1.0")
 
 local _, PlayerClass = UnitClass("player")
-local PlayerSpec
 
 -- Pixel Glow (color, number, frequency, length, thickness, xOffset, yOffset, border, key)
 local pixelGlowConfig = {api:RaidColor("player"), 10, 0.25, 6, 1, -5, -5}
+
+local function UpdateSpec(element)
+  local PlayerSpec = api:GetCurrentSpecName()
+  element.__spells = element.spells[PlayerClass][PlayerSpec]
+end
 
 local function SetPosition(element, index)
   local button = element[index]
@@ -321,7 +325,8 @@ local function Path(self, ...)
 	* event - the event triggering the update (string)
 	* unit  - the unit accompanying the event (string)
 	* ...   - the arguments accompanying the event
-	--]]
+  --]]
+
   return (self.SpellWatchers.Override or Update)(self, ...)
 end
 
@@ -329,8 +334,7 @@ local function Visibility(self, event, unit)
   local element = self.SpellWatchers
   local shouldEnable
 
-  local PlayerSpec = api:GetCurrentSpec()
-  element.__spells = element.spells[PlayerClass][PlayerSpec]
+  UpdateSpec(element)
 
   if (UnitHasVehicleUI("player")) then
     shouldEnable = false
@@ -392,9 +396,8 @@ do
     self:RegisterEvent("UNIT_POWER_UPDATE", Path)
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN", Path, true)
 
-    PlayerSpec = api:GetCurrentSpec()
-
     self.SpellWatchers.__isEnabled = true
+    Path(self, event, unit)
   end
 
   function SpellWatchersDisable(self)
@@ -421,7 +424,7 @@ local function Enable(self, unit)
 
     element.__owner = self
     element.num = self.num or 5
-    element.ForceUpdate = ForceUpdate
+    -- element.ForceUpdate = ForceUpdate
 
     self:RegisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath, true)
     self:RegisterEvent("SPELLS_CHANGED", VisibilityPath, true)

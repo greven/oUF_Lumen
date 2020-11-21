@@ -78,7 +78,7 @@ cfg.frames = {
     margin = 236, -- Margin between Player and Target Frames
     pos = {
       x = -322,
-      y = 282
+      y = 290
     },
     health = {
       margin = 2 -- Spacing between HP and Power Bars
@@ -232,7 +232,7 @@ cfg.units = {
     additionalpower = {
       show = true,
       height = cfg.frames.main.power.height,
-      hideOnFull = false
+      hideOnFull = not cfg.frames.playerplate.show
     },
     castbar = {
       enable = true,
