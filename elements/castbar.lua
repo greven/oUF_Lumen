@@ -3,7 +3,6 @@ local _, ns = ...
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 
-local font = m.fonts.font
 local format = string.format
 
 -- ------------------------------------------------------------------------
@@ -125,7 +124,7 @@ function lum:CreateCastbar(self)
     local Max = Castbar:CreateFontString(nil, "BACKGROUND")
     Max:SetTextColor(100 / 255, 100 / 255, 100 / 255)
     Max:SetJustifyH("RIGHT")
-    Max:SetFont(font, cfg.fontsize - 2, "THINOUTLINE")
+    Max:SetFont(m.fonts.font, cfg.fontsize - 2, "THINOUTLINE")
     Max:SetPoint("RIGHT", Time, "LEFT", 0, 0)
     Castbar.Max = Max
 
@@ -142,11 +141,11 @@ function lum:CreateCastbar(self)
                          cfg.units.player.castbar.pos.x,
                          cfg.units.player.castbar.pos.y)
 
-        Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
+        Text:SetFont(m.fonts.font, cfg.fontsize + 1, "THINOUTLINE")
         Text:SetWidth(cfg.units.player.castbar.width - 60)
         Text:SetPoint("LEFT", Castbar, 4, 0)
 
-        Time:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
+        Time:SetFont(m.fonts.font, cfg.fontsize + 1, "THINOUTLINE")
         Time:SetPoint("RIGHT", Castbar, -6, 0)
 
         Icon:SetHeight(cfg.units.player.castbar.height)
@@ -170,11 +169,11 @@ function lum:CreateCastbar(self)
         Castbar:SetHeight(cfg.units.target.castbar.height)
         Castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 320)
 
-        Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
+        Text:SetFont(m.fonts.font, cfg.fontsize + 1, "THINOUTLINE")
         Text:SetWidth(cfg.units.target.castbar.width - 60)
         Text:SetPoint("LEFT", Castbar, 6, 0)
 
-        Time:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
+        Time:SetFont(m.fonts.font, cfg.fontsize + 1, "THINOUTLINE")
         Time:SetPoint("RIGHT", Castbar, -6, 0)
 
         Icon:SetHeight(cfg.units.target.castbar.height)
@@ -188,11 +187,11 @@ function lum:CreateCastbar(self)
         Castbar:SetHeight(cfg.units.focus.castbar.height)
         Castbar:SetPoint("CENTER", "UIParent", "CENTER", 0, 280)
 
-        Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
+        Text:SetFont(m.fonts.font, cfg.fontsize + 1, "THINOUTLINE")
         Text:SetWidth(cfg.units.focus.castbar.width - 60)
         Text:SetPoint("LEFT", Castbar, 4, 0)
 
-        Time:SetFont(font, cfg.fontsize, "THINOUTLINE")
+        Time:SetFont(m.fonts.font, cfg.fontsize, "THINOUTLINE")
         Time:SetPoint("RIGHT", Castbar, -6, 0)
 
         Icon:SetHeight(cfg.units.focus.castbar.height)
@@ -207,11 +206,11 @@ function lum:CreateCastbar(self)
         Castbar:SetPoint("TOPLEFT", self, 0, 0)
         Castbar:SetPoint("BOTTOMRIGHT", self, 0, 0)
 
-        Text:SetFont(font, cfg.fontsize + 1, "THINOUTLINE")
+        Text:SetFont(m.fonts.font, cfg.fontsize + 1, "THINOUTLINE")
         Text:SetWidth(cfg.units.boss.width - 50)
         Text:SetPoint("LEFT", Castbar, 4, 0)
 
-        Time:SetFont(font, cfg.fontsize, "THINOUTLINE")
+        Time:SetFont(m.fonts.font, cfg.fontsize, "THINOUTLINE")
         Time:SetPoint("RIGHT", Castbar, -6, 0)
 
         Icon:SetHeight(cfg.units.boss.height)
@@ -224,11 +223,11 @@ function lum:CreateCastbar(self)
         Castbar:SetHeight(cfg.units.nameplate.castbar.height)
         Castbar:SetPoint("TOPLEFT", self.Health, "BOTTOMLEFT", 0, -5)
 
-        Text:SetFont(font, cfg.fontsize - 5, "THINOUTLINE")
+        Text:SetFont(m.fonts.font, cfg.fontsize - 5, "THINOUTLINE")
         Text:SetWidth(cfg.units.nameplate.width - 4)
         Text:SetPoint("CENTER", Castbar, -2, -10)
 
-        Time:SetFont(font, cfg.fontsize - 6, "THINOUTLINE")
+        Time:SetFont(m.fonts.font, cfg.fontsize - 6, "THINOUTLINE")
         Time:SetPoint("RIGHT", Castbar, 2, -10)
         Time:SetTextColor(.7, .7, .7)
 

@@ -10,6 +10,7 @@ ns.m = m
 
 m.fonts = {
     font = "Interface\\AddOns\\oUF_lumen\\media\\font.ttf",
+    mlang = "Interface\\AddOns\\oUF_lumen\\media\\font.ttf",
     symbols = "Interface\\AddOns\\oUF_lumen\\media\\symbols.otf",
     symbols_light = "Interface\\AddOns\\oUF_lumen\\media\\symbols_light.otf"
 }

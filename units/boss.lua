@@ -4,8 +4,6 @@ local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 local filters = ns.filters
 
-local font = m.fonts.font
-
 local frame = "boss"
 
 -- -----------------------------------
@@ -21,13 +19,13 @@ local function CreateBoss(self)
     self:SetSize(self.cfg.width, self.cfg.height)
 
     -- Texts
-    lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0,
+    lum:CreateNameString(self, m.fonts.mlang, cfg.fontsize + 2, "THINOUTLINE", 4, 0,
                          "LEFT", self.cfg.width - 60)
-    lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0,
+    lum:CreateHealthValueString(self, m.fonts.font, cfg.fontsize, "THINOUTLINE", -4, 0,
                                 "RIGHT")
-    lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT",
+    lum:CreateHealthPercentString(self, m.fonts.font, cfg.fontsize, nil, -32, 0, "LEFT",
                                   "BACKGROUND")
-    lum:CreatePowerValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0,
+    lum:CreatePowerValueString(self, m.fonts.font, cfg.fontsize - 4, "THINOUTLINE", 0,
                                0, "CENTER")
 
     -- Auras

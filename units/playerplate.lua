@@ -3,8 +3,6 @@ local A, ns = ...
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 
-local font = m.fonts.font
-
 local frame = "playerplate"
 local frameName = A .. "PlayerPlate"
 
@@ -30,7 +28,7 @@ local function CreatePlayerPlate(self, unit)
 
     local power = lum:CreatePowerBar(self, "nameplate")
     power:SetAllPoints(self)
-    lum:CreatePowerValueString(self, font, cfg.fontsize - 2, "THINOUTLINE", 0,
+    lum:CreatePowerValueString(self, m.fonts.font, cfg.fontsize - 2, "THINOUTLINE", 0,
                                0, "CENTER")
 
     lum:CreateClassPower(self)

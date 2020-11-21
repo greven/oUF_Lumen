@@ -4,8 +4,6 @@ local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 local filters = ns.filters
 
-local font = m.fonts.font
-
 local frame = "pet"
 
 -- -----------------------------------
@@ -27,7 +25,7 @@ local function CreatePet(self)
     lum:SharedStyle(self, "secondary")
 
     -- Texts
-    lum:CreateNameString(self, font, cfg.fontsize - 2, "THINOUTLINE", 3, 0,
+    lum:CreateNameString(self, m.fonts.mlang, cfg.fontsize - 2, "THINOUTLINE", 3, 0,
                          "LEFT", self.cfg.width - 8)
     self:Tag(self.Name, "[lum:name]")
 

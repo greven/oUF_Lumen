@@ -6,8 +6,6 @@ local filters, debuffs, watchers = ns.filters, ns.debuffs, ns.watchers
 
 local UnitAura, UnitPowerType = UnitAura, UnitPowerType
 
-local font = m.fonts.font
-
 -- -----------------------------------
 -- > Health bar
 -- -----------------------------------
@@ -276,7 +274,7 @@ function lum:CreateAdditionalPower(self)
     bg:SetTexture(m.textures.bg_texture)
     bg:SetVertexColor(r * 0.25, g * 0.25, b * 0.25)
 
-    local PowerValue = api:CreateFontstring(AdditionalPower, font,
+    local PowerValue = api:CreateFontstring(AdditionalPower, m.fonts.font,
                                             cfg.fontsize - 3, "THINOUTLINE")
     PowerValue:SetPoint("CENTER", AdditionalPower, 0, 0)
     PowerValue:SetJustifyH("CENTER")
@@ -793,7 +791,7 @@ function lum:CreateAlternativePower(self)
         AlternativePower:SetWidth(200)
         AlternativePower:SetPoint("CENTER", "UIParent", "CENTER", 0, 350)
 
-        AlternativePower.Text = api:CreateFontstring(AlternativePower, font, 10,
+        AlternativePower.Text = api:CreateFontstring(AlternativePower, m.fonts.font, 10,
                                                      "THINOUTLINE")
         AlternativePower.Text:SetPoint("CENTER", 0, 0)
 
@@ -828,7 +826,7 @@ function lum:CreatePlayerIconIndicators(self)
 
     -- Resting
     if not api:IsPlayerMaxLevel() then
-        local Resting = api:CreateFontstring(self.Health, font,
+        local Resting = api:CreateFontstring(self.Health, m.fonts.font,
                                              cfg.fontsize - 2, "THINOUTLINE")
         Resting:SetPoint("CENTER", self.Health, "TOP", 0, 1)
         Resting:SetText("zZz")
