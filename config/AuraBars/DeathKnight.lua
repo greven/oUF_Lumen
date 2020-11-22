@@ -4,7 +4,10 @@ local filters = ns.filters
 
 filters.DEATHKNIGHT = {
     buffs = {
-        [48792 or "Icebound Fortitude"] = true,
+        [48707 or "Anti-Magic Shell"] = true,
+        [49028 or "Dancing Rune Weapon"] = true,
+        [81256 or "Icebound Fortitude"] = true,
+        [49039 or "Lichborne"] = true,
         [196770 or "Remorseless Winter"] = true,
         [207256 or "Obliteration"] = true,
         [55233 or "Vampiric Blood"] = true
