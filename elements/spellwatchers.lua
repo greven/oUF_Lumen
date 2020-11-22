@@ -8,9 +8,6 @@ local core, api = ns.core, ns.api
 
 local LCG = LibStub("LibCustomGlow-1.0")
 
-local _, PlayerClass = UnitClass("player")
-local PlayerSpec = select(1, GetSpecializationInfo(GetSpecialization()))
-
 local ButtonGlow_Start = LCG.ButtonGlow_Start
 local ButtonGlow_Stop = LCG.ButtonGlow_Stop
 local PixelGlow_Start = LCG.PixelGlow_Start
@@ -18,6 +15,11 @@ local PixelGlow_Stop = LCG.PixelGlow_Stop
 
 -- Pixel Glow (color, number, frequency, length, thickness, xOffset, yOffset, border, key)
 local pixelGlowConfig = {api:RaidColor("player"), 10, 0.25, 6, 1, -5, -5}
+
+local _, PlayerClass = UnitClass("player")
+local PlayerSpec
+
+-- --------
 
 local function GetPlayerSpec()
     return select(1, GetSpecializationInfo(GetSpecialization()))
