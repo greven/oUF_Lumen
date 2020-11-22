@@ -74,7 +74,7 @@ local shouldCastWrath = false
 local shouldCastStarfire = false
 local eclipse = 0 -- 1 = Solar, 2 = Lunar
 
-local SetDruidSolarPowerColor = function(self)
+local function SetDruidSolarPowerColor(self)
   local frame = self.mystyle
 
   if frame ~= "playerplate" then
@@ -267,18 +267,18 @@ function lum:CreateAdditionalPower(self)
   local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
 
   local AdditionalPower = CreateFrame("StatusBar", nil, self, "BackdropTemplate")
-  api:SetBackdrop(AdditionalPower, 1, 1, 1, 1)
   AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
   AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
   AdditionalPower:SetSize(self.cfg.width, self.cfg.additionalpower.height)
   AdditionalPower:SetStatusBarColor(r, g, b)
   AdditionalPower.frequentUpdates = true
 
-  -- If power is not showing position the additional power below health
-  if not cfg.units.player.power.show then
-    AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
+  if cfg.units.player.power.show then
+    AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -16)
+    api:SetBackdrop(AdditionalPower, 1.5, 1.5, 1.5, 1.5)
   else
-    AdditionalPower:SetPoint("TOPLEFT", self.Power, "BOTTOMLEFT", 0, height)
+    -- If power is not showing position the additional power below health
+    AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames.main.health.margin)
   end
 
   local bg = AdditionalPower:CreateTexture(nil, "BACKGROUND")
@@ -547,10 +547,6 @@ end
 -- > Spell Watchers (Player Plate)
 -- -----------------------------------
 
--- local function UpdateSpellWatchersPosition(self, event)
---   print(event)
--- end
-
 local function PostCreateSpellWatcher(self, button)
   api:CreateDropShadow(button, 4, 4)
 
@@ -572,33 +568,11 @@ local function PostCreateSpellWatcher(self, button)
   -- button.overlay:SetVertexColor(0.05, 0.05, 0.05) -- FIX: Not setting the color...
 end
 
-local function OnUpdateSpellButton(button, elapsed)
-  if button.timeLeft then
-    button.timeLeft = max(button.timeLeft - elapsed, 0)
-
-    if button.timeLeft and button.timeLeft > 0 then
-      button.time:SetFormattedText(core:FormatTime(button.timeLeft))
-      if button.timeLeft < 6 then
-        button.time:SetTextColor(0.9, 0.05, 0.05)
-      elseif button.timeLeft < 60 then
-        button.time:SetTextColor(1, 1, 0.6)
-      else
-        button.time:SetTextColor(0.1, 0.6, 1.0)
-      end
-    else
-      button.time:SetText()
-    end
-  end
-end
-
-local function PostUpdateSpellWatcher(self, button, expirationTime)
-  if expirationTime and expirationTime > 0 then
-    button.timeLeft = expirationTime - GetTime()
-  end
-  button:SetScript("OnUpdate", OnUpdateSpellButton)
-end
-
 function lum:CreateSpellWatchers(self)
+  if not cfg.elements.spellwatchers.show then
+    return
+  end
+
   local frame = self.mystyle
   local cfg = cfg.units[frame]
 
@@ -610,7 +584,6 @@ function lum:CreateSpellWatchers(self)
   SpellWatchers.spells = watchers
   SpellWatchers.disableCooldown = true
   SpellWatchers.PostCreateButton = PostCreateSpellWatcher
-  SpellWatchers.PostUpdateSpell = PostUpdateSpellWatcher
   self.SpellWatchers = SpellWatchers
 end
 

@@ -44,23 +44,20 @@ function api:HasUnitDebuff(unit, name, spell)
   end
 end
 
--- Is the player a healer? (healing spec)
-function api:IsPlayerHealer()
-  local currentSpec = api:GetCurrentSpec()
-  local isHealer = core:HasValue(cfg.healingSpecs, currentSpec)
-  return isHealer
+-- Get current specialization name
+function api:GetCurrentSpecName()
+  local specID = GetSpecialization()
+  if specID then
+    local _, name = GetSpecializationInfo(specID)
+    return name
+  end
 end
 
--- Get current specialization name
-function api:GetCurrentSpec()
-  local specID = GetSpecialization()
-
-  if (specID) then
-    local _, currentSpecName = GetSpecializationInfo(specID)
-    return currentSpecName
-  end
-
-  return nil
+-- Is the player a healer? (healing spec)
+function api:IsPlayerHealer()
+  local currentSpec = api:GetCurrentSpecName()
+  local isHealer = core:HasValue(cfg.healingSpecs, currentSpec)
+  return isHealer
 end
 
 -- Is Player max level?

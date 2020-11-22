@@ -21,6 +21,7 @@ local events = {
   classification = "UNIT_CLASSIFICATION_CHANGED",
   classificationshort = "UNIT_CLASSIFICATION_CHANGED",
   spec = "PLAYER_LOGIN PLAYER_ENTERING_WORLD PLAYER_TALENT_UPDATE CHARACTER_POINTS_CHANGED PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE GROUP_JOINED",
+  ishealer = "PLAYER_LOGIN PLAYER_ENTERING_WORLD PLAYER_TALENT_UPDATE CHARACTER_POINTS_CHANGED PLAYER_ROLES_ASSIGNED GROUP_ROSTER_UPDATE GROUP_JOINED",
   hpvalue = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_CONNECTION UNIT_NAME_UPDATE",
   hpperc = "UNIT_HEALTH UNIT_MAXHEALTH UNIT_NAME_UPDATE",
   powervalue = "UNIT_MAXPOWER UNIT_POWER_UPDATE UNIT_CONNECTION PLAYER_DEAD PLAYER_ALIVE",
@@ -89,7 +90,10 @@ local _tags = {
   end,
   -- Current Spec
   spec = function()
-    return api:GetCurrentSpec()
+    return GetSpecialization()
+  end,
+  ishealer = function()
+    return api:IsPlayerHealer()
   end,
   -- Health Value
   hpvalue = function(unit)

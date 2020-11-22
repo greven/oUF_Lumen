@@ -2,7 +2,6 @@
 -- > SpellWatchers: Watch class spells
 -- ------------------------------------------------------------------------
 
--- TODO: Reset Spells on Spec Swap
 -- TODO: Global Cooldown swipe
 
 local _, ns = ...
@@ -11,20 +10,40 @@ local core, api = ns.core, ns.api
 
 local LCG = LibStub("LibCustomGlow-1.0")
 
-local _, PlayerClass = UnitClass("player")
-
 -- Pixel Glow (color, number, frequency, length, thickness, xOffset, yOffset, border, key)
 local pixelGlowConfig = {api:RaidColor("player"), 10, 0.25, 6, 1, -5, -5}
 
-local function UpdateSpec(element)
-  local PlayerSpec = api:GetCurrentSpecName()
-  element.__spells = element.spells[PlayerClass][PlayerSpec]
+local ButtonGlow_Start = LCG.ButtonGlow_Start
+local ButtonGlow_Stop = LCG.ButtonGlow_Stop
+local PixelGlow_Start = LCG.PixelGlow_Start
+local PixelGlow_Stop = LCG.PixelGlow_Stop
+
+local _, PlayerClass = UnitClass("player")
+local PlayerSpec = GetSpecialization()
+
+local function ShouldUpdateSpecSpells(self, event)
+  local element = self.SpellWatchers
+
+  if not element.__spells or PlayerSpec ~= GetSpecialization() or event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_LOGIN" then
+    return true
+  else
+    return false
+  end
+end
+
+local function UpdateSpecSpells(self)
+  local element = self.SpellWatchers
+  local specName = api:GetCurrentSpecName()
+
+  element.__spells = element.spells[PlayerClass][specName]
 end
 
 local function SetPosition(element, index)
   local button = element[index]
 
-  if not button then return end
+  if not button then
+    return
+  end
 
   local max = element.num
   local gap = element.gap or 4
@@ -33,6 +52,26 @@ local function SetPosition(element, index)
     button:SetPoint("LEFT", element[index - 1], "RIGHT", gap, 0)
   else
     button:SetPoint("TOPLEFT", element, 0, 0)
+  end
+end
+
+local function OnUpdateSpellButton(button, elapsed)
+  if button.timeLeft then
+    button.timeLeft = max(button.timeLeft - elapsed, 0)
+
+    if button.timeLeft and button.timeLeft > 0 then
+      button.time:SetFormattedText(core:FormatTime(button.timeLeft))
+      if button.timeLeft < 6 then
+        button.time:SetTextColor(0.9, 0.05, 0.05)
+      elseif button.timeLeft < 60 then
+        button.time:SetTextColor(1, 1, 0.6)
+      else
+        button.time:SetTextColor(0.1, 0.6, 1.0)
+      end
+    else
+      button.time:SetText()
+      button.icon:SetDesaturated(false)
+    end
   end
 end
 
@@ -71,6 +110,11 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(altID)
   end
 
+  -- Set spell icon texture
+  if texture then
+    button.icon:SetTexture(GetSpellTexture(spellID))
+  end
+
   -- Charges
   if charges and maxCharges > 1 then
     button.count:SetText(charges)
@@ -87,12 +131,13 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     end
   end
 
-  -- Spell charges
+  -- State based on spell charges and spell count
   if charges and charges > 0 and charges < maxCharges then
     button.count:SetTextColor(1, 1, 1)
     button.icon:SetDesaturated(false)
-    if glow and glow.type == "pixel" then
-      LCG.PixelGlow_Stop(button.glow)
+
+    if not auraID and (glow and glow.type == "pixel") then
+      PixelGlow_Stop(button.glow)
     end
   elseif count and count > 0 then
     button.count:SetTextColor(1, 1, 1)
@@ -101,11 +146,56 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     button.icon:SetDesaturated(true)
   else
     button.icon:SetDesaturated(false)
+
     if charges == maxCharges then
       button.count:SetTextColor(1, 0, 0)
-      if glow and glow.type == "pixel" then
-        LCG.PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
+      if not auraID and (glow and glow.type == "pixel") then
+        PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
       end
+    end
+  end
+
+  -- Button Overlay Glow for procs
+  if isAuraActive then
+    if glow and glow.type == "button" then
+      ButtonGlow_Start(button.glow)
+    end
+
+    if glow and glow.type == "pixel" then
+      PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
+    end
+  else
+    if auraID and (glow and glow.type == "button") then
+      ButtonGlow_Stop(button.glow)
+    end
+
+    if auraID and (glow and glow.type == "pixel") then
+      PixelGlow_Stop(button.glow)
+    end
+  end
+
+  -- If spell is not learned, fade it
+  if not isSpellKnown and not isAltSpellActive then
+    button.icon:SetVertexColor(0.2, 0.2, 0.2)
+    return
+  end
+
+  -- Check if spell is usable (OOM, etc.)
+  if isUsable then
+    button.icon:SetVertexColor(1.0, 1.0, 1.0)
+    -- Pixel Glow
+    if not auraID then
+      if not expirationTime and (glow and glow.type == "pixel") then
+        PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
+      else
+        PixelGlow_Stop(button.glow)
+      end
+    end
+  else
+    button.icon:SetVertexColor(0.2, 0.2, 0.2)
+    PixelGlow_Stop(button.glow)
+    if notEnoughMana then
+      button.icon:SetVertexColor(0.2, 0.3, 1.0)
     end
   end
 
@@ -129,39 +219,11 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     end
   end
 
-  if texture then
-    button.icon:SetTexture(GetSpellTexture(spellID))
+  -- OnUpdate
+  if expirationTime and expirationTime > 0 then
+    button.timeLeft = expirationTime - GetTime()
   end
-
-  -- Button Overlay Glow for procs
-  if isAuraActive and (glow and glow.type == "button") then
-    LCG.ButtonGlow_Start(button.glow)
-  else
-    LCG.ButtonGlow_Stop(button.glow)
-  end
-
-  -- If spell is not learned, fade it
-  if not isSpellKnown and not isAltSpellActive then
-    button.icon:SetVertexColor(0.2, 0.2, 0.2)
-    return
-  end
-
-  -- Check if spell is usable (OOM, etc.)
-  if isUsable then
-    button.icon:SetVertexColor(1.0, 1.0, 1.0)
-    -- Pixel Glow
-    if not expirationTime and (glow and glow.type == "pixel") then
-      LCG.PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
-    else
-      LCG.PixelGlow_Stop(button.glow)
-    end
-  else
-    button.icon:SetVertexColor(0.2, 0.2, 0.2)
-    LCG.PixelGlow_Stop(button.glow)
-    if notEnoughMana then
-      button.icon:SetVertexColor(0.2, 0.3, 1.0)
-    end
-  end
+  button:SetScript("OnUpdate", OnUpdateSpellButton)
 
   if (element.PostUpdateSpell) then
     element:PostUpdateSpell(button, expirationTime)
@@ -223,7 +285,8 @@ local function CreateSpellButton(element, index)
   return button
 end
 
-local function UpdateSpellButton(element, index)
+local function UpdateSpellButton(self, event, index)
+  local element = self.SpellWatchers
   local watcher = element.__spells[index]
 
   if not watcher then
@@ -300,7 +363,8 @@ local function UpdateSpells(self, event, unit)
       button:Show()
 
       SetPosition(watchers, index)
-      UpdateSpellButton(watchers, index)
+
+      UpdateSpellButton(self, event, index)
     end
   end
 end
@@ -308,7 +372,9 @@ end
 local function Update(self, event, unit)
   local element = self.SpellWatchers
 
-  if not element.__spells then return end
+  if not element.__spells then
+    return
+  end
 
   UpdateSpells(self, event, unit)
 
@@ -326,7 +392,6 @@ local function Path(self, ...)
 	* unit  - the unit accompanying the event (string)
 	* ...   - the arguments accompanying the event
   --]]
-
   return (self.SpellWatchers.Override or Update)(self, ...)
 end
 
@@ -334,7 +399,9 @@ local function Visibility(self, event, unit)
   local element = self.SpellWatchers
   local shouldEnable
 
-  UpdateSpec(element)
+  if ShouldUpdateSpecSpells(self, event) then
+    UpdateSpecSpells(self)
+  end
 
   if (UnitHasVehicleUI("player")) then
     shouldEnable = false
@@ -384,9 +451,9 @@ local function VisibilityPath(self, ...)
   return (self.SpellWatchers.OverrideVisibility or Visibility)(self, ...)
 end
 
--- local function ForceUpdate(element)
---   return Update(element.__owner, "ForceUpdate")
--- end
+local function ForceUpdate(element)
+  return Update(element.__owner, "ForceUpdate")
+end
 
 do
   function SpellWatchersEnable(self)
@@ -395,15 +462,17 @@ do
     self:RegisterEvent("UNIT_AURA", Path)
     self:RegisterEvent("UNIT_POWER_UPDATE", Path)
     self:RegisterEvent("SPELL_UPDATE_COOLDOWN", Path, true)
+    self:RegisterEvent("SPELL_UPDATE_USABLE", Path, true)
 
     self.SpellWatchers.__isEnabled = true
-    Path(self, event, unit)
+    ForceUpdate(element)
   end
 
   function SpellWatchersDisable(self)
     self:UnregisterEvent("UNIT_AURA", Path)
     self:UnregisterEvent("UNIT_POWER_UPDATE", Path)
     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN", Path)
+    self:UnregisterEvent("SPELL_UPDATE_USABLE", Path)
 
     local element = self.SpellWatchers
     for i = 1, #element do
@@ -424,10 +493,12 @@ local function Enable(self, unit)
 
     element.__owner = self
     element.num = self.num or 5
-    -- element.ForceUpdate = ForceUpdate
+    element.ForceUpdate = ForceUpdate
 
-    self:RegisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath, true)
-    self:RegisterEvent("SPELLS_CHANGED", VisibilityPath, true)
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", VisibilityPath, true)
+    self:RegisterEvent("PLAYER_LOGIN", VisibilityPath, true)
+    self:RegisterEvent("PLAYER_TALENT_UPDATE", UpdateSpecSpells, true)
+    self:RegisterEvent("SPELLS_CHANGED", UpdateSpecSpells, true)
 
     return true
   end
@@ -435,9 +506,12 @@ end
 
 local function Disable(self)
   if (self.SpellWatchers) then
+    self:RegisterEvent("PLAYER_ENTERING_WORLD", VisibilityPath)
+    self:RegisterEvent("PLAYER_LOGIN", VisibilityPath)
     self:UnregisterEvent("UNIT_AURA", VisibilityPath)
     self:UnregisterEvent("UNIT_POWER_UPDATE", VisibilityPath)
     self:UnregisterEvent("SPELL_UPDATE_COOLDOWN", VisibilityPath)
+    self:UnregisterEvent("SPELL_UPDATE_USABLE", VisibilityPath)
     self:UnregisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath)
     self:UnregisterEvent("SPELLS_CHANGED", VisibilityPath)
   end

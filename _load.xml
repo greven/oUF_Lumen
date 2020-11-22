@@ -6,7 +6,7 @@
   <Script file="api.lua" />
   <Script file="tags.lua" />
   <Script file="functions.lua" />
-  <Script file="shared.lua" />
   <Include file="elements\_elements.xml" />
+  <Script file="shared.lua" />
   <Include file="units\_units.xml" />
 </Ui>

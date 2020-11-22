@@ -44,10 +44,10 @@ cfg.roleIconColor = {
 
 -- Healing specs
 cfg.healingSpecs = {
-  "Restoration",
-  "Mistweaver",
+  "Discipline",
   "Holy",
-  "Discipline"
+  "Mistweaver",
+  "Restoration"
 }
 
 -- -----------------------------------
@@ -78,7 +78,7 @@ cfg.frames = {
     margin = 236, -- Margin between Player and Target Frames
     pos = {
       x = -322,
-      y = 290
+      y = 292
     },
     health = {
       margin = 2 -- Spacing between HP and Power Bars
@@ -672,7 +672,7 @@ cfg.units = {
         spellName = false
       }
     },
-    visibility = "[mod][harm][combat][group,noflying] show; hide;",
+    visibility = "[mod:alt][harm,nodead][combat][group,noflying] show; hide;",
     fader = {
       fadeInAlpha = 1,
       fadeInDuration = 0.3,
