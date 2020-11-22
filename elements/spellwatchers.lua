@@ -28,6 +28,7 @@ local function ShouldUpdateSpecSpells(self, event)
 
     if not element.__spells or PlayerSpec ~= GetPlayerSpec() or event ==
         "PLAYER_ENTERING_WORLD" or event == "PLAYER_LOGIN" then
+        PlayerSpec = GetPlayerSpec()
         return true
     else
         return false
@@ -36,7 +37,6 @@ end
 
 local function UpdateSpecSpells(self)
     local element = self.SpellWatchers
-    PlayerSpec = GetPlayerSpec()
     element.__spells = element.spells[PlayerClass][PlayerSpec]
 end
 
@@ -384,7 +384,9 @@ local function Visibility(self, event, unit)
     local element = self.SpellWatchers
     local shouldEnable
 
-    if ShouldUpdateSpecSpells(self, event) then UpdateSpecSpells(self) end
+    if ShouldUpdateSpecSpells(self, event) then
+        -- UpdateSpecSpells(self)
+    end
 
     if (UnitHasVehicleUI("player")) then
         shouldEnable = false

@@ -1,6 +1,7 @@
 local A, ns = ...
 
-local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
+                                       ns.G, ns.oUF
 
 local font = m.fonts.font
 
@@ -11,23 +12,27 @@ local frame = "arena"
 -- -----------------------------------
 
 local function CreateArena(self)
-  self.mystyle = frame
-  self.cfg = cfg.units[frame]
+    self.mystyle = frame
+    self.cfg = cfg.units[frame]
 
-  lum:SharedStyle(self, "secondary")
+    lum:SharedStyle(self, "secondary")
 
-  self:SetSize(self.cfg.width, self.cfg.height)
+    self:SetSize(self.cfg.width, self.cfg.height)
 
-  -- Texts
-  lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
-  self:Tag(self.Name, "[lum:level]  [lum:name]")
-  lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  self:Tag(self.Health.value, "[lum:hpvalue]")
-  lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
-  lum:CreatePowerValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
+    -- Texts
+    lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0,
+                         "LEFT", self.cfg.width - 75)
+    self:Tag(self.Name, "[lum:level]  [lum:name]")
+    lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0,
+                                "RIGHT")
+    self:Tag(self.Health.value, "[lum:hpvalue]")
+    lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT",
+                                  "BACKGROUND")
+    lum:CreatePowerValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0,
+                               0, "CENTER")
 
-  lum:CreateCastbar(self)
-  lum:CreateHealPrediction(self)
+    lum:CreateCastbar(self)
+    lum:CreateHealPrediction(self)
 end
 
 -- -----------------------------------
