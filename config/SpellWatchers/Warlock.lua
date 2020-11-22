@@ -10,7 +10,7 @@ watchers.WARLOCK = {
 
     },
     [267] = { -- Destruction
-        [1] = {spellID = 17962, glow = {type = "pixel"}}, -- Conflagrate
-        [2] = {spellID = 116858, glow = {type = "pixel"}} -- Chaos Bolt
+        [1] = {spellID = 17962, glow = "pixel"}, -- Conflagrate
+        [2] = {spellID = 116858, glow = "pixel"} -- Chaos Bolt
     }
 }

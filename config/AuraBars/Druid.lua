@@ -4,7 +4,10 @@ local filters = ns.filters
 
 filters.DRUID = {
     buffs = {
+        [106951 or "Berserk"] = true,
+        [50334 or "Berserk"] = true,
         [1850 or "Dash"] = true,
+        [22842 or "Frenzied Regeneration"] = true,
         [48518 or "Eclipse (Lunar)"] = true,
         [48517 or "Eclipse (Solar)"] = true,
         [192081 or "Iron Fur"] = true,
