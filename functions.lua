@@ -154,25 +154,26 @@ local function PostUpdatePowerColor(self, unit)
         self.glow:SetVertexColor(r, g, b, 0.9)
     end
 
+    -- Fix: Disable this for now till fixed
     -- Class Specific
-    if unit == "player" then
-        if G.playerClass == "DRUID" then
-            -- Moonkin Eclipse
-            if shouldCastWrath then
-                self:SetStatusBarColor(unpack(SOLAR_COLOR))
-            elseif shouldCastStarfire then
-                self:SetStatusBarColor(unpack(LUNAR_COLOR))
-            else
-                if eclipse == 1 then
-                    self:SetStatusBarColor(unpack(SOLAR_COLOR))
-                elseif eclipse == 2 then
-                    self:SetStatusBarColor(unpack(LUNAR_COLOR))
-                else
-                    self:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
-                end
-            end
-        end
-    end
+    -- if unit == "player" then
+    --     if G.playerClass == "DRUID" then
+    --         -- Moonkin Eclipse
+    --         if shouldCastWrath then
+    --             self:SetStatusBarColor(unpack(SOLAR_COLOR))
+    --         elseif shouldCastStarfire then
+    --             self:SetStatusBarColor(unpack(LUNAR_COLOR))
+    --         else
+    --             if eclipse == 1 then
+    --                 self:SetStatusBarColor(unpack(SOLAR_COLOR))
+    --             elseif eclipse == 2 then
+    --                 self:SetStatusBarColor(unpack(LUNAR_COLOR))
+    --             else
+    --                 self:SetStatusBarColor(unpack(LUNAR_POWER_COLOR))
+    --             end
+    --         end
+    --     end
+    -- end
 end
 
 local function PostUpdatePower(self, unit, cur, min, max)
@@ -221,8 +222,9 @@ function lum:CreatePowerBar(self, frameType)
     power.PostUpdate = PostUpdatePower
     self.Power = power
 
+    -- Fix: Disable this for now till fixed
     -- Class specific
-    SetDruidSolarPowerColor(self)
+    -- SetDruidSolarPowerColor(self)
 
     return self.Power
 end
