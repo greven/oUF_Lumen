@@ -1,7 +1,7 @@
 -- ------------------------------------------------------------------------
 -- > SpellWatchers: Watch class spells
 -- ------------------------------------------------------------------------
--- TODO: Global Cooldown swipe
+
 local _, ns = ...
 local oUF = ns.oUF
 local core, api = ns.core, ns.api
@@ -70,8 +70,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
     -- Track spell procs by auraID and alt spell ID
     if auraID then
-        local name, count, duration, expire, caster =
-            api:GetUnitAura("player", auraID, "HELPFUL")
+        local name, count, duration, expire, caster = api:GetUnitAura("player", auraID, "HELPFUL")
 
         if name and caster == "player" then
             isAuraActive = true
@@ -86,8 +85,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
         isUsable, notEnoughMana = IsUsableSpell(altID)
         start, duration = GetSpellCooldown(altID)
         count = GetSpellCount(altID)
-        charges, maxCharges, chargeStart, chargeDuration =
-            GetSpellCharges(altID)
+        charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(altID)
     end
 
     -- Set spell icon texture
