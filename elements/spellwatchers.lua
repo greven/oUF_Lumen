@@ -17,7 +17,7 @@ local _, PlayerClass = UnitClass("player")
 local pixelGlowConfig = {api:RaidColor("player"), 10, 0.25, 6, 1, -5, -5}
 
 local function UpdateSpec(element)
-  local PlayerSpec = api:GetCurrentSpecName()
+  local PlayerSpec = select(1, GetSpecializationInfo(GetSpecialization()))
   element.__spells = element.spells[PlayerClass][PlayerSpec]
 end
 
