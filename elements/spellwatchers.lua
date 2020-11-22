@@ -8,29 +8,31 @@ local core, api = ns.core, ns.api
 
 local LCG = LibStub("LibCustomGlow-1.0")
 
--- Pixel Glow (color, number, frequency, length, thickness, xOffset, yOffset, border, key)
-local pixelGlowConfig = {api:RaidColor("player"), 10, 0.25, 6, 1, -5, -5}
+local _, PlayerClass = UnitClass("player")
+local PlayerSpec = select(1, GetSpecializationInfo(GetSpecialization()))
 
 local ButtonGlow_Start = LCG.ButtonGlow_Start
 local ButtonGlow_Stop = LCG.ButtonGlow_Stop
 local PixelGlow_Start = LCG.PixelGlow_Start
 local PixelGlow_Stop = LCG.PixelGlow_Stop
 
-local _, PlayerClass = UnitClass("player")
-local PlayerSpec = select(1, GetSpecializationInfo(GetSpecialization()))
+-- Pixel Glow (color, number, frequency, length, thickness, xOffset, yOffset, border, key)
+local pixelGlowConfig = {api:RaidColor("player"), 10, 0.25, 6, 1, -5, -5}
 
 local function GetPlayerSpec()
     return select(1, GetSpecializationInfo(GetSpecialization()))
 end
 
 local function ShouldUpdateSpecSpells(self, event)
+    print("HERE")
     local element = self.SpellWatchers
-
     if not element.__spells or PlayerSpec ~= GetPlayerSpec() or event ==
         "PLAYER_ENTERING_WORLD" or event == "PLAYER_LOGIN" then
         PlayerSpec = GetPlayerSpec()
+        print("ShouldUpdateSpecSpells", true)
         return true
     else
+        print("ShouldUpdateSpecSpells", false)
         return false
     end
 end
@@ -384,9 +386,7 @@ local function Visibility(self, event, unit)
     local element = self.SpellWatchers
     local shouldEnable
 
-    if ShouldUpdateSpecSpells(self, event) then
-        -- UpdateSpecSpells(self)
-    end
+    if ShouldUpdateSpecSpells(self, event) then UpdateSpecSpells(self) end
 
     if (UnitHasVehicleUI("player")) then
         shouldEnable = false
@@ -442,7 +442,6 @@ do
         self:RegisterEvent("UNIT_AURA", Path)
         self:RegisterEvent("UNIT_POWER_UPDATE", Path)
         self:RegisterEvent("SPELL_UPDATE_COOLDOWN", Path, true)
-        self:RegisterEvent("SPELL_UPDATE_USABLE", Path, true)
 
         self.SpellWatchers.__isEnabled = true
         ForceUpdate(element)
@@ -452,7 +451,6 @@ do
         self:UnregisterEvent("UNIT_AURA", Path)
         self:UnregisterEvent("UNIT_POWER_UPDATE", Path)
         self:UnregisterEvent("SPELL_UPDATE_COOLDOWN", Path)
-        self:UnregisterEvent("SPELL_UPDATE_USABLE", Path)
 
         local element = self.SpellWatchers
         for i = 1, #element do element[i]:Hide() end
@@ -473,8 +471,8 @@ local function Enable(self, unit)
 
         self:RegisterEvent("PLAYER_ENTERING_WORLD", VisibilityPath, true)
         self:RegisterEvent("PLAYER_LOGIN", VisibilityPath, true)
-        self:RegisterEvent("PLAYER_TALENT_UPDATE", UpdateSpecSpells, true)
-        self:RegisterEvent("SPELLS_CHANGED", UpdateSpecSpells, true)
+        self:RegisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath, true)
+        self:RegisterEvent("SPELLS_CHANGED", VisibilityPath, true)
 
         return true
     end
@@ -484,12 +482,11 @@ local function Disable(self)
     if (self.SpellWatchers) then
         self:RegisterEvent("PLAYER_ENTERING_WORLD", VisibilityPath)
         self:RegisterEvent("PLAYER_LOGIN", VisibilityPath)
+        self:UnregisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath)
+        self:UnregisterEvent("SPELLS_CHANGED", VisibilityPath)
         self:UnregisterEvent("UNIT_AURA", VisibilityPath)
         self:UnregisterEvent("UNIT_POWER_UPDATE", VisibilityPath)
         self:UnregisterEvent("SPELL_UPDATE_COOLDOWN", VisibilityPath)
-        self:UnregisterEvent("SPELL_UPDATE_USABLE", VisibilityPath)
-        self:UnregisterEvent("PLAYER_TALENT_UPDATE", VisibilityPath)
-        self:UnregisterEvent("SPELLS_CHANGED", VisibilityPath)
     end
 end
 
