@@ -173,23 +173,6 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
         return
     end
 
-    -- Check if spell is usable (OOM, etc.)
-    if isUsable then
-        button.icon:SetVertexColor(1.0, 1.0, 1.0)
-        -- Pixel Glow
-        if not auraID then
-            if not expirationTime and (glow and glow == "pixel") then
-                PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
-            else
-                PixelGlow_Stop(button.glow)
-            end
-        end
-    else
-        button.icon:SetVertexColor(0.2, 0.2, 0.2)
-        PixelGlow_Stop(button.glow)
-        if notEnoughMana then button.icon:SetVertexColor(0.2, 0.3, 1.0) end
-    end
-
     -- Cooldown
     if button.cd then
         if charges and charges > 0 and charges < maxCharges then
@@ -208,6 +191,23 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
             expirationTime = nil
             button.cd:Hide()
         end
+    end
+
+    -- Check if spell is usable (OOM, etc.)
+    if isUsable then
+        button.icon:SetVertexColor(1.0, 1.0, 1.0)
+        -- Pixel Glow
+        if not auraID then
+            if not expirationTime and (glow and glow == "pixel") then
+                PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
+            else
+                PixelGlow_Stop(button.glow)
+            end
+        end
+    else
+        button.icon:SetVertexColor(0.2, 0.2, 0.2)
+        PixelGlow_Stop(button.glow)
+        if notEnoughMana then button.icon:SetVertexColor(0.2, 0.3, 1.0) end
     end
 
     if (element.PostUpdateSpell) then
