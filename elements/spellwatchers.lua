@@ -25,6 +25,16 @@ local function GetPlayerSpec()
     return select(1, GetSpecializationInfo(GetSpecialization()))
 end
 
+local function IsSpellKnown(spellID)
+    local isPlayerSpell = IsPlayerSpell(spellID)
+    if isPlayerSpell then return true end
+
+    -- Sometimes IsPlayerSpell returns false negatives.
+    -- Do another check with GetSpellInfo
+    local spell = GetSpellInfo(spellID)
+    return spell == GetSpellInfo(spell)
+end
+
 local function ShouldUpdateSpecSpells(self, event)
     local element = self.SpellWatchers
     if not element.__spells or PlayerSpec ~= GetPlayerSpec() or event ==
@@ -66,13 +76,11 @@ end
 
 local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     local element = button:GetParent()
-
-    local isSpellKnown = IsPlayerSpell(spellID)
+    local isSpellKnown = IsSpellKnown(spellID)
     local isUsable, notEnoughMana = IsUsableSpell(spellID)
     local start, duration = GetSpellCooldown(spellID)
     local count = GetSpellCount(spellID)
-    local charges, maxCharges, chargeStart, chargeDuration =
-        GetSpellCharges(spellID)
+    local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
 
     local expirationTime
     local isAuraActive = false
@@ -84,14 +92,13 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
         if name and caster == "player" then
             isAuraActive = true
-
             if altID then isAltSpellActive = true end
         end
     end
 
     -- If Alt spell is active then track the alt spellID instead
     if isAuraActive and isAltSpellActive then
-        isSpellKnown = IsPlayerSpell(altID)
+        isSpellKnown = IsSpellKnown(altID)
         isUsable, notEnoughMana = IsUsableSpell(altID)
         start, duration = GetSpellCooldown(altID)
         count = GetSpellCount(altID)
@@ -273,6 +280,7 @@ local function UpdateSpellButton(self, event, index)
     local glow = watcher.glow
 
     if spellID then
+
         local button = element[index]
 
         if not button then
@@ -303,6 +311,7 @@ end
 local function UpdateSpells(self, event, unit)
     local watchers = self.SpellWatchers
     if watchers and watchers.num > 0 then
+
         --[[ Callback: SpellWatchers:PreUpdate(unit)
 		Called before the element has been updated.
 
