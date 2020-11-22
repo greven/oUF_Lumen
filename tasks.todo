@@ -1,8 +1,13 @@
 general:
   ✔ Refactor @done(20-10-26 00:20)
   ✔ Add scale back to frames (player, party, target, etc) @done(20-10-25 20:12)
+  ☐ Shift player plate spell watchers when player has no Class power?
+
+power:
+  ☐ Bugs for moonking eclipse coloring, when power is full, it doesn't change color correctly according to eclipse state @bug
 
 party:
+  ☐ Refactor code like player frames
   ✔ Health is showing as depleted when 100% @bug @done(20-10-22 22:01)
   ☐ Finish the party frames
     ✔ Add debuffs @done(20-10-25 20:12)
@@ -19,5 +24,12 @@ auras:
   ☐ Update bar timers filters for all classes @today
 
 nameplates:
+  ☐ Refactor
+  ✔ Try to improve personal resource nameplate to show Class power and power? @done(20-11-15 12:45)
   ✔ Icon backdrop border not showing @done(20-10-26 00:12)
   ✔ Paladin holy power not showing on nameplate @done(20-10-26 00:12)
+
+spell watchers:
+  ☐ Mimic glow like on the default Actionbar
+  ☐ Maybe add ants animation when spell should be cast ? (resource spenders like Starfall)
+  ☐ Add tooltips when out of combat?

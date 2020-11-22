@@ -16,6 +16,9 @@ externals:
   embeds/oUF_ArtifactPower:
     url: git://github.com/Rainrider/oUF_ArtifactPower
     tag: latest
+  embeds/LibCustomGlow:
+    url: git://github.com/Stanzilla/LibCustomGlow
+    tag: latest
 
 manual-changelog:
   filename: CHANGELOG.md

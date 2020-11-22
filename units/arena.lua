@@ -1,65 +1,45 @@
 local A, ns = ...
 
-local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m, ns.G, ns.oUF
+local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
+                                       ns.G, ns.oUF
 
 local font = m.fonts.font
 
 local frame = "arena"
 
--- ------------------------------------------------------------------------
--- > ARENA UNIT SPECIFIC FUNCTiONS
--- ------------------------------------------------------------------------
-
--- Post Health Update
-local PostUpdateHealth = function(health, unit, min, max)
-  local self = health.__owner
-
-  if cfg.units[frame].health.gradientColored then
-    local color = CreateColor(oUF:ColorGradient(min, max, 1, 0, 0, 1, 1, 0, unpack(api:RaidColor(unit))))
-    health:SetStatusBarColor(color:GetRGB())
-  end
-
-  -- Class colored text
-  if cfg.units[frame].health.classColoredText then
-    self.Name:SetTextColor(unpack(api:RaidColor(unit)))
-  end
-end
-
 -- -----------------------------------
--- > TARGET STYLE
+-- > Arena Style
 -- -----------------------------------
 
-local createStyle = function(self)
-  self.mystyle = frame
-  self.cfg = cfg.units[frame]
+local function CreateArena(self)
+    self.mystyle = frame
+    self.cfg = cfg.units[frame]
 
-  lum:SharedStyle(self, "secondary")
+    lum:SharedStyle(self, "secondary")
 
-  self:SetSize(self.cfg.width, self.cfg.height)
+    self:SetSize(self.cfg.width, self.cfg.height)
 
-  -- Texts
-  lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0, "LEFT", self.cfg.width - 75)
-  self:Tag(self.Name, "[lum:level]  [lum:name]")
-  lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0, "RIGHT")
-  self:Tag(self.Health.value, "[lum:hpvalue]")
-  lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT", "BACKGROUND")
-  lum:CreatePowerValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0, 0, "CENTER")
+    -- Texts
+    lum:CreateNameString(self, font, cfg.fontsize + 2, "THINOUTLINE", 4, 0,
+                         "LEFT", self.cfg.width - 75)
+    self:Tag(self.Name, "[lum:level]  [lum:name]")
+    lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4, 0,
+                                "RIGHT")
+    self:Tag(self.Health.value, "[lum:hpvalue]")
+    lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, 0, "LEFT",
+                                  "BACKGROUND")
+    lum:CreatePowerValueString(self, font, cfg.fontsize - 4, "THINOUTLINE", 0,
+                               0, "CENTER")
 
-  -- Health & Power Updates
-  self.Health.PostUpdate = PostUpdateHealth
-
-  -- Castbar
-  lum:CreateCastbar(self)
-
-  -- Heal Prediction
-  lum:CreateHealPrediction(self)
+    lum:CreateCastbar(self)
+    lum:CreateHealPrediction(self)
 end
 
 -- -----------------------------------
 -- > SPAWN UNIT
 -- -----------------------------------
 -- if cfg.units[frame].show then
---   oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), createStyle)
+--   oUF:RegisterStyle(A..frame:gsub("^%l", string.upper), CreateArena)
 --   oUF:SetActiveStyle(A..frame:gsub("^%l", string.upper))
 --
 --   for index = 1, MAX_BOSS_FRAMES or 5 do
