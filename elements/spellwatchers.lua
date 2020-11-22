@@ -24,7 +24,6 @@ local function GetPlayerSpec()
 end
 
 local function ShouldUpdateSpecSpells(self, event)
-    print("HERE")
     local element = self.SpellWatchers
     if not element.__spells or PlayerSpec ~= GetPlayerSpec() or event ==
         "PLAYER_ENTERING_WORLD" or event == "PLAYER_LOGIN" then
@@ -61,17 +60,7 @@ local function OnUpdateSpellButton(button, elapsed)
     if button.timeLeft then
         button.timeLeft = max(button.timeLeft - elapsed, 0)
 
-        if button.timeLeft and button.timeLeft > 0 then
-            button.time:SetFormattedText(core:FormatTime(button.timeLeft))
-            if button.timeLeft < 6 then
-                button.time:SetTextColor(0.9, 0.05, 0.05)
-            elseif button.timeLeft < 60 then
-                button.time:SetTextColor(1, 1, 0.6)
-            else
-                button.time:SetTextColor(0.1, 0.6, 1.0)
-            end
-        else
-            button.time:SetText()
+        if button.timeLeft and button.timeLeft <= 0 then
             button.icon:SetDesaturated(false)
         end
     end
@@ -221,8 +210,10 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
     -- OnUpdate
     if expirationTime and expirationTime > 0 then
         button.timeLeft = expirationTime - GetTime()
+        button:SetScript("OnUpdate", OnUpdateSpellButton)
+    else
+        button:SetScript("OnUpdate", nil)
     end
-    button:SetScript("OnUpdate", OnUpdateSpellButton)
 
     if (element.PostUpdateSpell) then
         element:PostUpdateSpell(button, expirationTime)
@@ -240,7 +231,8 @@ local function CreateSpellButton(element, index)
     local size = element.size or maxSize
     button:SetSize(size, size)
 
-    local cd = CreateFrame("Cooldown", nil, button, "CooldownFrameTemplate")
+    local cd = CreateFrame("Cooldown", "$spellWatchersCooldown", button,
+                           "CooldownFrameTemplate")
     cd:SetFrameLevel(cd:GetParent():GetFrameLevel())
     cd:SetAllPoints()
 

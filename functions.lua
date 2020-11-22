@@ -532,6 +532,48 @@ end
 -- > Spell Watchers (Player Plate)
 -- -----------------------------------
 
+local function OnUpdateSpellButton(button, elapsed)
+    if button.timeLeft then
+        button.timeLeft = max(button.timeLeft - elapsed, 0)
+
+        if button.timeLeft and button.timeLeft > 0 then
+            button.time:SetFormattedText(core:FormatTime(button.timeLeft))
+            if button.timeLeft < 6 then
+                button.time:SetTextColor(0.9, 0.05, 0.05)
+            elseif button.timeLeft < 60 then
+                button.time:SetTextColor(1, 1, 0.6)
+            else
+                button.time:SetTextColor(0.1, 0.6, 1.0)
+            end
+        else
+            button.time:SetText()
+            button.icon:SetDesaturated(false)
+        end
+    end
+end
+
+local function PostUpdateSpellWatcher(button, expirationTime)
+    if button.timeLeft then
+        button.timeLeft = max(button.timeLeft - elapsed, 0)
+
+        if button.timeLeft and button.timeLeft > 0 then
+            button.time:SetFormattedText(core:FormatTime(button.timeLeft))
+            if button.timeLeft < 6 then
+                button.time:SetTextColor(0.9, 0.05, 0.05)
+            elseif button.timeLeft < 60 then
+                button.time:SetTextColor(1, 1, 0.6)
+            else
+                button.time:SetTextColor(0.1, 0.6, 1.0)
+            end
+        else
+            button.time:SetText()
+        end
+        button:SetScript("OnUpdate", OnUpdateSpellButton)
+    else
+        button:SetScript("OnUpdate", nil)
+    end
+end
+
 local function PostCreateSpellWatcher(self, button)
     api:CreateDropShadow(button, 4, 4)
 
@@ -565,8 +607,9 @@ function lum:CreateSpellWatchers(self)
     SpellWatchers:SetPoint("BOTTOM", self, "TOP", 0, 0)
     SpellWatchers.gap = 4
     SpellWatchers.spells = watchers
-    SpellWatchers.disableCooldown = true
+    SpellWatchers.disableCooldown = false
     SpellWatchers.PostCreateButton = PostCreateSpellWatcher
+    SpellWatchers.PostUpdateSpell = PostUpdateSpellWatcher
     self.SpellWatchers = SpellWatchers
 end
 
