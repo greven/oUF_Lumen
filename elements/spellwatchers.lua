@@ -17,7 +17,7 @@ local PixelGlow_Start = LCG.PixelGlow_Start
 local PixelGlow_Stop = LCG.PixelGlow_Stop
 
 local _, PlayerClass = UnitClass("player")
-local PlayerSpec = GetPlayerSpec()
+local PlayerSpec = select(1, GetSpecializationInfo(GetSpecialization()))
 
 local function GetPlayerSpec()
     return select(1, GetSpecializationInfo(GetSpecialization()))
