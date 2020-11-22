@@ -4,8 +4,10 @@ local filters = ns.filters
 
 filters.PRIEST = {
   buffs = {
+    [200183 or "Apotheosis"] = true,
     [194384 or "Atonement"] = true,
     [17 or "Power Word: Shield"] = true,
+    [139 or "Renew"] = true,
     [15286 or "Vampiric Embrace"] = true,
     [194249 or "Voidform"] = true
   },
