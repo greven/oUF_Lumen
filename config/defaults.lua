@@ -122,7 +122,10 @@ cfg.elements = {
             fadeOutDelay = 0.5
         }
     },
-    spellwatchers = {show = true},
+    spellwatchers = {
+        show = true,
+        useCustomText = true -- Set custom cooldown and count text
+    },
     altpowerbar = {show = true},
     experiencebar = {
         show = true,

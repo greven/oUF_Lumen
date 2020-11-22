@@ -28,10 +28,8 @@ local function ShouldUpdateSpecSpells(self, event)
     if not element.__spells or PlayerSpec ~= GetPlayerSpec() or event ==
         "PLAYER_ENTERING_WORLD" or event == "PLAYER_LOGIN" then
         PlayerSpec = GetPlayerSpec()
-        print("ShouldUpdateSpecSpells", true)
         return true
     else
-        print("ShouldUpdateSpecSpells", false)
         return false
     end
 end
@@ -53,16 +51,6 @@ local function SetPosition(element, index)
         button:SetPoint("LEFT", element[index - 1], "RIGHT", gap, 0)
     else
         button:SetPoint("TOPLEFT", element, 0, 0)
-    end
-end
-
-local function OnUpdateSpellButton(button, elapsed)
-    if button.timeLeft then
-        button.timeLeft = max(button.timeLeft - elapsed, 0)
-
-        if button.timeLeft and button.timeLeft <= 0 then
-            button.icon:SetDesaturated(false)
-        end
     end
 end
 
@@ -133,7 +121,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
         button.count:SetTextColor(1, 1, 1)
     elseif start and duration > 1.5 then
         button.count:SetTextColor(1, 1, 1)
-        button.icon:SetDesaturated(true)
+        if element.disableCooldown then button.icon:SetDesaturated(true) end
     else
         button.icon:SetDesaturated(false)
 
@@ -207,23 +195,13 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
         end
     end
 
-    -- OnUpdate
-    if expirationTime and expirationTime > 0 then
-        button.timeLeft = expirationTime - GetTime()
-        button:SetScript("OnUpdate", OnUpdateSpellButton)
-    else
-        button:SetScript("OnUpdate", nil)
-    end
-
     if (element.PostUpdateSpell) then
         element:PostUpdateSpell(button, expirationTime)
     end
 end
 
 local function CreateSpellButton(element, index)
-    local button = CreateFrame("Button",
-                               element:GetDebugName() .. "Button" .. index,
-                               element)
+    local button = CreateFrame("Button", element:GetDebugName() .. "Button" .. index, element)
     button:RegisterForClicks("AnyUp")
 
     local num, width = element.num, element:GetWidth()
@@ -231,8 +209,7 @@ local function CreateSpellButton(element, index)
     local size = element.size or maxSize
     button:SetSize(size, size)
 
-    local cd = CreateFrame("Cooldown", "$spellWatchersCooldown", button,
-                           "CooldownFrameTemplate")
+    local cd = CreateFrame("Cooldown", "$spellWatchersCooldown", button, "CooldownFrameTemplate")
     cd:SetFrameLevel(cd:GetParent():GetFrameLevel())
     cd:SetAllPoints()
 
@@ -244,9 +221,8 @@ local function CreateSpellButton(element, index)
     countFrame:SetAllPoints(button)
     countFrame:SetFrameLevel(cd:GetFrameLevel() + 1)
 
-    local count =
-        countFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
-    count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", 0, 0)
+    local count = countFrame:CreateFontString(nil, "OVERLAY", "NumberFontNormal")
+    count:SetPoint("BOTTOMRIGHT", countFrame, "BOTTOMRIGHT", -2, 2)
 
     local overlay = button:CreateTexture(nil, "OVERLAY")
     overlay:SetAllPoints()
@@ -333,8 +309,7 @@ local function UpdateSpells(self, event, unit)
             local button = watchers[index]
 
             if (not button) then
-                button = (watchers.CreateButton or CreateSpellButton)(watchers,
-                                                                      index)
+                button = (watchers.CreateButton or CreateSpellButton)(watchers, index)
                 table.insert(watchers, button)
             end
 

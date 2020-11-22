@@ -549,27 +549,17 @@ local function OnUpdateSpellButton(button, elapsed)
             button.time:SetText()
             button.icon:SetDesaturated(false)
         end
+    else
+        button.time:SetText()
     end
 end
 
-local function PostUpdateSpellWatcher(button, expirationTime)
-    if button.timeLeft then
-        button.timeLeft = max(button.timeLeft - elapsed, 0)
-
-        if button.timeLeft and button.timeLeft > 0 then
-            button.time:SetFormattedText(core:FormatTime(button.timeLeft))
-            if button.timeLeft < 6 then
-                button.time:SetTextColor(0.9, 0.05, 0.05)
-            elseif button.timeLeft < 60 then
-                button.time:SetTextColor(1, 1, 0.6)
-            else
-                button.time:SetTextColor(0.1, 0.6, 1.0)
-            end
-        else
-            button.time:SetText()
-        end
+local function PostUpdateSpellWatcher(self, button, expirationTime)
+    if expirationTime and expirationTime > 0 then
+        button.timeLeft = expirationTime - GetTime()
         button:SetScript("OnUpdate", OnUpdateSpellButton)
     else
+        button.time:SetText()
         button:SetScript("OnUpdate", nil)
     end
 end
@@ -577,19 +567,21 @@ end
 local function PostCreateSpellWatcher(self, button)
     api:CreateDropShadow(button, 4, 4)
 
-    local count = button.count
-    count:ClearAllPoints()
-    count:SetJustifyH("RIGHT")
-    count:SetPoint("BOTTOM", button, "TOP", 1, 2)
-    count:SetFont(STANDARD_TEXT_FONT, 14, "THICKOUTLINE")
+    if cfg.elements.spellwatchers.useCustomText then
+        local count = button.count
+        count:ClearAllPoints()
+        count:SetJustifyH("RIGHT")
+        count:SetPoint("BOTTOM", button, "TOP", 1, 2)
+        count:SetFont(STANDARD_TEXT_FONT, 14, "THICKOUTLINE")
 
-    button.time = button:CreateFontString(nil, "OVERLAY")
-    button.time:SetFont(m.fonts.font, 16, "THINOUTLINE")
-    button.time:SetPoint("CENTER", button, 0, 0)
-    button.time:SetTextColor(1, 1, 0.65)
-    button.time:SetShadowOffset(1, -1)
-    button.time:SetShadowColor(0, 0, 0, 1)
-    button.time:SetJustifyH("CENTER")
+        button.time = button:CreateFontString(nil, "OVERLAY")
+        button.time:SetFont(m.fonts.font, 16, "THINOUTLINE")
+        button.time:SetPoint("CENTER", button, 0, 0)
+        button.time:SetTextColor(1, 1, 0.65)
+        button.time:SetShadowOffset(1, -1)
+        button.time:SetShadowColor(0, 0, 0, 1)
+        button.time:SetJustifyH("CENTER")
+    end
 
     button.overlay:SetTexture(m.textures.button_border)
     -- button.overlay:SetVertexColor(0.05, 0.05, 0.05) -- FIX: Not setting the color...
@@ -599,17 +591,17 @@ function lum:CreateSpellWatchers(self)
     if not cfg.elements.spellwatchers.show then return end
 
     local frame = self.mystyle
-    local cfg = cfg.units[frame]
 
-    -- TODO: Adjust the margin on Visilibity change?
     local SpellWatchers = CreateFrame("Frame", nil, self)
-    SpellWatchers:SetSize(cfg.width, cfg.width / 5 + 4)
+    SpellWatchers:SetSize(cfg.units[frame].width, cfg.units[frame].width / 5 + 4)
     SpellWatchers:SetPoint("BOTTOM", self, "TOP", 0, 0)
     SpellWatchers.gap = 4
     SpellWatchers.spells = watchers
-    SpellWatchers.disableCooldown = false
     SpellWatchers.PostCreateButton = PostCreateSpellWatcher
-    SpellWatchers.PostUpdateSpell = PostUpdateSpellWatcher
+    if cfg.elements.spellwatchers.useCustomText then
+        SpellWatchers.disableCooldown = true
+        SpellWatchers.PostUpdateSpell = PostUpdateSpellWatcher
+    end
     self.SpellWatchers = SpellWatchers
 end
 
