@@ -10,7 +10,7 @@ watchers.PRIEST = {
         [4] = {spellID = 214621}, -- Schism
         [5] = {spellID = 129250} -- Power Word: Solace
     },
-    [65] = { -- Holy
+    [257] = { -- Holy
         [1] = {spellID = 2061, auraID = 114255, glow = {type = "button"}}, -- Flash Heal / Surge of Light
         [2] = {spellID = 2050}, -- Holy Word: Serenity
         [3] = {spellID = 34861}, -- Holy Word: Sanctify
