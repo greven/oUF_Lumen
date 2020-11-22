@@ -36,8 +36,16 @@ local function ShouldUpdateSpecSpells(self, event)
     end
 end
 
+local function ResetSpellWatchers(element)
+    for i = 1, #element do
+        element[i].icon:SetTexture()
+        element[i]:Hide()
+    end
+end
+
 local function UpdateSpecSpells(self)
     local element = self.SpellWatchers
+    ResetSpellWatchers(element)
     element.__spells = element.spells[PlayerClass][PlayerSpec]
 end
 
@@ -114,7 +122,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
         button.count:SetTextColor(1, 1, 1)
         button.icon:SetDesaturated(false)
 
-        if not auraID and (glow and glow.type == "pixel") then
+        if not auraID and (glow and glow == "pixel") then
             PixelGlow_Stop(button.glow)
         end
     elseif count and count > 0 then
@@ -127,7 +135,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
         if charges == maxCharges then
             button.count:SetTextColor(1, 0, 0)
-            if not auraID and (glow and glow.type == "pixel") then
+            if not auraID and (glow and glow == "pixel") then
                 PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
             end
         end
@@ -135,19 +143,19 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
     -- Button Overlay Glow for procs
     if isAuraActive then
-        if glow and glow.type == "button" then
+        if glow and glow == "button" then
             ButtonGlow_Start(button.glow)
         end
 
-        if glow and glow.type == "pixel" then
+        if glow and glow == "pixel" then
             PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
         end
     else
-        if auraID and (glow and glow.type == "button") then
+        if auraID and (glow and glow == "button") then
             ButtonGlow_Stop(button.glow)
         end
 
-        if auraID and (glow and glow.type == "pixel") then
+        if auraID and (glow and glow == "pixel") then
             PixelGlow_Stop(button.glow)
         end
     end
@@ -163,7 +171,7 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
         button.icon:SetVertexColor(1.0, 1.0, 1.0)
         -- Pixel Glow
         if not auraID then
-            if not expirationTime and (glow and glow.type == "pixel") then
+            if not expirationTime and (glow and glow == "pixel") then
                 PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
             else
                 PixelGlow_Stop(button.glow)
