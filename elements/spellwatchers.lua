@@ -150,6 +150,8 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
     -- Button Overlay Glow for procs
     if isAuraActive then
+        button.icon:SetDesaturated(false)
+
         if glow and glow == "button" then
             ButtonGlow_Start(button.glow)
         end
