@@ -1,3 +1,15 @@
+### Version 9.3.1:
+
+- Fixes
+
+### Version 9.3.0:
+
+- Major release for Shadowlands
+- Overhaul refactoring
+- Introduced the Player Plate unit
+- Optional SpellWatchers element
+- Swing bar (configurable per class)
+
 ### Version 9.2.0:
 
 - Refactoring

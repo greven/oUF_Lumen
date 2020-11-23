@@ -256,8 +256,7 @@ function lum:CreateAdditionalPower(self)
     local gap = -18
     local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
 
-    local AdditionalPower = CreateFrame("StatusBar", nil, self,
-                                        "BackdropTemplate")
+    local AdditionalPower = CreateFrame("StatusBar", nil, self, "BackdropTemplate")
     AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
     AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
     AdditionalPower:SetSize(self.cfg.width, self.cfg.additionalpower.height)
@@ -265,7 +264,7 @@ function lum:CreateAdditionalPower(self)
     AdditionalPower.frequentUpdates = true
 
     if cfg.units.player.power.show then
-        AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -16)
+        AdditionalPower:SetPoint("TOP", self.Health, "BOTTOM", 0, -14)
         api:SetBackdrop(AdditionalPower, 1.5, 1.5, 1.5, 1.5)
     else
         -- If power is not showing position the additional power below health

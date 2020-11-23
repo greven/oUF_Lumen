@@ -202,8 +202,9 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow, a
     -- Check if spell is usable (OOM, etc.)
     if isUsable then
         button.icon:SetVertexColor(1.0, 1.0, 1.0)
-        -- Pixel Glow
+        -- Glow for usable spells (enough power)
         if not auraID then
+            -- Note: Maybe check if glow is already applied and don't re-apply?
             if not expirationTime and (glow and glow == "pixel") then
                 PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
             else
