@@ -18,7 +18,7 @@ G.playerLevel = UnitLevel("player")
 G.playerClass = select(2, UnitClass("player"))
 G.playerColor = RAID_CLASS_COLORS[G.playerClass]
 
--- Hearthstone spells
+-- Hearthstone spells: https://www.wowhead.com/item=6948/hearthstone#shared-cooldown
 G.hearthstones = {
     8690, -- Hearthstone
     39937, -- There's No Place Like Home
