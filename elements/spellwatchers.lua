@@ -74,13 +74,14 @@ local function SetPosition(element, index)
     end
 end
 
-local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
+local function UpdateSpellState(button, spellID, auraID, altID, texture, glow, auraCount)
     local element = button:GetParent()
     local isSpellKnown = IsSpellKnown(spellID)
     local isUsable, notEnoughMana = IsUsableSpell(spellID)
     local start, duration = GetSpellCooldown(spellID)
     local count = GetSpellCount(spellID)
     local charges, maxCharges, chargeStart, chargeDuration = GetSpellCharges(spellID)
+    local currentAuraCount
 
     local expirationTime
     local isAuraActive = false
@@ -88,11 +89,12 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
     -- Track spell procs by auraID and alt spell ID
     if auraID then
-        local name, count, duration, expire, caster = api:GetUnitAura("player", auraID, "HELPFUL")
+        local name, count, _, _, caster = api:GetUnitAura("player", auraID, "HELPFUL")
 
         if name and caster == "player" then
             isAuraActive = true
             if altID then isAltSpellActive = true end
+            currentAuraCount = count
         end
     end
 
@@ -150,6 +152,12 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
 
     -- Button Overlay Glow for procs
     if isAuraActive then
+        if auraCount and currentAuraCount < auraCount then
+            ButtonGlow_Stop(button.glow)
+            PixelGlow_Stop(button.glow)
+            return
+        end
+
         button.icon:SetDesaturated(false)
 
         if glow and glow == "button" then
@@ -160,13 +168,9 @@ local function UpdateSpellState(button, spellID, auraID, altID, texture, glow)
             PixelGlow_Start(button.glow, unpack(pixelGlowConfig))
         end
     else
-        if auraID and (glow and glow == "button") then
             ButtonGlow_Stop(button.glow)
-        end
-
-        if auraID and (glow and glow == "pixel") then
             PixelGlow_Stop(button.glow)
-        end
+
     end
 
     -- If spell is not learned, fade it
@@ -280,6 +284,7 @@ local function UpdateSpellButton(self, event, index)
     local auraID = watcher.auraID
     local altID = watcher.altID
     local glow = watcher.glow
+    local auraCount = watcher.auraCount
 
     if spellID then
 
@@ -302,7 +307,7 @@ local function UpdateSpellButton(self, event, index)
         button:SetID(index)
         button:Show()
 
-        UpdateSpellState(button, spellID, auraID, altID, true, glow)
+        UpdateSpellState(button, spellID, auraID, altID, true, glow, auraCount)
 
         if (element.PostUpdateButton) then
             element:PostUpdateButton(button)
