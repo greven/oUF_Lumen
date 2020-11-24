@@ -256,7 +256,8 @@ function lum:CreateAdditionalPower(self)
     local gap = -18
     local r, g, b = unpack(oUF.colors.power[ADDITIONAL_POWER_BAR_NAME])
 
-    local AdditionalPower = CreateFrame("StatusBar", nil, self, "BackdropTemplate")
+    local AdditionalPower = CreateFrame("StatusBar", nil, self,
+                                        "BackdropTemplate")
     AdditionalPower:SetStatusBarTexture(m.textures.status_texture)
     AdditionalPower:GetStatusBarTexture():SetHorizTile(false)
     AdditionalPower:SetSize(self.cfg.width, self.cfg.additionalpower.height)
@@ -1110,7 +1111,7 @@ end
 
 -- oUF_ArtifactPower
 function lum:CreateArtifactPowerBar(self)
-    if cfg.elements.artifactpowerbar.show then
+    if cfg.elements.artifactpowerbar.show and G.PlayerLevel < 51 then
         local ArtifactPower = CreateFrame("StatusBar", nil, self)
         ArtifactPower:SetStatusBarTexture(m.textures.status_texture)
         ArtifactPower:SetStatusBarColor(217 / 255, 205 / 255, 145 / 255)
