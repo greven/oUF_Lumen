@@ -1111,7 +1111,7 @@ end
 
 -- oUF_ArtifactPower
 function lum:CreateArtifactPowerBar(self)
-    if cfg.elements.artifactpowerbar.show and G.PlayerLevel < 51 then
+    if cfg.elements.artifactpowerbar.show and G.playerLevel < 51 then
         local ArtifactPower = CreateFrame("StatusBar", nil, self)
         ArtifactPower:SetStatusBarTexture(m.textures.status_texture)
         ArtifactPower:SetStatusBarColor(217 / 255, 205 / 255, 145 / 255)
