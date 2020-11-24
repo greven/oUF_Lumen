@@ -87,7 +87,7 @@ end
 -- Castbar generator
 function lum:CreateCastbar(self)
     local unit = self.mystyle
-    print(unit)
+
     if not unit or not cfg.units[unit].castbar.enable then return end
 
     local backdropColor = cfg.elements.castbar.backdrop.color
