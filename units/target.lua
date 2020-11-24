@@ -39,7 +39,7 @@ local function CreateTarget(self)
                      "RIGHT", "DOWN", true)
 
     lum:SetBarTimerAuras(self, frame, 12, 12, 24, 2, "BOTTOMLEFT", self,
-                         "TOPLEFT", -2, cfg.frames.secondary.height + 16,
+                         "TOPLEFT", -2, cfg.frames.secondary.height + 20,
                          "BOTTOMLEFT", "UP")
 end
 
