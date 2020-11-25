@@ -561,7 +561,7 @@ cfg.units = {
             a2 = "BOTTOM",
             af = "UIParent",
             x = 0,
-            y = cfg.frames.main.pos.y + 4
+            y = cfg.frames.main.pos.y
         },
         health = {
             show = true,

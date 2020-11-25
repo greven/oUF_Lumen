@@ -1,3 +1,7 @@
+### Version 9.3.2:
+
+- Tweak some positioning
+
 ### Version 9.3.1:
 
 - Fixes

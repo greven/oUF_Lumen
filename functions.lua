@@ -512,8 +512,7 @@ function lum:SetBarTimerAuras(self, frame, numAuras, numRows, size, spacing,
     end
 
     local barTimers = lum:CreateBarTimer(self, numAuras, numRows, size, spacing)
-    barTimers:SetPoint("BOTTOMLEFT", self, "TOPLEFT", -2,
-                       cfg.frames.secondary.height + 16)
+    barTimers:SetPoint(anchor, parent, parentAnchor, posX, posY)
     barTimers.initialAnchor = "BOTTOMLEFT"
     barTimers["growth-y"] = "UP"
 
