@@ -744,28 +744,30 @@ end
 -- -----------------------------------
 
 local function AltPowerPostUpdate(self, unit, cur, min, max)
-    if self.unit ~= unit then return end
+    if self.__owner.unit ~= unit then return end
 
-    local _, r, g, b = _G.UnitAlternatePowerTextureInfo(self.__owner.unit, 2)
-
-    if (r == 1 and g == 1 and b == 1) or not b then r, g, b = 1, 0, 0 end
-
+    local _, r, g, b = GetUnitPowerBarTextureInfoByID(self.__barID, 2)
+    if (r == 1 and g == 1 and b == 1) or not b then r, g, b = .2, .8, 1 end
     self:SetStatusBarColor(r, g, b)
+
+    if cur == max then return end
+
     if cur < max then
         if self.isMouseOver then
-            self.Text:SetFormattedText("%s / %s - %d%%", core:ShortNumber(cur),
-                                       core:ShortNumber(max),
-                                       core:NumberToPerc(cur, max))
-        elseif cur > 0 then
-            self.Text:SetFormattedText("%s", core:ShortNumber(cur))
+            self.Text:SetFormattedText("(%s%%) %s / %s",
+                                       core:NumberToPerc(cur, max),
+                                       core:ShortNumber(cur),
+                                       core:ShortNumber(max))
         else
-            self.Text:SetText(nil)
+            self.Text:SetText()
         end
+    elseif cur > 0 then
+        self.Text:SetFormattedText("%s", core:ShortNumber(cur))
     else
         if self.isMouseOver then
             self.Text:SetFormattedText("%s", core:ShortNumber(cur))
         else
-            self.Text:SetText(nil)
+            self.Text:SetText()
         end
     end
 end
@@ -789,20 +791,23 @@ function lum:CreateAlternativePower(self)
     if cfg.elements.altpowerbar.show then
         local AlternativePower = CreateFrame("StatusBar", nil, self)
         AlternativePower:SetStatusBarTexture(m.textures.status_texture)
-        api:SetBackdrop(AlternativePower, 2, 2, 2, 2)
-        AlternativePower:SetHeight(16)
+        AlternativePower:SetHeight(18)
         AlternativePower:SetWidth(200)
         AlternativePower:SetPoint("CENTER", "UIParent", "CENTER", 0, 350)
+        AlternativePower:GetStatusBarTexture():SetHorizTile(false)
+        AlternativePower:SetStatusBarColor(.2, .8, 1)
+        AlternativePower.colorPower = true
+        api:SetBackdrop(AlternativePower, 2, 2, 2, 2, {0, 0, 0, 0.9})
 
-        AlternativePower.Text = api:CreateFontstring(AlternativePower, font, 10,
+        local bg = AlternativePower:CreateTexture(nil, "BORDER")
+        bg:SetTexture(m.textures.bg_texture)
+        bg:SetAllPoints()
+        bg:SetAlpha(0.2)
+        AlternativePower.bg = bg
+
+        AlternativePower.Text = api:CreateFontstring(AlternativePower, font, 11,
                                                      "THINOUTLINE")
         AlternativePower.Text:SetPoint("CENTER", 0, 0)
-
-        local AlternativePowerBG = AlternativePower:CreateTexture(nil, "BORDER")
-        AlternativePowerBG:SetAllPoints()
-        AlternativePowerBG:SetAlpha(0.3)
-        AlternativePowerBG:SetTexture(m.textures.bg_texture)
-        AlternativePowerBG:SetColorTexture(1 / 3, 1 / 3, 1 / 3)
 
         AlternativePower:EnableMouse(true)
         AlternativePower:SetScript("OnEnter", AlternativePowerOnEnter)
