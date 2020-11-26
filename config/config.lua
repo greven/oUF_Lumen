@@ -36,6 +36,9 @@ local cfg, m, filters, watchers = ns.cfg, ns.m, ns.filters, ns.watchers
 -- Show BarTimers with the normal theme
 -- cfg.elements.barTimers.theme = "normal"
 
+-- Disable Name Plates
+-- cfg.units.nameplate.show = false
+
 -- AuraBars Filters
 -- If you want to add spells not on the AuraBars filters, copy the relevant class filters table and add or remove what you want. Example for Warrior
 
