@@ -1,3 +1,7 @@
+### Version 9.3.3:
+
+- Add classification to nameplates
+
 ### Version 9.3.2:
 
 - Tweak some positioning
