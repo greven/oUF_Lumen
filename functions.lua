@@ -248,6 +248,15 @@ local function AdditionalPowerPostUpdate(self, cur, max)
     else
         self:Show()
     end
+
+    -- Hide if dead
+    local isPlayerDead = UnitIsDead("player") or UnitIsGhost(unit)
+    print(isPlayerDead)
+    if isPlayerDead then
+        self:Hide()
+    else
+        self:Show()
+    end
 end
 
 function lum:CreateAdditionalPower(self)

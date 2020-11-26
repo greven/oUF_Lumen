@@ -68,7 +68,7 @@ local function OnTargetChanged(self)
     end
 end
 
-local function AddTargetIndicators(self)
+local function CreateTargetIndicators(self)
     local selectedColor = self.cfg.selectedColor
     local glowColor = self.cfg.glowColor
 
@@ -149,10 +149,14 @@ local PostUpdatePlates = function(self, event, unit)
         OnTargetChanged(self)
     end
 
-    if not self.isPlayer then
-        lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 4,
-                             "CENTER", self.cfg.width - 4)
+    lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 4,
+                         "CENTER", self.cfg.width - 4)
+
+    if self.isPlayer then
         self:Tag(self.Name, "[lum:levelplus] [lum:name]")
+    else
+        self:Tag(self.Name,
+                 "[lum:classificationshort] [lum:levelplus] [lum:name]")
     end
 end
 
@@ -192,6 +196,7 @@ local function CreateNameplate(self, unit)
 
     local health = lum:CreateHealthBar(self, "nameplate")
     health:SetAllPoints()
+
     health.percent = api:CreateFontstring(self.Health, font, cfg.fontsize - 4,
                                           "THINOUTLINE", "BACKGROUND")
     health.percent:SetPoint("LEFT", self.Health, "RIGHT", 4, 0)
@@ -208,7 +213,7 @@ local function CreateNameplate(self, unit)
     lum:CreateCastbar(self)
     CreateNameplateClassPower(self)
     CreateRaidIcons(self)
-    AddTargetIndicators(self)
+    CreateTargetIndicators(self)
 
     -- Auras
     local debuffs = lum:SetDebuffAuras(self, frame, 6, 1, 16, 4, "BOTTOMLEFT",
