@@ -4,8 +4,6 @@ local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 local filters, debuffs = ns.filters, ns.debuffs
 
-local font = m.fonts.font
-
 local frame = "party"
 
 -- -----------------------------------
@@ -105,16 +103,16 @@ local function CreateParty(self)
     self.Power.PostUpdate = PostUpdatePower
 
     -- Texts
-    lum:CreateHealthValueString(self, font, cfg.fontsize - 2, "THINOUTLINE", 4,
+    lum:CreateHealthValueString(self, m.fonts.font, cfg.fontsize - 2, "THINOUTLINE", 4,
                                 8, "LEFT")
-    lum:CreatePartyNameString(self, font, cfg.fontsize)
+    lum:CreatePartyNameString(self, m.fonts.mlang, cfg.fontsize)
 
     if self.cfg.health.classColoredText then
         self:Tag(self.Name,
                  "[lum:playerstatus] [lum:leader] [raidcolor][lum:name]")
     end
 
-    self.classText = api:CreateFontstring(self.Health, font, cfg.fontsize,
+    self.classText = api:CreateFontstring(self.Health, m.fonts.font, cfg.fontsize,
                                           "THINOUTLINE")
     self.classText:SetPoint("BOTTOMRIGHT", self, "BOTTOMRIGHT", -4, 5)
     self.classText:SetJustifyH("RIGHT")

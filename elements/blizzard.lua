@@ -3,8 +3,6 @@ local _, ns = ...
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 
-local font = m.fonts.font
-
 local _G = _G
 
 -- -----------------------------------------
@@ -53,7 +51,7 @@ function lum:MirrorBars()
         bg:SetTexture(m.textures.bg_texture)
         bg:SetColorTexture(0.2, 0.2, 0.2)
 
-        text:SetFont(font, cfg.fontsize - 1, "THINOUTLINE")
+        text:SetFont(m.fonts.font, cfg.fontsize - 1, "THINOUTLINE")
         text:ClearAllPoints()
         text:SetPoint("LEFT", statusBar, 4, 0)
         mirrorTimer.label = text

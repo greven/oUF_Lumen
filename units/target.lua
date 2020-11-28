@@ -4,8 +4,6 @@ local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 local filters = ns.filters
 
-local font = m.fonts.font
-
 local frame = "target"
 
 -- -----------------------------------
@@ -19,15 +17,15 @@ local function CreateTarget(self)
     lum:SharedStyle(self, "main")
 
     -- Texts
-    lum:CreateNameString(self, font, cfg.fontsize, "THINOUTLINE", 4, -0.5,
+    lum:CreateNameString(self, m.fonts.mlang, cfg.fontsize, "THINOUTLINE", 4, -0.5,
                          "LEFT", self.cfg.width - 56)
-    lum:CreateHealthValueString(self, font, cfg.fontsize, "THINOUTLINE", -4,
+    lum:CreateHealthValueString(self, m.fonts.font, cfg.fontsize, "THINOUTLINE", -4,
                                 -0.5, "RIGHT")
-    lum:CreateHealthPercentString(self, font, cfg.fontsize, nil, -32, -0.5,
+    lum:CreateHealthPercentString(self, m.fonts.font, cfg.fontsize, nil, -32, -0.5,
                                   "LEFT", "BACKGROUND")
-    lum:CreatePowerValueString(self, font, cfg.fontsize - 3, "THINOUTLINE", 0,
+    lum:CreatePowerValueString(self, m.fonts.font, cfg.fontsize - 3, "THINOUTLINE", 0,
                                0, "CENTER")
-    lum:CreateClassificationString(self, font, cfg.fontsize - 1)
+    lum:CreateClassificationString(self, m.fonts.font, cfg.fontsize - 1)
 
     lum:CreateCastbar(self)
     lum:CreateHealPrediction(self)

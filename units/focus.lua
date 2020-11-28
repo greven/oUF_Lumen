@@ -3,8 +3,6 @@ local A, ns = ...
 local lum, core, api, cfg, m, G, oUF = ns.lum, ns.core, ns.api, ns.cfg, ns.m,
                                        ns.G, ns.oUF
 
-local font = m.fonts.font
-
 local frame = "focus"
 
 -- ------------------------------------------------------------------------
@@ -38,7 +36,7 @@ local function CreateFocus(self)
     lum:SharedStyle(self, "secondary")
 
     -- Texts
-    lum:CreateNameString(self, font, cfg.fontsize - 2, "THINOUTLINE", 3, 0,
+    lum:CreateNameString(self, m.fonts.mlang, cfg.fontsize - 2, "THINOUTLINE", 3, 0,
                          "LEFT", self.cfg.width - 4)
     self:Tag(self.Name, "[lum:name]")
 

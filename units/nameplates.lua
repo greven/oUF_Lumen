@@ -7,8 +7,6 @@ local _G = _G
 
 local UnitIsPlayer, UnitIsUnit = UnitIsPlayer, UnitIsUnit
 
-local font = m.fonts.font
-
 local frame = "nameplate"
 
 -- -----------------------------------
@@ -150,7 +148,7 @@ local PostUpdatePlates = function(self, event, unit)
     end
 
     if not self.isPlayer then
-        lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 4,
+        lum:CreateNameString(self, m.fonts.mlang, cfg.fontsize - 5, "THINOUTLINE", 0, 4,
                              "CENTER", self.cfg.width - 4)
         self:Tag(self.Name, "[lum:levelplus] [lum:name]")
     end
@@ -158,7 +156,7 @@ end
 
 local function CreateNameplateClassPower(self)
     if cfg.units.nameplate.classpower.show then
-        classPower = api:CreateFontstring(self.Health, font, cfg.fontsize - 2,
+        classPower = api:CreateFontstring(self.Health, m.fonts.font, cfg.fontsize - 2,
                                           "THINOUTLINE", "BACKGROUND")
         classPower:SetPoint("RIGHT", self.Health, "LEFT", -4, 0)
         classPower:SetJustifyH("RIGHT")
@@ -192,7 +190,7 @@ local function CreateNameplate(self, unit)
 
     local health = lum:CreateHealthBar(self, "nameplate")
     health:SetAllPoints()
-    health.percent = api:CreateFontstring(self.Health, font, cfg.fontsize - 4,
+    health.percent = api:CreateFontstring(self.Health, m.fonts.font, cfg.fontsize - 4,
                                           "THINOUTLINE", "BACKGROUND")
     health.percent:SetPoint("LEFT", self.Health, "RIGHT", 4, 0)
     health.percent:SetJustifyH("LEFT")
