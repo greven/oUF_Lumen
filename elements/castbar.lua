@@ -24,8 +24,6 @@ local function CheckForSpellInterrupt(self, unit)
     if not unit then return end
     if unit == "vehicle" then unit = "player" end
 
-
-
     local hasColorConfig = cfg.units["nameplate1"] and cfg.units["nameplate1"].castbar and cfg.units["nameplate1"].castbar.color
     local initialColor = (hasColorConfig and cfg.units["nameplate1"].castbar.color) or {235 / 255, 25 / 255, 25 / 255}
 
