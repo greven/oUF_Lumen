@@ -16,22 +16,22 @@ local function SetHearthstoneBindingLocation(self, unit)
 
     if core:HasValue(G.hearthstones, self.spellID) then
         local bindLocation = GetBindLocation()
-        self.Text:SetText(format("%s - |cff888888%s|r", self.Text:GetText(),
-                                 bindLocation))
+        self.Text:SetText(format("%s - |cff888888%s|r", self.Text:GetText(), bindLocation))
     end
 end
 
 local function CheckForSpellInterrupt(self, unit)
+    if not unit then return end
     if unit == "vehicle" then unit = "player" end
 
-    local initialColor = cfg.units[unit].castbar.color
+    local cfg = cfg.units[unit]
+    local initialColor = (cfg and cfg.units[unit].castbar.color) or {235 / 255, 25 / 255, 25 / 255}
 
     if (self.notInterruptible and UnitCanAttack("player", unit)) then
         self:SetStatusBarColor(0.2, 0.2, 0.2)
 
         if self.Glowborder then
-            self.Glowborder:SetBackdropBorderColor(25 / 255, 200 / 255,
-                                                   255 / 255, 1)
+            self.Glowborder:SetBackdropBorderColor(25 / 255, 200 / 255, 255 / 255, 1)
             self.Glowborder:Show()
         end
     else
@@ -46,9 +46,7 @@ local function CustomCastTimeText(self, duration)
     local unit = self.__owner.mystyle
 
     if self.Time then
-        self.Time:SetText(("%.1f"):format(
-                              self.channeling and duration or self.max -
-                                  duration))
+        self.Time:SetText(("%.1f"):format(self.channeling and duration or self.max - duration))
     end
 
     if self.Max and unit ~= "nameplate" then
@@ -130,11 +128,9 @@ function lum:CreateCastbar(self)
     Castbar.Max = Max
 
     if (unit == "player") then
-        api:SetBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2,
-                        backdropColor)
+        api:SetBackdrop(Castbar, cfg.units.player.castbar.height + 4, 2, 2, 2, backdropColor)
         Castbar:SetStatusBarColor(unpack(cfg.units.player.castbar.color))
-        Castbar:SetWidth(cfg.units.player.castbar.width -
-                             cfg.units.player.castbar.height + 6)
+        Castbar:SetWidth(cfg.units.player.castbar.width - cfg.units.player.castbar.height + 6)
         Castbar:SetHeight(cfg.units.player.castbar.height)
         Castbar:SetPoint(cfg.units.player.castbar.pos.a1,
                          cfg.units.player.castbar.pos.af,

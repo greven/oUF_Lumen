@@ -199,8 +199,7 @@ function lum:CreatePowerBar(self, frameType)
     power:SetWidth(self.cfg.width)
     power:SetStatusBarTexture(m.textures.status_texture)
     power:GetStatusBarTexture():SetHorizTile(false)
-    power:SetPoint("TOP", self.Health, "BOTTOM", 0,
-                   -cfg.frames[frameType].health.margin)
+    power:SetPoint("TOP", self.Health, "BOTTOM", 0, -cfg.frames[frameType].health.margin)
 
     power.bg = power:CreateTexture(nil, "BACKGROUND")
     power.bg:SetAllPoints(power)
