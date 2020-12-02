@@ -325,7 +325,7 @@ cfg.units = {
         name = {show = true},
         castbar = {
             enable = false
-        }
+        },
         auras = {
             buffs = {show = false, spellName = false},
             debuffs = {show = false, spellName = false}
