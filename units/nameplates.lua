@@ -149,15 +149,14 @@ local PostUpdatePlates = function(self, event, unit)
         OnTargetChanged(self)
     end
 
-    lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 4,
-                         "CENTER", self.cfg.width - 4)
+    lum:CreateNameString(self, font, cfg.fontsize - 5, "THINOUTLINE", 0, 4, "CENTER", self.cfg.width - 4)
+    self:Tag(self.Name, "[lum:classificationshort] [lum:levelplus] [lum:name]")
 
-    if self.isPlayer then
-        self:Tag(self.Name, "[lum:levelplus] [lum:name]")
-    else
-        self:Tag(self.Name,
-                 "[lum:classificationshort] [lum:levelplus] [lum:name]")
-    end
+    -- if self.isPlayer then
+    --     self:Tag(self.Name, "[lum:levelplus] [lum:name]")
+    -- else
+    --     self:Tag(self.Name, "[lum:classificationshort] [lum:levelplus] [lum:name]")
+    -- end
 end
 
 local function CreateNameplateClassPower(self)
